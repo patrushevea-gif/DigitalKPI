@@ -18,7 +18,6 @@
 <button class="tab active" data-tab="0">Архитектура</button>
 <button class="tab" data-tab="1">KPI</button>
 <button class="tab" data-tab="2">Зрелость</button>
-<button class="tab" data-tab="3">Матрица</button>
 </div>
 <button id="fs" title="На весь экран" style="background:rgba(127,119,221,0.22);color:#fff;border:1px solid rgba(127,119,221,0.38);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;letter-spacing:0.01em;">⛶ Полный экран</button>
 </div>
@@ -450,16 +449,12 @@ col:{goals:'#a78bfa',dirs:'#10b981',dash:'#3b82f6',emp:'#f87171',idx:'#fbbf24',s
 cnt:{goals:3,dirs:19,dash:20,emp:5,idx:1,sal:4,twins:19,team:'~120',ai:1,lk:''}},
 {g:LB,lbl:{tl:'Годы + уровни',drv:'Драйверы',lv:'Шкала 1–8',lk:'Связи'},
 col:{tl:'#f97316',drv:'#f472b6',lv:'#94a3b8',lk:'#666'},
-cnt:{tl:5,drv:4,lv:8,lk:''}},
-{g:LC,lbl:{ax:'Оси',cl:'Ячейки',gr:'Сетка'},
-col:{ax:'#60a5fa',cl:'#22d3ee',gr:'#475569'},
-cnt:{ax:3,cl:'~94',gr:''}}
+cnt:{tl:5,drv:4,lv:8,lk:''}}
 ];
 const LEG=[
 [['Компания','#7f77dd'],['Направления (19)','#eab308'],['Процессы (94)','#3b82f6'],['ИТ (13)','#22d3ee']],
 [['Топ-цели (3)','#a78bfa'],['Направления (19)','#10b981'],['Дашборды (20)','#3b82f6'],['Данные сотрудников','#f87171'],['Индекс влияния','#fbbf24'],['Зарплата','#c084fc'],['Двойники руководителей','#f472b6'],['Цифровая команда','#94a3b8'],['ИИ-ядро','#22d3ee']],
-[['2024 уровень 4','#1e40af'],['2025 ур.5','#2563eb'],['2026 ур.6','#eab308'],['2027 ур.7','#f97316'],['2028–30 ур.8','#dc2626'],['Драйверы','#f472b6']],
-[['X: направления','#60a5fa'],['Y: ИТ-системы','#fbbf24'],['Z: процессы','#ec4899'],['Куб = связь','#22d3ee']]
+[['2024 уровень 4','#1e40af'],['2025 ур.5','#2563eb'],['2026 ур.6','#eab308'],['2027 ур.7','#f97316'],['2028–30 ур.8','#dc2626'],['Драйверы','#f472b6']]
 ];
 
 let at=0;
@@ -480,9 +475,8 @@ function sw(i){
 setHover(null);
 at=i;SG.forEach((g,k)=>g.visible=(k===i));
 if(i===0){cs.r=380;cs.th=Math.PI/2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
-else if(i===1){cs.r=560;cs.th=Math.PI/2.05;cs.ph=Math.PI/6;cs.tx=0;cs.ty=0;cs.tz=0;}
-else if(i===2){cs.r=440;cs.th=Math.PI/2.2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
-else{cs.r=360;cs.th=Math.PI/2.3;cs.ph=-Math.PI/4;cs.tx=0;cs.ty=0;cs.tz=-40;}
+else if(i===1){cs.r=620;cs.th=Math.PI/2.05;cs.ph=Math.PI/6;cs.tx=0;cs.ty=0;cs.tz=0;}
+else{cs.r=440;cs.th=Math.PI/2.2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
 upCam();
 document.querySelectorAll('#tabs .tab').forEach((b,k)=>b.classList.toggle('active',k===i));
 document.getElementById('info').innerHTML='';
@@ -558,7 +552,6 @@ let ar=true;
 document.getElementById('rot').addEventListener('change',e=>ar=e.target.checked);
 function tick(){
 if(ar&&!drag){cs.ph+=0.002;upCam();}
-if(at===3){LC.cl.rotation.y=Math.sin(Date.now()*0.0002)*0.06;}
 if(at===1){
   const t=Date.now()*0.001;
   if(scene.userData.aiCore){scene.userData.aiCore.rotation.y=t*0.3;scene.userData.aiCore.rotation.x=t*0.18;scene.userData.aiCore.material.emissiveIntensity=0.75+Math.sin(t*1.6)*0.2;}
