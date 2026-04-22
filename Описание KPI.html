@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Архитектура системы KPI — Потоки данных</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg:       #f5f5f3;
+  --bg2:      #ffffff;
+  --bg3:      #f9f9f8;
+  --surface:  #f2f2f0;
+
+  --ink:      #1a1a1a;
+  --ink2:     #4a4a4a;
+  --ink3:     #888888;
+  --rule:     #d8d8d4;
+  --rule2:    #e8e8e5;
+
+  --accent-purple: #4a3fbf;
+  --bg-purple:     #f0effe;
+  --bd-purple:     #c4bcf5;
+
+  --accent-teal:   #0f7a6b;
+  --bg-teal:       #edf8f6;
+  --bd-teal:       #9ed8d0;
+
+  --accent-blue:   #1a5fb4;
+  --bg-blue:       #edf2fb;
+  --bd-blue:       #a8c4e8;
+
+  --accent-coral:  #c0392b;
+  --bg-coral:      #fdf0ee;
+  --bd-coral:      #e8b4ae;
+
+  --accent-amber:  #7d4e00;
+  --bg-amber:      #fdf6e8;
+  --bd-amber:      #e8cc88;
+
+  --accent-green:  #1a6b3a;
+  --bg-green:      #eef7f1;
+  --bd-green:      #9ed4b4;
+
+  --accent-pink:   #852d6e;
+  --bg-pink:       #fceef8;
+  --bd-pink:       #dda8ce;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 48px 28px 80px;
+}
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  margin-bottom: 52px;
+  padding-bottom: 28px;
+  border-bottom: 2px solid var(--ink);
+}
+.header-left { flex: 1; }
+.header-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 10px;
+}
+.header h1 {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.header p {
+  font-size: 14px;
+  color: var(--ink2);
+  font-weight: 400;
+  max-width: 500px;
+  line-height: 1.65;
+}
+.header-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+.header-meta-item {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--ink3);
+  letter-spacing: 0.05em;
+}
+
+/* ── Section label ── */
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 8px;
+  padding-left: 2px;
+}
+
+/* ── Arrow connector ── */
+.arrow-down {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2px 0;
+}
+.arrow-down .arrow-line {
+  width: 1px;
+  height: 18px;
+  background: var(--rule);
+}
+.arrow-down .arrow-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--ink3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 0;
+}
+.arrow-down .arrow-head {
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid var(--rule);
+}
+
+/* ── Layer card ── */
+.layer {
+  border-radius: 4px;
+  border: 1px solid var(--rule);
+  background: var(--bg2);
+  padding: 20px 22px;
+  margin-bottom: 4px;
+}
+
+.layer-l1 { border-top: 3px solid var(--accent-purple); }
+.layer-l2 { border-top: 3px solid var(--accent-teal); }
+.layer-l3 { border-top: 3px solid var(--accent-blue); }
+.layer-l4 { border-top: 3px solid var(--accent-coral); }
+.layer-l5 { border-top: 3px solid var(--accent-amber); }
+.layer-ai { border-top: 3px solid var(--accent-green); }
+.layer-salary { border-top: 3px solid var(--accent-purple); }
+
+.layer-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule2);
+}
+.layer-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink3);
+  width: 28px;
+  flex-shrink: 0;
+}
+.layer-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.layer-sub {
+  font-size: 12px;
+  color: var(--ink3);
+  margin-top: 2px;
+  font-weight: 400;
+}
+
+/* ── Goals ── */
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.goal-card {
+  background: var(--bg-purple);
+  border: 1px solid var(--bd-purple);
+  border-radius: 4px;
+  padding: 18px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.goal-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent-purple);
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+/* ── Process KPI block ── */
+.process-kpi-block {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--bd-purple);
+  background: var(--bg-purple);
+  border: 1px solid var(--bd-purple);
+  border-radius: 4px;
+  padding: 18px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+}
+.process-kpi-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent-purple);
+  text-align: center;
+}
+.process-kpi-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink3);
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+/* ── Directions ── */
+.directions-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+.dir-card {
+  background: var(--bg-teal);
+  border: 1px solid var(--bd-teal);
+  border-radius: 4px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+.dir-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--accent-teal);
+  opacity: 0.7;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.dir-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+/* ── Dashboards ── */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.dash-card {
+  background: var(--bg-blue);
+  border: 1px solid var(--bd-blue);
+  border-radius: 4px;
+  padding: 14px 16px;
+}
+.dash-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-blue);
+  margin-bottom: 10px;
+}
+.dash-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.metric-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+.mt-biz {
+  color: var(--accent-blue);
+  border-color: var(--bd-blue);
+  background: #ffffff;
+}
+.mt-disc {
+  color: var(--accent-amber);
+  border-color: var(--bd-amber);
+  background: #ffffff;
+}
+.dash-summary {
+  background: var(--bg3);
+  border: 1px solid var(--bd-blue);
+  border-left: 3px solid var(--accent-blue);
+  border-radius: 4px;
+  padding: 14px 16px;
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.dash-summary-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.dash-summary-sub {
+  font-size: 12px;
+  color: var(--ink2);
+  line-height: 1.55;
+}
+
+/* ── Employee ── */
+.employee-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.emp-card {
+  background: var(--bg-coral);
+  border: 1px solid var(--bd-coral);
+  border-radius: 4px;
+  padding: 14px 16px;
+}
+.emp-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-coral);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--bd-coral);
+}
+.emp-items {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.emp-item {
+  font-size: 12px;
+  color: var(--ink2);
+  padding: 4px 8px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 2px;
+  border-left: 2px solid var(--bd-coral);
+  line-height: 1.45;
+}
+
+/* ── Index ── */
+.index-block {
+  background: var(--bg-amber);
+  border: 1px solid var(--bd-amber);
+  border-radius: 4px;
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+.index-component {
+  text-align: center;
+  padding: 10px 12px;
+  background: #ffffff;
+  border-radius: 3px;
+  border: 1px solid var(--bd-amber);
+}
+.index-component-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-amber);
+  margin-bottom: 4px;
+}
+.index-component-desc {
+  font-size: 11px;
+  color: var(--ink2);
+  line-height: 1.4;
+}
+.index-formula {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 10px 14px;
+  background: #ffffff;
+  border-radius: 3px;
+  border: 1px solid var(--bd-amber);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-amber);
+}
+
+/* ── AI Module ── */
+.ai-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule2);
+}
+.ai-src-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--ink3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  width: 100%;
+  margin-bottom: 4px;
+}
+.source-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+.st-purple { color: var(--accent-purple); border-color: var(--bd-purple); background: var(--bg-purple); }
+.st-teal   { color: var(--accent-teal);   border-color: var(--bd-teal);   background: var(--bg-teal); }
+.st-blue   { color: var(--accent-blue);   border-color: var(--bd-blue);   background: var(--bg-blue); }
+.st-coral  { color: var(--accent-coral);  border-color: var(--bd-coral);  background: var(--bg-coral); }
+.st-amber  { color: var(--accent-amber);  border-color: var(--bd-amber);  background: var(--bg-amber); }
+
+.ai-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.ai-card {
+  background: var(--bg-green);
+  border: 1px solid var(--bd-green);
+  border-radius: 4px;
+  padding: 14px 16px;
+}
+.ai-card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-green);
+  margin-bottom: 10px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--bd-green);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.ai-items {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.ai-item {
+  font-size: 12px;
+  color: var(--ink2);
+  padding: 4px 8px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 2px;
+  border-left: 2px solid var(--bd-green);
+  line-height: 1.45;
+}
+.ai-item strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Predict */
+.ai-card-predict {
+  background: var(--bg-pink);
+  border-color: var(--bd-pink);
+  grid-column: 1 / -1;
+}
+.ai-card-predict .ai-card-title {
+  color: var(--accent-pink);
+  border-bottom-color: var(--bd-pink);
+}
+.predict-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+.predict-chip {
+  padding: 9px 11px;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid var(--bd-pink);
+  border-radius: 3px;
+  font-size: 11px;
+  color: var(--ink2);
+  line-height: 1.5;
+}
+.predict-chip strong {
+  display: block;
+  font-size: 12px;
+  color: var(--accent-pink);
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+/* AI outputs */
+.ai-outputs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule2);
+}
+.ai-output-badge {
+  background: #ffffff;
+  border: 1px solid var(--bd-green);
+  border-radius: 3px;
+  padding: 10px 12px;
+  text-align: center;
+}
+.ai-output-badge .icon { font-size: 15px; margin-bottom: 5px; }
+.ai-output-badge .name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-green);
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.ai-output-badge .desc {
+  font-size: 11px;
+  color: var(--ink2);
+  line-height: 1.4;
+}
+
+/* ── Salary ── */
+.salary-inner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.salary-component {
+  background: var(--bg-purple);
+  border: 1px solid var(--bd-purple);
+  border-radius: 4px;
+  padding: 14px 14px;
+  text-align: center;
+}
+.salary-component-pct {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent-purple);
+  margin-bottom: 6px;
+}
+.salary-component-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.salary-component-desc {
+  font-size: 11px;
+  color: var(--ink2);
+  line-height: 1.4;
+}
+
+/* ── Legend ── */
+.legend {
+  margin-top: 44px;
+  padding-top: 22px;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.legend-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding-top: 2px;
+}
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink2);
+}
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Watermark ── */
+.watermark {
+  text-align: right;
+  margin-top: 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--ink3);
+  letter-spacing: 0.08em;
+  border-top: 1px solid var(--rule2);
+  padding-top: 14px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="header-label">Предмет договора · Техническая архитектура системы</div>
+      <h1>Система управления KPI<br>— Архитектура потоков данных</h1>
+      <p>Полная схема: от стратегических целей компании до расчёта заработной платы каждого сотрудника. Включает ИИ-аналитику и предиктивные модели.</p>
+    </div>
+    <div class="header-meta">
+      <div class="header-meta-item">ВЕРСИЯ 1.0</div>
+      <div class="header-meta-item">19 НАПРАВЛЕНИЙ</div>
+      <div class="header-meta-item">20 ДАШБОРДОВ</div>
+      <div class="header-meta-item">7 УРОВНЕЙ</div>
+    </div>
+  </div>
+
+  <!-- L1 -->
+  <div class="section-label">Уровень 01 — Стратегия</div>
+  <div class="layer layer-l1">
+    <div class="layer-header">
+      <div class="layer-num">01</div>
+      <div>
+        <div class="layer-title">3 Топ-цели компании</div>
+        <div class="layer-sub">Стратегический уровень — основа всего каскада KPI</div>
+      </div>
+    </div>
+    <div class="goals-grid">
+      <div class="goal-card">
+        <div class="goal-text">Цель 1</div>
+      </div>
+      <div class="goal-card">
+        <div class="goal-text">Цель 2</div>
+      </div>
+      <div class="goal-card">
+        <div class="goal-text">Цель 3</div>
+      </div>
+    </div>
+    <div class="process-kpi-block">
+      <div class="process-kpi-label">Процессные KPI</div>
+      <div class="process-kpi-sub">90 процессов</div>
+    </div>
+  </div>
+
+  <div class="arrow-down">
+    <div class="arrow-line"></div>
+    <div class="arrow-label">каскадирование целей</div>
+    <div class="arrow-line"></div>
+    <div class="arrow-head"></div>
+  </div>
+
+  <!-- L2 -->
+  <div class="section-label">Уровень 02 — Направления компании</div>
+  <div class="layer layer-l2">
+    <div class="layer-header">
+      <div class="layer-num">02</div>
+      <div>
+        <div class="layer-title">19 Направлений компании</div>
+        <div class="layer-sub">Каждое направление получает свой набор KPI, каскадированных из топ-целей</div>
+      </div>
+    </div>
+    <div class="directions-grid">
+      <div class="dir-card"><span class="dir-num">01</span><span class="dir-name">Производство Белорецк</span></div>
+      <div class="dir-card"><span class="dir-num">02</span><span class="dir-name">Производство Технопарк</span></div>
+      <div class="dir-card"><span class="dir-num">03</span><span class="dir-name">RnD и Технологии</span></div>
+      <div class="dir-card"><span class="dir-num">04</span><span class="dir-name">Продажи</span></div>
+      <div class="dir-card"><span class="dir-num">05</span><span class="dir-name">Снабжение</span></div>
+      <div class="dir-card"><span class="dir-num">06</span><span class="dir-name">Развитие</span></div>
+      <div class="dir-card"><span class="dir-num">07</span><span class="dir-name">Опер. эффективность</span></div>
+      <div class="dir-card"><span class="dir-num">08</span><span class="dir-name">Персонал</span></div>
+      <div class="dir-card"><span class="dir-num">09</span><span class="dir-name">Финансы</span></div>
+      <div class="dir-card"><span class="dir-num">10</span><span class="dir-name">Безопасность</span></div>
+      <div class="dir-card"><span class="dir-num">11</span><span class="dir-name">СОТПБ и ЭБ</span></div>
+      <div class="dir-card"><span class="dir-num">12</span><span class="dir-name">Право</span></div>
+      <div class="dir-card"><span class="dir-num">13</span><span class="dir-name">ИТ и Автоматизация</span></div>
+      <div class="dir-card"><span class="dir-num">14</span><span class="dir-name">Администрирование</span></div>
+      <div class="dir-card"><span class="dir-num">15</span><span class="dir-name">Техническая политика</span></div>
+      <div class="dir-card"><span class="dir-num">16</span><span class="dir-name">Искусственный интеллект</span></div>
+      <div class="dir-card"><span class="dir-num">17</span><span class="dir-name">Маркетинг</span></div>
+      <div class="dir-card"><span class="dir-num">18</span><span class="dir-name">Оказание услуг по покраске</span></div>
+      <div class="dir-card"><span class="dir-num">19</span><span class="dir-name">Ресейл</span></div>
+    </div>
+  </div>
+
+  <div class="arrow-down">
+    <div class="arrow-line"></div>
+    <div class="arrow-label">формируют метрики дашбордов</div>
+    <div class="arrow-line"></div>
+    <div class="arrow-head"></div>
+  </div>
+
+  <!-- L3 -->
+  <div class="section-label">Уровень 03 — Дашборды KPI (20 штук)</div>
+  <div class="layer layer-l3">
+    <div class="layer-header">
+      <div class="layer-num">03</div>
+      <div>
+        <div class="layer-title">20 Дашбордов</div>
+        <div class="layer-sub">19 по направлениям + 1 сводный. Каждый содержит два блока метрик</div>
+      </div>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-title">Бизнес-метрики направления</div>
+        <div class="dash-metrics">
+          <span class="metric-tag mt-biz">Выполнение плана</span>
+          <span class="metric-tag mt-biz">Объём производства / продаж</span>
+          <span class="metric-tag mt-biz">Качество продукта / услуги</span>
+          <span class="metric-tag mt-biz">Скорость исполнения</span>
+          <span class="metric-tag mt-biz">Бюджетное исполнение</span>
+          <span class="metric-tag mt-biz">Клиентская удовлетворённость</span>
+          <span class="metric-tag mt-biz">ROI / эффективность</span>
+          <span class="metric-tag mt-biz">SLA / контрактные обязательства</span>
+          <span class="metric-tag mt-biz">Инновации / R&D-метрики</span>
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Исполнительская дисциплина (сводно по направлению)</div>
+        <div class="dash-metrics">
+          <span class="metric-tag mt-disc">% выполнения задач в срок</span>
+          <span class="metric-tag mt-disc">Кол-во просроченных задач</span>
+          <span class="metric-tag mt-disc">Среднее время закрытия</span>
+          <span class="metric-tag mt-disc">Индекс исполнения поручений</span>
+          <span class="metric-tag mt-disc">Посещаемость / активность</span>
+          <span class="metric-tag mt-disc">Качество отчётности</span>
+          <span class="metric-tag mt-disc">Соблюдение регламентов</span>
+          <span class="metric-tag mt-disc">Нарушения / инциденты</span>
+        </div>
+      </div>
+      <div class="dash-summary">
+        <div>
+          <div class="dash-summary-title">Сводный дашборд компании — дашборд №20</div>
+          <div class="dash-summary-sub">Агрегированные ключевые метрики по всем 19 направлениям · Топ-цели в реальном времени · Отклонения и тренды · Рейтинг направлений · Сквозные показатели по компании</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">
+    <div class="arrow-line"></div>
+    <div class="arrow-label">декомпозиция на сотрудников</div>
+    <div class="arrow-line"></div>
+    <div class="arrow-head"></div>
+  </div>
+
+  <!-- L4 -->
+  <div class="section-label">Уровень 04 — Данные по каждому сотруднику</div>
+  <div class="layer layer-l4">
+    <div class="layer-header">
+      <div class="layer-num">04</div>
+      <div>
+        <div class="layer-title">KPI и оценки сотрудников</div>
+        <div class="layer-sub">Три независимых блока данных, которые сводятся в индекс влияния</div>
+      </div>
+    </div>
+    <div class="employee-grid">
+      <div class="emp-card">
+        <div class="emp-card-title">KPI по должности</div>
+        <div class="emp-items">
+          <div class="emp-item">Метрики, унаследованные из направления (частично)</div>
+          <div class="emp-item">Индивидуальные должностные KPI (специфичные для роли)</div>
+          <div class="emp-item">Весовые коэффициенты по каждому показателю</div>
+          <div class="emp-item">Плановые и фактические значения</div>
+          <div class="emp-item">Динамика выполнения за период</div>
+        </div>
+      </div>
+      <div class="emp-card">
+        <div class="emp-card-title">Исполнительская дисциплина (персональная)</div>
+        <div class="emp-items">
+          <div class="emp-item">Выполнение задач в срок — персональный %</div>
+          <div class="emp-item">Качество исполнения поручений</div>
+          <div class="emp-item">Соблюдение дедлайнов и регламентов</div>
+          <div class="emp-item">Активность в корпоративных системах</div>
+          <div class="emp-item">Инциденты, нарушения, предписания</div>
+        </div>
+      </div>
+      <div class="emp-card">
+        <div class="emp-card-title">Оценка 360°</div>
+        <div class="emp-items">
+          <div class="emp-item">Оценка от непосредственного руководителя</div>
+          <div class="emp-item">Оценка от подчинённых (если применимо)</div>
+          <div class="emp-item">Оценка от коллег одного уровня</div>
+          <div class="emp-item">Самооценка сотрудника</div>
+          <div class="emp-item">Оценка от смежных подразделений</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">
+    <div class="arrow-line"></div>
+    <div class="arrow-label">агрегация в единый показатель</div>
+    <div class="arrow-line"></div>
+    <div class="arrow-head"></div>
+  </div>
+
+  <!-- L5 -->
+  <div class="section-label">Уровень 05 — Индекс влияния сотрудника</div>
+  <div class="layer layer-l5">
+    <div class="layer-header">
+      <div class="layer-num">05</div>
+      <div>
+        <div class="layer-title">Индекс влияния сотрудника</div>
+        <div class="layer-sub">Сквозной показатель: как конкретный человек влияет на цели направления и компании</div>
+      </div>
+    </div>
+    <div class="index-block">
+      <div class="index-component">
+        <div class="index-component-name">Вклад в KPI направления</div>
+        <div class="index-component-desc">Насколько выполнение должностных KPI влияет на метрики направления</div>
+      </div>
+      <div class="index-component">
+        <div class="index-component-name">Исполнит. дисциплина</div>
+        <div class="index-component-desc">Персональный показатель надёжности и своевременности</div>
+      </div>
+      <div class="index-component">
+        <div class="index-component-name">Оценка 360°</div>
+        <div class="index-component-desc">Многосторонняя оценка компетентности и soft skills</div>
+      </div>
+      <div class="index-formula">
+        ИНДЕКС = α · (KPI_должность) + β · (Исп. дисциплина) + γ · (Оценка 360°) · Весовые коэффициенты по роли
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">
+    <div class="arrow-line"></div>
+    <div class="arrow-label">все данные поступают в ИИ</div>
+    <div class="arrow-line"></div>
+    <div class="arrow-head"></div>
+  </div>
+
+  <!-- AI -->
+  <div class="section-label">Сквозной модуль — Искусственный интеллект</div>
+  <div class="layer layer-ai">
+    <div class="layer-header">
+      <div class="layer-num">ИИ</div>
+      <div>
+        <div class="layer-title">ИИ-аналитика — сквозной модуль</div>
+        <div class="layer-sub">Анализирует все уровни данных системы в режиме реального времени</div>
+      </div>
+    </div>
+    <div class="ai-sources">
+      <div class="ai-src-label">Источники данных для анализа</div>
+      <span class="source-tag st-purple">3 топ-цели</span>
+      <span class="source-tag st-teal">19 направлений</span>
+      <span class="source-tag st-blue">20 дашбордов KPI</span>
+      <span class="source-tag st-coral">KPI по должностям</span>
+      <span class="source-tag st-coral">Исп. дисциплина (все)</span>
+      <span class="source-tag st-coral">Оценки 360°</span>
+      <span class="source-tag st-amber">Индексы сотрудников</span>
+      <span class="source-tag st-blue">Исторические данные</span>
+      <span class="source-tag st-purple">Кадровые данные (HR)</span>
+    </div>
+    <div class="ai-grid">
+      <div class="ai-card">
+        <div class="ai-card-title">Детекция аномалий</div>
+        <div class="ai-items">
+          <div class="ai-item"><strong>Статистические выбросы</strong> — показатели, выходящие за пределы нормального распределения</div>
+          <div class="ai-item"><strong>Резкие падения KPI</strong> — внезапное снижение метрик без видимых причин</div>
+          <div class="ai-item"><strong>Аномальные всплески</strong> — подозрительный рост (риск манипуляции данными)</div>
+          <div class="ai-item"><strong>Нарушение паттернов</strong> — отклонение от исторически устойчивых тенденций</div>
+          <div class="ai-item"><strong>Кросс-метрические противоречия</strong> — несоответствие между связанными показателями</div>
+        </div>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">Диагностика и объяснение</div>
+        <div class="ai-items">
+          <div class="ai-item"><strong>Корневые причины</strong> — автоматический поиск первопричин отклонений</div>
+          <div class="ai-item"><strong>Цепочки влияния</strong> — как проблема одного сотрудника влияет на направление</div>
+          <div class="ai-item"><strong>Сезонные корректировки</strong> — снятие плановых колебаний при анализе</div>
+          <div class="ai-item"><strong>Сравнение с бенчмарком</strong> — сопоставление с лучшими показателями направлений</div>
+          <div class="ai-item"><strong>Контекстный анализ</strong> — учёт внешних факторов (нагрузка, изменения процессов)</div>
+        </div>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">Рекомендации и решения</div>
+        <div class="ai-items">
+          <div class="ai-item"><strong>Корректирующие действия</strong> — конкретные шаги для исправления отклонений</div>
+          <div class="ai-item"><strong>Приоритизация проблем</strong> — какой риск решать первым по влиянию на цели</div>
+          <div class="ai-item"><strong>Лучшие практики</strong> — рекомендации на основе успешных паттернов</div>
+          <div class="ai-item"><strong>Перераспределение ресурсов</strong> — предложения по оптимизации загрузки команд</div>
+          <div class="ai-item"><strong>Обучение и развитие</strong> — выявление пробелов в компетенциях и рекомендации</div>
+        </div>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">Система алертов</div>
+        <div class="ai-items">
+          <div class="ai-item"><strong>Ранние предупреждения</strong> — уведомления до выхода метрики в красную зону</div>
+          <div class="ai-item"><strong>Эскалация по уровням</strong> — сотрудник → руководитель → топ-менеджмент</div>
+          <div class="ai-item"><strong>Тихие зоны</strong> — направления, по которым данные не обновлялись</div>
+          <div class="ai-item"><strong>Риск невыполнения плана</strong> — вероятностная оценка достижения целей</div>
+          <div class="ai-item"><strong>Пороговые нарушения</strong> — автоматическая фиксация пересечения KPI-границ</div>
+        </div>
+      </div>
+      <div class="ai-card ai-card-predict">
+        <div class="ai-card-title">Предиктивная аналитика — прогнозирование рисков</div>
+        <div class="predict-grid">
+          <div class="predict-chip"><strong>Слабое звено команды</strong>Модель выявляет сотрудников с устойчивой нисходящей динамикой до критического падения</div>
+          <div class="predict-chip"><strong>Риск просадки направления</strong>Прогноз: какое из 19 направлений не выполнит KPI в следующем периоде и почему</div>
+          <div class="predict-chip"><strong>Каскадные риски</strong>Если направление A просаживается, ИИ предсказывает вторичный эффект на зависимые направления</div>
+          <div class="predict-chip"><strong>Риск выгорания</strong>Паттерны выгорания выявляются за 4–6 недель до явного кризиса по совокупности сигналов</div>
+          <div class="predict-chip"><strong>Прогноз топ-целей</strong>Вероятность достижения 3 стратегических целей к концу периода на основе текущей динамики</div>
+          <div class="predict-chip"><strong>Кадровые риски</strong>Предиктивная оценка вероятности увольнения ключевых сотрудников по поведенческим паттернам</div>
+          <div class="predict-chip"><strong>Симуляция планов</strong>Как изменение весов KPI или перераспределение задач повлияет на выполнение целей</div>
+          <div class="predict-chip"><strong>Сезонные прогнозы</strong>Учёт исторических паттернов для предвидения провалов дисциплины в пиковые периоды</div>
+          <div class="predict-chip"><strong>Рейтинг рисков</strong>Еженедельный рейтинг сотрудников и направлений по уровню накопленного риска</div>
+        </div>
+      </div>
+    </div>
+    <div class="ai-outputs">
+      <div class="ai-output-badge">
+        <div class="icon">📧</div>
+        <div class="name">Авто-алерты</div>
+        <div class="desc">Push / email уведомления по триггерам</div>
+      </div>
+      <div class="ai-output-badge">
+        <div class="icon">📝</div>
+        <div class="name">AI-инсайты</div>
+        <div class="desc">Текстовые выводы с объяснением ситуации</div>
+      </div>
+      <div class="ai-output-badge">
+        <div class="icon">📊</div>
+        <div class="name">Прогнозные графики</div>
+        <div class="desc">Визуализация трендов и сценариев</div>
+      </div>
+      <div class="ai-output-badge">
+        <div class="icon">🎯</div>
+        <div class="name">Action items</div>
+        <div class="desc">Конкретные рекомендации с приоритетом</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">
+    <div class="arrow-line"></div>
+    <div class="arrow-label">результирующий расчёт</div>
+    <div class="arrow-line"></div>
+    <div class="arrow-head"></div>
+  </div>
+
+  <!-- Salary -->
+  <div class="section-label">Уровень 07 — Расчёт заработной платы</div>
+  <div class="layer layer-salary">
+    <div class="layer-header">
+      <div class="layer-num">07</div>
+      <div>
+        <div class="layer-title">Автоматический расчёт заработной платы</div>
+        <div class="layer-sub">Итоговый результат системы — зарплата формируется из четырёх компонентов</div>
+      </div>
+    </div>
+    <div class="salary-inner">
+      <div class="salary-component">
+        <div class="salary-component-pct">КПЭ</div>
+        <div class="salary-component-name">Выполнение KPI должности</div>
+        <div class="salary-component-desc">Фактические vs плановые показатели по должностным KPI</div>
+      </div>
+      <div class="salary-component">
+        <div class="salary-component-pct">ИД</div>
+        <div class="salary-component-name">Исполнительская дисциплина</div>
+        <div class="salary-component-desc">Персональный коэффициент надёжности и своевременности</div>
+      </div>
+      <div class="salary-component">
+        <div class="salary-component-pct">360°</div>
+        <div class="salary-component-name">Оценка 360°</div>
+        <div class="salary-component-desc">Многосторонняя оценка компетенций и поведения</div>
+      </div>
+      <div class="salary-component">
+        <div class="salary-component-pct">ИВ</div>
+        <div class="salary-component-name">Индекс влияния</div>
+        <div class="salary-component-desc">Вклад сотрудника в цели направления и компании</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-title">Обозначения</div>
+    <div class="legend-items">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple)"></div>Стратегия / результат</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-teal)"></div>Направления (19 шт.)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue)"></div>Дашборды KPI (20 шт.)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-coral)"></div>Данные сотрудников</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-amber)"></div>Индекс влияния</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green)"></div>ИИ-аналитика</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-pink)"></div>Предиктивная аналитика</div>
+    </div>
+  </div>
+
+  <div class="watermark">Архитектура системы KPI · Предмет договора с подрядчиком · v1.0</div>
+
+</div>
+</body>
+</html>

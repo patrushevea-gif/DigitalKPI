@@ -1,0 +1,344 @@
+
+<div id="app" style="width:100%;background:#0a0e1a;border-radius:12px;overflow:hidden;font-family:'Anthropic Sans',sans-serif;color:#e8e8f0;">
+<div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+<div>
+<div style="font-size:14px;font-weight:500;">Россильбер — 3D-схема процессов</div>
+<div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;">19 направлений · 94 процесса · 13 ИТ-систем · 8 уровней зрелости</div>
+</div>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+<div id="tabs" style="display:flex;gap:3px;background:rgba(255,255,255,0.05);padding:3px;border-radius:8px;">
+<button class="tab active" data-tab="0">Архитектура</button>
+<button class="tab" data-tab="1">Зрелость</button>
+<button class="tab" data-tab="2">Матрица</button>
+</div>
+<button id="fs" title="На весь экран" style="background:rgba(127,119,221,0.25);color:#fff;border:1px solid rgba(127,119,221,0.4);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;">⛶ Полный экран</button>
+</div>
+</div>
+<div id="body" style="display:flex;min-height:600px;">
+<div id="side" style="width:210px;padding:12px;border-right:1px solid rgba(255,255,255,0.08);font-size:12px;background:rgba(255,255,255,0.02);overflow-y:auto;">
+<div style="color:rgba(255,255,255,0.5);text-transform:uppercase;font-size:10px;letter-spacing:1px;margin-bottom:8px;">Слои</div>
+<div id="layers"></div>
+<div style="color:rgba(255,255,255,0.5);text-transform:uppercase;font-size:10px;letter-spacing:1px;margin:14px 0 8px;">Управление</div>
+<label style="display:flex;gap:8px;align-items:center;margin-bottom:6px;cursor:pointer;"><input type="checkbox" id="rot" checked>Авто-вращение</label>
+<label style="display:flex;gap:8px;align-items:center;margin-bottom:6px;cursor:pointer;"><input type="checkbox" id="lbl" checked>Подписи</label>
+<label style="display:flex;gap:8px;align-items:center;margin-bottom:10px;cursor:pointer;"><input type="checkbox" id="inv" checked>Реверс X (лево↔право)</label>
+<button id="reset" style="width:100%;padding:6px;background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:6px;cursor:pointer;font-size:12px;">Сброс камеры</button>
+<div id="legend" style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);"></div>
+<div id="info" style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-size:11px;color:rgba(255,255,255,0.7);line-height:1.45;min-height:40px;"></div>
+</div>
+<div id="canvasWrap" style="flex:1;position:relative;">
+<canvas id="cv" style="display:block;width:100%;height:600px;cursor:grab;"></canvas>
+<div id="tip" style="position:absolute;background:rgba(15,18,30,0.95);border:1px solid rgba(255,255,255,0.15);padding:5px 9px;border-radius:5px;font-size:11px;display:none;pointer-events:none;max-width:240px;z-index:5;"></div>
+<div id="hint" style="position:absolute;bottom:8px;right:12px;font-size:10px;color:rgba(255,255,255,0.3);">Тащите · колесо зум · клик детали</div>
+</div>
+</div>
+</div>
+<style>
+#app .tab{background:none;border:none;color:rgba(255,255,255,0.55);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;}
+#app .tab:hover{color:#fff;}
+#app .tab.active{background:rgba(127,119,221,0.3);color:#fff;}
+#app .lrow{display:flex;align-items:center;gap:7px;padding:3px 5px;border-radius:4px;cursor:pointer;margin-bottom:3px;}
+#app .lrow:hover{background:rgba(255,255,255,0.05);}
+#app .ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+#app .lcnt{margin-left:auto;font-size:10px;color:rgba(255,255,255,0.4);}
+#app input[type=checkbox]{accent-color:#7f77dd;}
+#app:fullscreen{background:#0a0e1a;width:100vw;height:100vh;border-radius:0;}
+#app:fullscreen #body{min-height:calc(100vh - 57px);height:calc(100vh - 57px);}
+#app:fullscreen #side{height:100%;overflow-y:auto;}
+#app:fullscreen #canvasWrap{height:100%;}
+#app:fullscreen #cv{height:100% !important;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+(function(){
+const DIRS=[
+{id:1,n:'Производство',c:'#7c3aed'},{id:2,n:'Качество',c:'#3b82f6'},{id:3,n:'R&D',c:'#eab308'},
+{id:4,n:'Продажи',c:'#10b981'},{id:5,n:'Снабжение',c:'#f59e0b'},{id:6,n:'Развитие',c:'#ec4899'},
+{id:7,n:'Опер.эфф.',c:'#06b6d4'},{id:8,n:'Персонал',c:'#84cc16'},{id:9,n:'Финансы',c:'#14b8a6'},
+{id:10,n:'Безопасность',c:'#ef4444'},{id:11,n:'СОТ',c:'#f97316'},{id:12,n:'Право',c:'#a78bfa'},
+{id:13,n:'ИТ',c:'#60a5fa'},{id:14,n:'Админ',c:'#94a3b8'},{id:15,n:'Техполитика',c:'#d946ef'},
+{id:16,n:'ИИ',c:'#22d3ee'},{id:17,n:'Маркетинг',c:'#fb7185'},{id:18,n:'Покраска',c:'#65a30d'},
+{id:19,n:'Ресейл',c:'#f472b6'}];
+const PROCS=[[1,6],[2,5],[3,5],[4,5],[5,3],[6,5],[7,6],[8,6],[9,6],[10,5],[11,5],[12,5],[13,5],[14,5],[15,4],[16,7],[17,4],[18,4],[19,3]];
+const PNAMES={1:['Планирование','Исполнение','Произв.учёт','Отгрузка','Оптимизация','Склад'],2:['Сырьё','ГП','Хранение','Несоотв.','СМК'],3:['Разработка','Аналоги','Себест.','НТД','Цикл'],4:['Аттестация','Планир.','ОВП','Новые','Ресейл'],5:['Поставщики','Закупки','Логистика'],6:['Стратегия','Аудит','Вовлеч.','Эффекты','Анализ'],7:['Аудит','Оптимиз.','KPI','5S','Риски','Коммуник.'],8:['Привлеч.','Адаптация','Обучение','Учёт','Мотивация','Регламенты'],9:['Бюджет','Бухучёт','Упр.учёт','Доходы','Внеш.орг','Цифров.'],10:['Экон.','Инф.','Физ.','Антитеррор','Кадр.'],11:['Программы','Инструкт.','Обучение','Работы','Док-ты'],12:['Договоры','Специф.','Рекламации','Защита','Риски'],13:['Запросы','Изменения','Инциденты','Активы','Доступы'],14:['Матрица','Анализ','Битрикс','Док-ты','Инструм.'],15:['Инновации','Строит.','ТОиР','Метрология'],16:['Локальные','Платформа','Обучение','ИБ','Лицензии','Стратегия','MVP'],17:['Рынок','Реклама','Бренд','Портфель'],18:['Услуги','Качество','Док-ты','Оборуд.'],19:['Тендеры','Розница','Автомат.']};
+const ITS=[
+{n:'1C:ERP',d:[1,5,9]},{n:'1C:MES',d:[1]},{n:'1C:LIMS',d:[2]},{n:'1C:WMS',d:[5,1]},
+{n:'1C:Документооб.',d:[12,14]},{n:'1C:ЗУП+KPI',d:[8]},{n:'1C:ITILIUM',d:[13]},
+{n:'1C:Аналитика',d:[7,9]},{n:'1C:Безопасность',d:[11]},{n:'1C:SKUD',d:[10]},
+{n:'Битрикс 24',d:[4,14,6]},{n:'OBSIDIAN',d:[6,3]},{n:'ИИ/ML',d:[16,7]}];
+const MAT=[
+{y:2024,lvl:4,c:'#1e40af',t:'Старт концепции',d:'Стратегия. Архитектура процессов. Контрольные точки.'},
+{y:2025,lvl:5,c:'#2563eb',t:'Регламентация',d:'Реестр процессов. Оцифровка. Владельцы.'},
+{y:2026,lvl:6,c:'#eab308',t:'ERP и дашборды',d:'Перевод в ERP. Автодашборды. Контроль real-time.'},
+{y:2027,lvl:7,c:'#f97316',t:'Цифр.аналитика',d:'Анализ данных. Выявление проблем на фактах.'},
+{y:2028,lvl:8,c:'#dc2626',t:'ИИ-управление',d:'ИИ-агенты. Прогнозы. Рекомендации.'}];
+const DRV=['Вовлечённость руковод.','IT-инфраструктура','Систематизация данных','Адм. и анализ'];
+
+const cv=document.getElementById('cv');
+const W=()=>cv.clientWidth,H=()=>cv.clientHeight;
+const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0x0a0e1a,400,1000);
+const cam=new THREE.PerspectiveCamera(55,1,0.1,2000);
+scene.add(new THREE.AmbientLight(0xffffff,0.7));
+const dl=new THREE.DirectionalLight(0xffffff,0.5);dl.position.set(100,100,100);scene.add(dl);
+
+const cs={r:380,th:Math.PI/2,ph:0,tx:0,ty:0,tz:0};
+function upCam(){
+cam.position.x=cs.tx+cs.r*Math.sin(cs.th)*Math.cos(cs.ph);
+cam.position.y=cs.ty+cs.r*Math.cos(cs.th);
+cam.position.z=cs.tz+cs.r*Math.sin(cs.th)*Math.sin(cs.ph);
+cam.lookAt(cs.tx,cs.ty,cs.tz);
+}
+let drag=false,lx=0,ly=0;
+cv.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;cv.style.cursor='grabbing';cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',e=>{
+if(!drag){hov(e);return;}
+const dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;
+const inv=document.getElementById('inv').checked?-1:1;
+cs.ph-=dx*0.006*inv;
+cs.th=Math.max(0.15,Math.min(Math.PI-0.15,cs.th-dy*0.006));
+upCam();
+});
+cv.addEventListener('pointerup',()=>{drag=false;cv.style.cursor='grab';});
+cv.addEventListener('wheel',e=>{e.preventDefault();cs.r=Math.max(80,Math.min(900,cs.r*(1+e.deltaY*0.001)));upCam();},{passive:false});
+
+const SG=[new THREE.Group(),new THREE.Group(),new THREE.Group()];
+SG.forEach(g=>scene.add(g));
+const HOV=[[],[],[]];
+
+function label(txt,col='#fff',sz=12,bg=null){
+const c=document.createElement('canvas'),ctx=c.getContext('2d'),pd=6,fp=sz*2.2;
+ctx.font=`500 ${fp}px 'Anthropic Sans',sans-serif`;
+const w=ctx.measureText(txt).width+pd*2,h=fp+pd*1.1;
+c.width=w;c.height=h;
+ctx.font=`500 ${fp}px 'Anthropic Sans',sans-serif`;
+if(bg){ctx.fillStyle=bg;const r=6;ctx.beginPath();ctx.moveTo(r,0);ctx.lineTo(w-r,0);ctx.quadraticCurveTo(w,0,w,r);ctx.lineTo(w,h-r);ctx.quadraticCurveTo(w,h,w-r,h);ctx.lineTo(r,h);ctx.quadraticCurveTo(0,h,0,h-r);ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);ctx.closePath();ctx.fill();}
+ctx.fillStyle=col;ctx.textBaseline='middle';ctx.fillText(txt,pd,h/2);
+const tx=new THREE.CanvasTexture(c);tx.minFilter=THREE.LinearFilter;
+const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthWrite:false,depthTest:false}));
+s.scale.set(w*0.22,h*0.22,1);s.userData.isLbl=true;return s;
+}
+function node(col,sz=4){
+return new THREE.Mesh(new THREE.SphereGeometry(sz,16,16),new THREE.MeshPhongMaterial({color:col,emissive:col,emissiveIntensity:0.35,shininess:50}));
+}
+function ln(a,b,col,op=0.25){
+return new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op}));
+}
+
+const LA={comp:new THREE.Group(),dirs:new THREE.Group(),procs:new THREE.Group(),it:new THREE.Group(),links:new THREE.Group()};
+Object.values(LA).forEach(g=>SG[0].add(g));
+
+const hub=node('#7f77dd',9);hub.position.set(0,130,0);
+hub.userData={name:'Россильбер',info:'ГК Россильбер: 19 направлений, 94 процесса, 13 ИТ-систем'};
+LA.comp.add(hub);HOV[0].push(hub);
+const hubL=label('РОССИЛЬБЕР','#fff',13,'rgba(127,119,221,0.7)');hubL.position.set(0,148,0);LA.comp.add(hubL);
+
+const dnodes={};
+DIRS.forEach((d,i)=>{
+const a=(i/DIRS.length)*Math.PI*2,x=Math.cos(a)*130,z=Math.sin(a)*130,y=40;
+const m=node(d.c,5);m.position.set(x,y,z);
+m.userData={name:d.n,info:`Направление №${d.id}: ${d.n}`};
+LA.dirs.add(m);HOV[0].push(m);dnodes[d.id]=m;
+const l=label(d.n,'#fff',10);l.position.set(x*1.2,y+8,z*1.2);LA.dirs.add(l);
+LA.links.add(ln(m.position,hub.position,d.c,0.2));
+});
+
+PROCS.forEach(([did,count])=>{
+const parent=dnodes[did],dir=DIRS.find(x=>x.id===did),names=PNAMES[did]||[];
+for(let k=0;k<count;k++){
+const a=(k/count)*Math.PI*2,r=22,px=parent.position.x+Math.cos(a)*r,pz=parent.position.z+Math.sin(a)*r,py=-50+Math.sin(a*2)*6;
+const m=node(dir.c,2);m.position.set(px,py,pz);m.material.emissiveIntensity=0.25;
+m.userData={name:names[k]||`Процесс ${k+1}`,info:`${names[k]||'Процесс'} (${dir.n})`};
+LA.procs.add(m);HOV[0].push(m);
+LA.links.add(ln(m.position,parent.position,dir.c,0.15));
+}
+});
+
+ITS.forEach((it,i)=>{
+const a=(i/ITS.length)*Math.PI*2,x=Math.cos(a)*155,z=Math.sin(a)*155,y=-130;
+const m=node('#22d3ee',4.5);m.position.set(x,y,z);
+m.userData={name:it.n,info:`ИТ-система: ${it.n}\nОбслуживает: ${it.d.map(id=>DIRS.find(x=>x.id===id).n).join(', ')}`};
+LA.it.add(m);HOV[0].push(m);
+const l=label(it.n,'#e8e8f0',9);l.position.set(x*1.13,y-10,z*1.13);LA.it.add(l);
+it.d.forEach(did=>{if(dnodes[did])LA.links.add(ln(m.position,dnodes[did].position,'#22d3ee',0.25));});
+});
+
+const LB={tl:new THREE.Group(),drv:new THREE.Group(),lv:new THREE.Group(),lk:new THREE.Group()};
+Object.values(LB).forEach(g=>SG[1].add(g));
+
+const ypos=[];
+MAT.forEach((m,i)=>{
+const a=(i/MAT.length)*Math.PI*1.6-Math.PI/2,r=100-i*4,x=Math.cos(a)*r,z=Math.sin(a)*r,y=-140+i*65;
+const b=new THREE.Mesh(new THREE.CylinderGeometry(7,7,m.lvl*14,24),new THREE.MeshPhongMaterial({color:m.c,emissive:m.c,emissiveIntensity:0.4,transparent:true,opacity:0.85}));
+b.position.set(x,y-20+m.lvl*7,z);
+b.userData={name:`${m.y} — уровень ${m.lvl}`,info:`${m.y}: ${m.t}\n${m.d}`};
+LB.tl.add(b);HOV[1].push(b);
+const yl=label(`${m.y}`,'#fff',13,m.c);yl.position.set(x,y+m.lvl*14+3,z);LB.tl.add(yl);
+const tl=label(`Ур. ${m.lvl} · ${m.t}`,'#e8e8f0',9);tl.position.set(x,y-38,z);LB.tl.add(tl);
+ypos.push(b.position.clone());
+});
+for(let i=0;i<ypos.length-1;i++){
+LB.lk.add(ln(ypos[i],ypos[i+1],0xffffff,0.35));
+}
+for(let lvl=1;lvl<=8;lvl++){
+const r=new THREE.Mesh(new THREE.RingGeometry(40+lvl*4,41+lvl*4,48),new THREE.MeshBasicMaterial({color:0x4a5568,side:THREE.DoubleSide,transparent:true,opacity:0.15}));
+r.rotation.x=Math.PI/2;r.position.y=-180;LB.lv.add(r);
+}
+const base=new THREE.Mesh(new THREE.CircleGeometry(80,32),new THREE.MeshBasicMaterial({color:0x1a1f35,side:THREE.DoubleSide,transparent:true,opacity:0.45}));
+base.rotation.x=Math.PI/2;base.position.y=-181;LB.lv.add(base);
+
+DRV.forEach((d,i)=>{
+const a=(i/DRV.length)*Math.PI*2+Math.PI/4,x=Math.cos(a)*170,z=Math.sin(a)*170,y=170;
+const m=node('#f472b6',5.5);m.position.set(x,y,z);
+m.userData={name:d,info:`Драйвер развития процессов:\n${d}`};
+LB.drv.add(m);HOV[1].push(m);
+const l=label(d,'#fff',10,'rgba(244,114,182,0.3)');l.position.set(x,y+14,z);LB.drv.add(l);
+LB.lk.add(ln(m.position,ypos[ypos.length-1],'#f472b6',0.3));
+});
+
+const LC={ax:new THREE.Group(),cl:new THREE.Group(),gr:new THREE.Group()};
+Object.values(LC).forEach(g=>SG[2].add(g));
+
+const dx=16,dy=20,dz=16,nx=DIRS.length,ny=ITS.length;
+const ox=-nx*dx/2,oy=-ny*dy/2;
+
+LC.ax.add(ln(new THREE.Vector3(ox,oy,0),new THREE.Vector3(ox+nx*dx,oy,0),0x60a5fa,0.5));
+LC.ax.add(ln(new THREE.Vector3(ox,oy,0),new THREE.Vector3(ox,oy+ny*dy,0),0xfbbf24,0.5));
+LC.ax.add(ln(new THREE.Vector3(ox,oy,0),new THREE.Vector3(ox,oy,-dz*6),0xec4899,0.5));
+const lx1=label('Направления →','#60a5fa',11);lx1.position.set(0,oy-14,0);LC.ax.add(lx1);
+const ly1=label('ИТ-системы ↑','#fbbf24',11);ly1.position.set(ox-35,0,0);LC.ax.add(ly1);
+const lz1=label('Процессы (глубина)','#ec4899',11);lz1.position.set(ox,oy-6,-dz*3);LC.ax.add(lz1);
+
+DIRS.forEach((d,i)=>{
+const x=ox+i*dx+dx/2;
+const l=label(d.n,d.c,8);l.position.set(x,oy-6,8);LC.ax.add(l);
+});
+ITS.forEach((it,i)=>{
+const y=oy+i*dy+dy/2;
+const l=label(it.n,'#fbbf24',8);l.position.set(ox-10,y,0);LC.ax.add(l);
+});
+
+ITS.forEach((it,iy)=>{
+it.d.forEach(did=>{
+const ix=DIRS.findIndex(d=>d.id===did);if(ix<0)return;
+const dir=DIRS[ix],pc=(PROCS.find(p=>p[0]===did)||[0,3])[1];
+const x=ox+ix*dx+dx/2,y=oy+iy*dy+dy/2;
+for(let k=0;k<pc;k++){
+const z=-k*dz-8;
+const cube=new THREE.Mesh(new THREE.BoxGeometry(9,9,9),new THREE.MeshPhongMaterial({color:dir.c,emissive:dir.c,emissiveIntensity:0.4,transparent:true,opacity:0.82}));
+cube.position.set(x,y,z);
+cube.userData={name:`${dir.n} × ${it.n}`,info:`${dir.n} работает с ${it.n}\nПроцесс #${k+1} из ${pc}`};
+LC.cl.add(cube);HOV[2].push(cube);
+}
+});
+});
+
+for(let i=0;i<=nx;i++){
+const x=ox+i*dx;LC.gr.add(ln(new THREE.Vector3(x,oy,0),new THREE.Vector3(x,oy+ny*dy,0),0x333344,0.3));
+}
+for(let j=0;j<=ny;j++){
+const y=oy+j*dy;LC.gr.add(ln(new THREE.Vector3(ox,y,0),new THREE.Vector3(ox+nx*dx,y,0),0x333344,0.3));
+}
+
+const CFG=[
+{g:LA,lbl:{comp:'Компания',dirs:'Направления',procs:'Процессы',it:'ИТ-системы',links:'Связи'},
+col:{comp:'#7f77dd',dirs:'#eab308',procs:'#3b82f6',it:'#22d3ee',links:'#666'},
+cnt:{comp:1,dirs:19,procs:94,it:13,links:''}},
+{g:LB,lbl:{tl:'Годы + уровни',drv:'Драйверы',lv:'Шкала 1–8',lk:'Связи'},
+col:{tl:'#f97316',drv:'#f472b6',lv:'#94a3b8',lk:'#666'},
+cnt:{tl:5,drv:4,lv:8,lk:''}},
+{g:LC,lbl:{ax:'Оси',cl:'Ячейки',gr:'Сетка'},
+col:{ax:'#60a5fa',cl:'#22d3ee',gr:'#475569'},
+cnt:{ax:3,cl:'~94',gr:''}}
+];
+const LEG=[
+[['Компания','#7f77dd'],['Направления (19)','#eab308'],['Процессы (94)','#3b82f6'],['ИТ (13)','#22d3ee']],
+[['2024 уровень 4','#1e40af'],['2025 ур.5','#2563eb'],['2026 ур.6','#eab308'],['2027 ур.7','#f97316'],['2028–30 ур.8','#dc2626'],['Драйверы','#f472b6']],
+[['X: направления','#60a5fa'],['Y: ИТ-системы','#fbbf24'],['Z: процессы','#ec4899'],['Куб = связь','#22d3ee']]
+];
+
+let at=0;
+SG.forEach((g,i)=>g.visible=(i===0));
+
+function renderL(){
+const c=CFG[at],box=document.getElementById('layers');box.innerHTML='';
+Object.keys(c.g).forEach(k=>{
+const r=document.createElement('label');r.className='lrow';
+r.innerHTML=`<input type="checkbox" ${c.g[k].visible?'checked':''}><span class="ldot" style="background:${c.col[k]||'#888'}"></span><span>${c.lbl[k]||k}</span><span class="lcnt">${c.cnt[k]!==undefined?c.cnt[k]:''}</span>`;
+box.appendChild(r);
+r.querySelector('input').addEventListener('change',e=>{c.g[k].visible=e.target.checked;});
+});
+document.getElementById('legend').innerHTML='<div style="color:rgba(255,255,255,0.5);text-transform:uppercase;font-size:10px;letter-spacing:1px;margin-bottom:6px;">Легенда</div>'+LEG[at].map(l=>`<div style="display:flex;gap:7px;align-items:center;margin-bottom:3px;font-size:11px;"><span style="width:9px;height:9px;border-radius:50%;background:${l[1]}"></span>${l[0]}</div>`).join('');
+}
+
+function sw(i){
+at=i;SG.forEach((g,k)=>g.visible=(k===i));
+if(i===0){cs.r=380;cs.th=Math.PI/2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
+else if(i===1){cs.r=440;cs.th=Math.PI/2.2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
+else{cs.r=360;cs.th=Math.PI/2.3;cs.ph=-Math.PI/4;cs.tx=0;cs.ty=0;cs.tz=-40;}
+upCam();
+document.querySelectorAll('#tabs .tab').forEach((b,k)=>b.classList.toggle('active',k===i));
+document.getElementById('info').innerHTML='';
+renderL();applyT();
+}
+document.querySelectorAll('#tabs .tab').forEach(b=>b.addEventListener('click',()=>sw(parseInt(b.dataset.tab))));
+
+function applyT(){
+const sl=document.getElementById('lbl').checked;
+scene.traverse(o=>{if(o.userData&&o.userData.isLbl)o.visible=sl;});
+}
+document.getElementById('lbl').addEventListener('change',applyT);
+document.getElementById('reset').addEventListener('click',()=>sw(at));
+
+const app=document.getElementById('app');
+const fsBtn=document.getElementById('fs');
+fsBtn.addEventListener('click',()=>{
+if(!document.fullscreenElement){
+(app.requestFullscreen||app.webkitRequestFullscreen||app.msRequestFullscreen).call(app);
+}else{
+(document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen).call(document);
+}
+});
+document.addEventListener('fullscreenchange',()=>{
+fsBtn.textContent=document.fullscreenElement?'⛶ Выйти':'⛶ Полный экран';
+setTimeout(rsz,50);
+});
+
+const rc=new THREE.Raycaster(),mp=new THREE.Vector2();
+const tip=document.getElementById('tip'),info=document.getElementById('info');
+function hov(e){
+const rt=cv.getBoundingClientRect();
+mp.x=((e.clientX-rt.left)/rt.width)*2-1;mp.y=-((e.clientY-rt.top)/rt.height)*2+1;
+rc.setFromCamera(mp,cam);
+const h=rc.intersectObjects(HOV[at],false);
+if(h.length){
+tip.style.display='block';tip.style.left=(e.clientX-rt.left+12)+'px';tip.style.top=(e.clientY-rt.top+12)+'px';
+tip.textContent=h[0].object.userData.name||'';cv.style.cursor='pointer';
+}else{tip.style.display='none';if(!drag)cv.style.cursor='grab';}
+}
+cv.addEventListener('click',e=>{
+const rt=cv.getBoundingClientRect();
+mp.x=((e.clientX-rt.left)/rt.width)*2-1;mp.y=-((e.clientY-rt.top)/rt.height)*2+1;
+rc.setFromCamera(mp,cam);
+const h=rc.intersectObjects(HOV[at],false);
+if(h.length){
+const d=h[0].object.userData;
+info.innerHTML=`<div style="color:#fff;font-weight:500;margin-bottom:3px;">${d.name||''}</div><div>${(d.info||'').replace(/\n/g,'<br>')}</div>`;
+}
+});
+
+let ar=true;
+document.getElementById('rot').addEventListener('change',e=>ar=e.target.checked);
+function tick(){
+if(ar&&!drag){cs.ph+=0.002;upCam();}
+if(at===2){LC.cl.rotation.y=Math.sin(Date.now()*0.0002)*0.06;}
+renderer.render(scene,cam);requestAnimationFrame(tick);
+}
+function rsz(){renderer.setSize(W(),H(),false);cam.aspect=W()/H();cam.updateProjectionMatrix();}
+window.addEventListener('resize',rsz);
+setTimeout(rsz,50);
+renderL();upCam();tick();
+})();
+</script>
