@@ -103,7 +103,7 @@
 <video id="arVideo" autoplay playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;background:#000;"></video>
 <div id="arSlot" style="position:absolute;inset:0;z-index:2;pointer-events:auto;"></div>
 <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:4;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.88);text-shadow:0 2px 8px rgba(0,0,0,0.8);font-weight:600;pointer-events:none;">AR · цифровая платформа KPI</div>
-<div id="arHint" style="position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:4;font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,0.75);text-shadow:0 2px 8px rgba(0,0,0,0.8);text-align:center;max-width:90%;pointer-events:none;">Двигайте телефон — схема парит перед вами и вращается</div>
+<div id="arHint" style="position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:4;font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,0.75);text-shadow:0 2px 8px rgba(0,0,0,0.8);text-align:center;max-width:90%;pointer-events:none;transition:opacity 0.8s;">Объёмная схема парит перед вами в натуральную величину. Разрешите датчик движения — и двигайте телефоном, как будто модель стоит перед вами.</div>
 <button id="arExit" style="position:absolute;top:14px;right:14px;z-index:5;background:rgba(0,0,0,0.55);color:#fff;border:1px solid rgba(255,255,255,0.35);padding:10px 16px;border-radius:999px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;backdrop-filter:blur(10px);">✕ Выход</button>
 <div id="arErr" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:6;max-width:86%;background:rgba(15,18,30,0.95);border:1px solid rgba(239,68,68,0.5);border-radius:10px;padding:20px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;line-height:1.55;text-align:center;"></div>
 </div>
@@ -704,72 +704,176 @@ try{(function(){
     return stream;
   }
 
+  let arExtras=null,arOrientHandler=null,arStartT=0;
+
+  function cloneMaterials(root){
+    root.traverse(o=>{if(o.material){if(Array.isArray(o.material))o.material=o.material.map(m=>m.clone());else o.material=o.material.clone();}});
+  }
+
+  function buildFloorExtras(x,z){
+    // AR uses meters. Floor at y=0. Scene floats above.
+    const g=new THREE.Group();
+    // Ground disc (soft dark halo under object)
+    const disc=new THREE.Mesh(new THREE.CircleGeometry(1.1,64),new THREE.MeshBasicMaterial({color:0x0a1020,transparent:true,opacity:0.42,side:THREE.DoubleSide,depthWrite:false}));
+    disc.rotation.x=-Math.PI/2;disc.position.set(x,0.005,z);g.add(disc);
+    // Static accent ring at base
+    const baseRing=new THREE.Mesh(new THREE.RingGeometry(0.62,0.66,96),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));
+    baseRing.rotation.x=-Math.PI/2;baseRing.position.set(x,0.01,z);g.add(baseRing);
+    // 3 expanding pulse rings (staggered)
+    const pulses=[];
+    for(let i=0;i<3;i++){
+      const r=new THREE.Mesh(new THREE.RingGeometry(0.6,0.64,96),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.45,side:THREE.DoubleSide,depthWrite:false}));
+      r.rotation.x=-Math.PI/2;r.position.set(x,0.015+i*0.002,z);g.add(r);pulses.push({mesh:r,phase:i/3});
+    }
+    // Vertical connector — hologram beam from floor up to bottom of floating model
+    const beamH=0.22; // 22 cm gap floor→model
+    const beamGeo=new THREE.CylinderGeometry(0.01,0.35,beamH,32,1,true);
+    const beamMat=new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.18,side:THREE.DoubleSide,depthWrite:false});
+    const beam=new THREE.Mesh(beamGeo,beamMat);
+    beam.position.set(x,beamH/2,z);g.add(beam);
+    return {group:g,pulses,beam};
+  }
+
   async function enterAR(){
     hideErr();
     overlay.style.display='block';
     try{arStream=await startCam();}
     catch(e){showErr(e.message||String(e));return;}
 
-    arActive=true;
-    // move the main canvas into the AR slot so renderer keeps working
-    arParent=cv.parentNode;
-    slot.appendChild(cv);
-    // transparent scene + no fog + hide stars
+    arActive=true;arStartT=Date.now();
+    arParent=cv.parentNode;slot.appendChild(cv);
     arPrevFog=scene.fog;scene.fog=null;
     arPrevBg=scene.background;scene.background=null;
     arPrevClear=renderer.getClearAlpha();
     renderer.setClearColor(0x000000,0);
     if(scene.userData.stars){arStars=scene.userData.stars;arStars.visible=false;}
 
-    // clone current visible tab into anchor
+    // === Build AR scene in METRIC units ===
+    // Human-height model (~1.5 m), floating 0.25 m above floor
+    const MODEL_HEIGHT=1.5, FLOAT_GAP=0.25;
+    const EYE_H=1.55;          // camera eye height
+    const FORWARD=2.4;         // distance in front of user
+    const PLACE_X=0, PLACE_Z=-FORWARD;
+
     const visible=SG[at]||SG[1];
     const clone=visible.clone(true);
+    cloneMaterials(clone);
     clone.visible=true;
+    // center object on its local origin, then the anchor handles world placement
     const bbox=new THREE.Box3().setFromObject(clone);
     const c=new THREE.Vector3();bbox.getCenter(c);clone.position.sub(c);
     const sz=new THREE.Vector3();bbox.getSize(sz);
-    const maxDim=Math.max(sz.x,sz.y,sz.z)||1;
-    arAnchor=new THREE.Group();arAnchor.add(clone);
-    arAnchor.userData.baseScale=180/maxDim; // scene units; camera logic below
-    arAnchor.scale.setScalar(arAnchor.userData.baseScale);
-    arAnchor.position.set(0,0,-260);
+    const sceneHeight=Math.max(sz.y,1);
+    const scale=MODEL_HEIGHT/sceneHeight;
+
+    arAnchor=new THREE.Group();
+    arAnchor.scale.setScalar(scale);
+    arAnchor.add(clone);
+    // center of model sits at y = FLOAT_GAP + MODEL_HEIGHT/2
+    arAnchor.position.set(PLACE_X, FLOAT_GAP + MODEL_HEIGHT/2, PLACE_Z);
     scene.add(arAnchor);
 
-    // camera reset — straight on, fov slightly wider for phone
+    // Boost semi-transparent AI envelope so it's clearly visible over camera feed
+    clone.traverse(o=>{
+      if(o.material){
+        const ms=Array.isArray(o.material)?o.material:[o.material];
+        ms.forEach(mm=>{
+          if(mm.transparent && mm.opacity<0.1 && mm.color && mm.color.getHex()===0x22d3ee){
+            mm.opacity=Math.max(mm.opacity,0.14);
+          }
+        });
+      }
+      // stronger emissive where possible for camera contrast
+      if(o.material && o.material.emissive && o.material.emissiveIntensity!==undefined){
+        o.material.emissiveIntensity=Math.min(1.3,(o.material.emissiveIntensity||0.3)+0.15);
+      }
+    });
+
+    // === Floor extras: ground halo, pulse rings, hologram beam ===
+    const ex=buildFloorExtras(PLACE_X,PLACE_Z);
+    scene.add(ex.group);arExtras=ex;
+
+    // === Camera — eye level, looking at model center ===
     cam.fov=65;cam.aspect=window.innerWidth/window.innerHeight;cam.updateProjectionMatrix();
-    cam.position.set(0,0,0);cam.lookAt(0,0,-1);
+    cam.position.set(0,EYE_H,0);
+    cam.lookAt(PLACE_X, FLOAT_GAP + MODEL_HEIGHT/2, PLACE_Z);
+    const camBaseQuat=cam.quaternion.clone();
 
     arPrevSize={w:cv.clientWidth,h:cv.clientHeight};
     renderer.setSize(window.innerWidth,window.innerHeight,false);
     cv.style.width='100%';cv.style.height='100%';cv.style.background='transparent';
 
+    // === Device orientation parallax (scene appears locked to real space) ===
+    let oBeta=0,oGamma=0,oAlpha=0,oBaseAlpha=null;
+    function onOrient(e){
+      if(e.alpha==null)return;
+      oAlpha=e.alpha;oBeta=e.beta||0;oGamma=e.gamma||0;
+      if(oBaseAlpha==null)oBaseAlpha=oAlpha;
+    }
+    async function enableOrient(){
+      try{
+        if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+          const p=await DeviceOrientationEvent.requestPermission();
+          if(p!=='granted')return;
+        }
+        window.addEventListener('deviceorientation',onOrient,true);
+        arOrientHandler=onOrient;
+      }catch(e){}
+    }
+    enableOrient();
+
+    // === Main render loop ===
+    const tmpQ=new THREE.Quaternion(),tmpE=new THREE.Euler();
     renderer.setAnimationLoop(()=>{
-      if(arAnchor){arAnchor.rotation.y+=0.006;}
+      const t=(Date.now()-arStartT)*0.001;
+
+      // Very slow rotation
+      if(arAnchor)arAnchor.rotation.y=t*0.18;
+
+      // Floor pulse rings — expand outward and fade
+      if(arExtras&&arExtras.pulses){
+        arExtras.pulses.forEach(p=>{
+          const phase=((t*0.4)+p.phase)%1;
+          p.mesh.scale.setScalar(1+phase*2.6);
+          p.mesh.material.opacity=0.55*(1-phase);
+        });
+      }
+      // Beam subtle pulse
+      if(arExtras&&arExtras.beam){
+        arExtras.beam.material.opacity=0.14+Math.sin(t*1.8)*0.06;
+      }
+
+      // Device-orientation parallax — subtle head/phone tracking
+      if(arOrientHandler&&oBaseAlpha!=null){
+        const dYaw=THREE.MathUtils.degToRad((oAlpha-oBaseAlpha));
+        const pitch=THREE.MathUtils.degToRad(Math.max(-40,Math.min(40,oBeta-70)));
+        const roll=THREE.MathUtils.degToRad(Math.max(-25,Math.min(25,oGamma)));
+        tmpE.set(-pitch*0.35,-dYaw*0.6,-roll*0.25,'YXZ');
+        tmpQ.setFromEuler(tmpE);
+        cam.quaternion.copy(camBaseQuat).multiply(tmpQ);
+      }
+
       renderer.render(scene,cam);
     });
-    // hide hint after 6s
     setTimeout(()=>{if(hintEl)hintEl.style.opacity='0.0';},6000);
   }
 
   function exitAR(){
     if(!arActive){overlay.style.display='none';return;}
     arActive=false;
-    // stop camera
+    if(arOrientHandler){try{window.removeEventListener('deviceorientation',arOrientHandler,true);}catch(e){}arOrientHandler=null;}
     if(arStream){arStream.getTracks().forEach(t=>{try{t.stop();}catch(e){}});arStream=null;}
     try{video.srcObject=null;}catch(e){}
-    // remove anchor
     if(arAnchor){scene.remove(arAnchor);arAnchor=null;}
-    // restore stars, fog, bg
+    if(arExtras){scene.remove(arExtras.group);arExtras=null;}
     if(arStars){arStars.visible=true;arStars=null;}
     scene.fog=arPrevFog;arPrevFog=null;
     scene.background=arPrevBg;arPrevBg=null;
     renderer.setClearColor(0x000000,arPrevClear==null?1:arPrevClear);
-    // restore canvas parent
     if(arParent){arParent.appendChild(cv);arParent=null;}
     cv.style.background='';
     overlay.style.display='none';
     if(hintEl)hintEl.style.opacity='';
-    // restore normal view
     cam.fov=55;cam.updateProjectionMatrix();
     sw(at);
     setTimeout(()=>{const w=cv.clientWidth,h=cv.clientHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();},50);
