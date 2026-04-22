@@ -277,11 +277,16 @@ const y=oy+j*dy;LC.gr.add(ln(new THREE.Vector3(ox,y,0),new THREE.Vector3(ox+nx*d
 const LD={goals:new THREE.Group(),dirs:new THREE.Group(),dash:new THREE.Group(),emp:new THREE.Group(),idx:new THREE.Group(),sal:new THREE.Group(),twins:new THREE.Group(),team:new THREE.Group(),ai:new THREE.Group(),lk:new THREE.Group()};
 Object.values(LD).forEach(g=>SG[1].add(g));
 
+function hex2rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
 function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
 function haloTex(col){
   const c=document.createElement('canvas');c.width=c.height=128;
   const ctx=c.getContext('2d'),g=ctx.createRadialGradient(64,64,4,64,64,64);
-  g.addColorStop(0,col);g.addColorStop(0.25,col.replace(')',',0.55)').replace('rgb','rgba'));g.addColorStop(1,'rgba(0,0,0,0)');
+  const [r,gg,b]=hex2rgb(col);
+  g.addColorStop(0,`rgba(${r},${gg},${b},0.95)`);
+  g.addColorStop(0.25,`rgba(${r},${gg},${b},0.45)`);
+  g.addColorStop(0.55,`rgba(${r},${gg},${b},0.12)`);
+  g.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=g;ctx.fillRect(0,0,128,128);
   const t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearFilter;return t;
 }
