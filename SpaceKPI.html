@@ -306,6 +306,7 @@ document.getElementById('legend').innerHTML='<div style="color:rgba(255,255,255,
 }
 
 function sw(i){
+setHover(null);
 at=i;SG.forEach((g,k)=>g.visible=(k===i));
 if(i===0){cs.r=380;cs.th=Math.PI/2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
 else if(i===1){cs.r=440;cs.th=Math.PI/2.2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
@@ -340,6 +341,25 @@ setTimeout(rsz,50);
 
 const rc=new THREE.Raycaster(),mp=new THREE.Vector2();
 const tip=document.getElementById('tip'),info=document.getElementById('info');
+let hoveredObj=null;
+function setHover(o){
+  if(hoveredObj===o)return;
+  if(hoveredObj&&hoveredObj.material){
+    const u=hoveredObj.userData;
+    if(u._oEm!==undefined){hoveredObj.material.emissiveIntensity=u._oEm;}
+    if(u._oSc!==undefined){hoveredObj.scale.setScalar(u._oSc);}
+    if(u._halo){u._halo.visible=false;}
+  }
+  hoveredObj=o;
+  if(o&&o.material){
+    const u=o.userData;
+    if(u._oEm===undefined)u._oEm=o.material.emissiveIntensity||0;
+    if(u._oSc===undefined)u._oSc=o.scale.x||1;
+    o.material.emissiveIntensity=Math.min(1.4,(u._oEm||0.3)+0.85);
+    o.scale.setScalar(u._oSc*1.35);
+    if(u._halo){u._halo.visible=true;u._halo.position.copy(o.position);}
+  }
+}
 function hov(e){
 const rt=cv.getBoundingClientRect();
 mp.x=((e.clientX-rt.left)/rt.width)*2-1;mp.y=-((e.clientY-rt.top)/rt.height)*2+1;
@@ -348,7 +368,8 @@ const h=rc.intersectObjects(HOV[at],false);
 if(h.length){
 tip.style.display='block';tip.style.left=(e.clientX-rt.left+12)+'px';tip.style.top=(e.clientY-rt.top+12)+'px';
 tip.textContent=h[0].object.userData.name||'';cv.style.cursor='pointer';
-}else{tip.style.display='none';if(!drag)cv.style.cursor='grab';}
+setHover(h[0].object);
+}else{tip.style.display='none';if(!drag)cv.style.cursor='grab';setHover(null);}
 }
 cv.addEventListener('click',e=>{
 const rt=cv.getBoundingClientRect();
