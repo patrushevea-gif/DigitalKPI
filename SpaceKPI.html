@@ -389,6 +389,58 @@ for(let i=0;i<4;i++){
 }
 const salCap=label('УРОВЕНЬ 07 · РАСЧЁТ ЗАРПЛАТЫ','#c084fc',10);salCap.position.set(0,Y_SAL-30,0);LD.sal.add(salCap);
 
+// Digital twin leaders — one floating "shadow" per direction
+const twinNodes=[];
+for(let i=0;i<19;i++){
+  const a=(i/19)*Math.PI*2,r=230,x=Math.cos(a)*r,z=Math.sin(a)*r,y=Y_DIR+45;
+  const c=KPI_DCOL[i%KPI_DCOL.length];
+  const m=new THREE.Mesh(new THREE.OctahedronGeometry(4.5,0),new THREE.MeshPhongMaterial({color:c,emissive:c,emissiveIntensity:0.65,transparent:true,opacity:0.9,shininess:90,specular:0x444466}));
+  m.position.set(x,y,z);
+  m.userData={name:`Двойник: ${KPI_DIRS[i]}`,info:`Цифровой двойник руководителя направления «${KPI_DIRS[i]}».\nАдминистрирует процессы и KPI направления.`};
+  const halo=new THREE.Sprite(haloMat('#f472b6'));halo.scale.set(22,22,1);halo.visible=false;halo.position.copy(m.position);
+  m.userData._halo=halo;LD.lk.add(halo);
+  LD.twins.add(m);HOV[1].push(m);
+  // ribbon connections
+  LD.lk.add(ln(m.position,dirNodes[i].position,'#f472b6',0.2));
+  twinNodes.push(m);
+}
+const twinCap=label('ЦИФРОВЫЕ ДВОЙНИКИ РУКОВОДИТЕЛЕЙ (19)','#f472b6',9);twinCap.position.set(0,Y_DIR+78,0);LD.twins.add(twinCap);
+
+// Full digital team — cloud of small nodes clustered around each direction
+for(let i=0;i<19;i++){
+  const cnt=4+Math.floor(Math.random()*4);
+  const c=KPI_DCOL[i%KPI_DCOL.length];
+  const base=dirNodes[i].position;
+  for(let k=0;k<cnt;k++){
+    const a=Math.random()*Math.PI*2,rr=18+Math.random()*22,vy=(Math.random()-0.5)*30;
+    const m=new THREE.Mesh(new THREE.SphereGeometry(1.6,12,12),new THREE.MeshPhongMaterial({color:c,emissive:c,emissiveIntensity:0.5,transparent:true,opacity:0.85}));
+    m.position.set(base.x+Math.cos(a)*rr,base.y-25+vy,base.z+Math.sin(a)*rr);
+    m.userData={name:`Сотрудник · ${KPI_DIRS[i]}`,info:`Цифровой аналог сотрудника направления «${KPI_DIRS[i]}».\nЧасть полной цифровой команды компании.`};
+    LD.team.add(m);HOV[1].push(m);
+  }
+}
+const teamCap=label('ПОЛНАЯ ЦИФРОВАЯ КОМАНДА (~120 ЕДИНИЦ)','#94a3b8',9);teamCap.position.set(0,Y_DIR-60,0);LD.team.add(teamCap);
+
+// AI orchestration: large translucent envelope sphere + central core
+const aiCore=new THREE.Mesh(new THREE.IcosahedronGeometry(14,1),new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:0.95,shininess:120,transparent:true,opacity:0.92,specular:0x99e8f0}));
+aiCore.position.set(0,Y_EMP+18,0);
+aiCore.userData={name:'ИИ-ядро управления','info':'Сквозной ИИ-модуль:\n• Аномалии · Диагностика\n• Рекомендации · Алерты\n• Предиктивная аналитика\nУправляет всеми процессами и системами компании.'};
+const aiHalo=new THREE.Sprite(haloMat('#22d3ee'));aiHalo.scale.set(80,80,1);aiHalo.visible=false;aiHalo.position.copy(aiCore.position);
+aiCore.userData._halo=aiHalo;LD.lk.add(aiHalo);
+LD.ai.add(aiCore);HOV[1].push(aiCore);
+
+const aiEnv=new THREE.Mesh(new THREE.SphereGeometry(330,32,24),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.035,side:THREE.BackSide,depthWrite:false}));
+LD.ai.add(aiEnv);
+const aiWire=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(330,2)),new THREE.LineBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.08}));
+LD.ai.add(aiWire);
+scene.userData.aiCore=aiCore;scene.userData.aiWire=aiWire;
+
+// AI tendrils to every key node
+[...goalNodes,...dirNodes,...dashNodes,...empNodes,idxNode,...salNodes,...twinNodes].forEach(n=>{
+  LD.ai.add(ln(aiCore.position,n.position,'#22d3ee',0.05));
+});
+const aiCap=label('ИИ-ЯДРО · УПРАВЛЕНИЕ ВСЕМИ ПРОЦЕССАМИ','#22d3ee',10,'rgba(34,211,238,0.22)');aiCap.position.set(0,Y_EMP+42,0);LD.ai.add(aiCap);
+
 const CFG=[
 {g:LA,lbl:{comp:'Компания',dirs:'Направления',procs:'Процессы',it:'ИТ-системы',links:'Связи'},
 col:{comp:'#7f77dd',dirs:'#eab308',procs:'#3b82f6',it:'#22d3ee',links:'#666'},
@@ -507,6 +559,14 @@ document.getElementById('rot').addEventListener('change',e=>ar=e.target.checked)
 function tick(){
 if(ar&&!drag){cs.ph+=0.002;upCam();}
 if(at===3){LC.cl.rotation.y=Math.sin(Date.now()*0.0002)*0.06;}
+if(at===1){
+  const t=Date.now()*0.001;
+  if(scene.userData.aiCore){scene.userData.aiCore.rotation.y=t*0.3;scene.userData.aiCore.rotation.x=t*0.18;scene.userData.aiCore.material.emissiveIntensity=0.75+Math.sin(t*1.6)*0.2;}
+  if(scene.userData.aiWire){scene.userData.aiWire.rotation.y=-t*0.04;}
+  LD.twins.children.forEach((c,i)=>{if(c.isMesh)c.rotation.y=t*0.5+i;});
+}
+if(scene.userData.bigStars){scene.userData.bigStars.rotation.y+=0.0003;}
+if(scene.userData.stars){scene.userData.stars.rotation.y+=0.00008;}
 renderer.render(scene,cam);requestAnimationFrame(tick);
 }
 function rsz(){renderer.setSize(W(),H(),false);cam.aspect=W()/H();cam.updateProjectionMatrix();}
