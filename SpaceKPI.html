@@ -103,7 +103,7 @@
 <video id="arVideo" autoplay playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;background:#000;"></video>
 <div id="arSlot" style="position:absolute;inset:0;z-index:2;pointer-events:auto;"></div>
 <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:4;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.88);text-shadow:0 2px 8px rgba(0,0,0,0.8);font-weight:600;pointer-events:none;">AR · цифровая платформа KPI</div>
-<div id="arHint" style="position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:4;font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,0.75);text-shadow:0 2px 8px rgba(0,0,0,0.8);text-align:center;max-width:90%;pointer-events:none;transition:opacity 0.8s;">Объёмная схема парит перед вами в натуральную величину. Разрешите датчик движения — и двигайте телефоном, как будто модель стоит перед вами.</div>
+<div id="arHint" style="position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:4;font-family:'Inter',sans-serif;font-size:13px;color:rgba(255,255,255,0.9);text-shadow:0 2px 8px rgba(0,0,0,0.9);text-align:center;max-width:90%;pointer-events:none;transition:opacity 0.8s;background:rgba(0,0,0,0.35);padding:10px 18px;border-radius:999px;backdrop-filter:blur(6px);">Наведите телефон на пол рядом с собой и нажмите, чтобы разместить схему.</div>
 <button id="arExit" style="position:absolute;top:14px;right:14px;z-index:5;background:rgba(0,0,0,0.55);color:#fff;border:1px solid rgba(255,255,255,0.35);padding:10px 16px;border-radius:999px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;backdrop-filter:blur(10px);">✕ Выход</button>
 <div id="arErr" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:6;max-width:86%;background:rgba(15,18,30,0.95);border:1px solid rgba(239,68,68,0.5);border-radius:10px;padding:20px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;line-height:1.55;text-align:center;"></div>
 </div>
@@ -704,34 +704,62 @@ try{(function(){
     return stream;
   }
 
-  let arExtras=null,arOrientHandler=null,arStartT=0;
+  let arExtras=null,arOrientHandler=null,arStartT=0,arReticle=null,arPlaced=false,arRaf=null;
 
   function cloneMaterials(root){
     root.traverse(o=>{if(o.material){if(Array.isArray(o.material))o.material=o.material.map(m=>m.clone());else o.material=o.material.clone();}});
   }
 
-  function buildFloorExtras(x,z){
-    // AR uses meters. Floor at y=0. Scene floats above.
+  function buildFloorExtras(){
+    // Metric units. Floor = y=0. Attached to a Group positioned at anchor world pos.
     const g=new THREE.Group();
-    // Ground disc (soft dark halo under object)
-    const disc=new THREE.Mesh(new THREE.CircleGeometry(1.1,64),new THREE.MeshBasicMaterial({color:0x0a1020,transparent:true,opacity:0.42,side:THREE.DoubleSide,depthWrite:false}));
-    disc.rotation.x=-Math.PI/2;disc.position.set(x,0.005,z);g.add(disc);
-    // Static accent ring at base
-    const baseRing=new THREE.Mesh(new THREE.RingGeometry(0.62,0.66,96),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));
-    baseRing.rotation.x=-Math.PI/2;baseRing.position.set(x,0.01,z);g.add(baseRing);
-    // 3 expanding pulse rings (staggered)
+    // Dark shadow disc under object (grounds it visually)
+    const disc=new THREE.Mesh(new THREE.CircleGeometry(1.0,64),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));
+    disc.rotation.x=-Math.PI/2;disc.position.y=0.003;g.add(disc);
+    // Static accent ring at base (dim cyan)
+    const baseRing=new THREE.Mesh(new THREE.RingGeometry(0.62,0.66,96),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false}));
+    baseRing.rotation.x=-Math.PI/2;baseRing.position.y=0.008;g.add(baseRing);
+    // 3 expanding pulse rings
     const pulses=[];
     for(let i=0;i<3;i++){
       const r=new THREE.Mesh(new THREE.RingGeometry(0.6,0.64,96),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.45,side:THREE.DoubleSide,depthWrite:false}));
-      r.rotation.x=-Math.PI/2;r.position.set(x,0.015+i*0.002,z);g.add(r);pulses.push({mesh:r,phase:i/3});
+      r.rotation.x=-Math.PI/2;r.position.y=0.012+i*0.002;g.add(r);pulses.push({mesh:r,phase:i/3});
     }
-    // Vertical connector — hologram beam from floor up to bottom of floating model
-    const beamH=0.22; // 22 cm gap floor→model
-    const beamGeo=new THREE.CylinderGeometry(0.01,0.35,beamH,32,1,true);
-    const beamMat=new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.18,side:THREE.DoubleSide,depthWrite:false});
-    const beam=new THREE.Mesh(beamGeo,beamMat);
-    beam.position.set(x,beamH/2,z);g.add(beam);
+    // Hologram beam floor→model (0.25 m gap)
+    const beamH=0.24;
+    const beam=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.32,beamH,32,1,true),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.16,side:THREE.DoubleSide,depthWrite:false}));
+    beam.position.y=beamH/2;g.add(beam);
     return {group:g,pulses,beam};
+  }
+
+  function buildReticle(){
+    const g=new THREE.Group();
+    const outer=new THREE.Mesh(new THREE.RingGeometry(0.18,0.21,64),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.95,side:THREE.DoubleSide,depthWrite:false}));
+    outer.rotation.x=-Math.PI/2;g.add(outer);
+    const inner=new THREE.Mesh(new THREE.CircleGeometry(0.04,32),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.95,depthWrite:false}));
+    inner.rotation.x=-Math.PI/2;inner.position.y=0.001;g.add(inner);
+    // cross lines
+    for(let k=0;k<4;k++){
+      const ln=new THREE.Mesh(new THREE.PlaneGeometry(0.08,0.006),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.9,depthWrite:false,side:THREE.DoubleSide}));
+      ln.rotation.x=-Math.PI/2;ln.rotation.z=k*Math.PI/2;ln.position.set(Math.cos(k*Math.PI/2)*0.12,0.001,Math.sin(k*Math.PI/2)*0.12);g.add(ln);
+    }
+    return g;
+  }
+
+  // Device-orientation → camera quaternion (Three.js standard math)
+  const _zee=new THREE.Vector3(0,0,1);
+  const _euler=new THREE.Euler();
+  const _q0=new THREE.Quaternion();
+  const _q1=new THREE.Quaternion(-Math.sqrt(0.5),0,0,Math.sqrt(0.5));
+  function setCamFromOrient(alphaDeg,betaDeg,gammaDeg,orientDeg){
+    const a=THREE.MathUtils.degToRad(alphaDeg||0);
+    const b=THREE.MathUtils.degToRad(betaDeg||0);
+    const gm=THREE.MathUtils.degToRad(gammaDeg||0);
+    const o=THREE.MathUtils.degToRad(orientDeg||0);
+    _euler.set(b,a,-gm,'YXZ');
+    cam.quaternion.setFromEuler(_euler);
+    cam.quaternion.multiply(_q1);
+    cam.quaternion.multiply(_q0.setFromAxisAngle(_zee,-o));
   }
 
   async function enterAR(){
@@ -740,7 +768,7 @@ try{(function(){
     try{arStream=await startCam();}
     catch(e){showErr(e.message||String(e));return;}
 
-    arActive=true;arStartT=Date.now();
+    arActive=true;arStartT=Date.now();arPlaced=false;
     arParent=cv.parentNode;slot.appendChild(cv);
     arPrevFog=scene.fog;scene.fog=null;
     arPrevBg=scene.background;scene.background=null;
@@ -748,67 +776,67 @@ try{(function(){
     renderer.setClearColor(0x000000,0);
     if(scene.userData.stars){arStars=scene.userData.stars;arStars.visible=false;}
 
-    // === Build AR scene in METRIC units ===
-    // Human-height model (~1.5 m), floating 0.25 m above floor
-    const MODEL_HEIGHT=1.5, FLOAT_GAP=0.25;
-    const EYE_H=1.55;          // camera eye height
-    const FORWARD=2.4;         // distance in front of user
-    const PLACE_X=0, PLACE_Z=-FORWARD;
-
+    // --- Build the model ---
+    const MODEL_HEIGHT=1.5, FLOAT_GAP=0.25, EYE_H=1.55;
     const visible=SG[at]||SG[1];
     const clone=visible.clone(true);
     cloneMaterials(clone);
-    clone.visible=true;
-    // center object on its local origin, then the anchor handles world placement
     const bbox=new THREE.Box3().setFromObject(clone);
     const c=new THREE.Vector3();bbox.getCenter(c);clone.position.sub(c);
     const sz=new THREE.Vector3();bbox.getSize(sz);
-    const sceneHeight=Math.max(sz.y,1);
-    const scale=MODEL_HEIGHT/sceneHeight;
+    const scale=MODEL_HEIGHT/Math.max(sz.y,1);
 
     arAnchor=new THREE.Group();
     arAnchor.scale.setScalar(scale);
     arAnchor.add(clone);
-    // center of model sits at y = FLOAT_GAP + MODEL_HEIGHT/2
-    arAnchor.position.set(PLACE_X, FLOAT_GAP + MODEL_HEIGHT/2, PLACE_Z);
+    // anchor.position = floor point; clone sits centered at y=0 of anchor
+    // shift clone up so its bottom is FLOAT_GAP above anchor origin
+    clone.position.y+=(MODEL_HEIGHT/2+FLOAT_GAP)/scale;
+    arAnchor.visible=false; // hidden until placed
     scene.add(arAnchor);
 
-    // Boost semi-transparent AI envelope so it's clearly visible over camera feed
+    // Dim the AI envelope so it reads as a shape instead of a bright glow
     clone.traverse(o=>{
-      if(o.material){
-        const ms=Array.isArray(o.material)?o.material:[o.material];
-        ms.forEach(mm=>{
-          if(mm.transparent && mm.opacity<0.1 && mm.color && mm.color.getHex()===0x22d3ee){
-            mm.opacity=Math.max(mm.opacity,0.14);
-          }
-        });
-      }
-      // stronger emissive where possible for camera contrast
-      if(o.material && o.material.emissive && o.material.emissiveIntensity!==undefined){
-        o.material.emissiveIntensity=Math.min(1.3,(o.material.emissiveIntensity||0.3)+0.15);
-      }
+      if(!o.material)return;
+      const ms=Array.isArray(o.material)?o.material:[o.material];
+      ms.forEach(mm=>{
+        // darken semi-transparent cyan shells (envFill)
+        if(mm.transparent && mm.color && mm.color.getHex()===0x22d3ee && mm.opacity<0.12){
+          mm.color.setHex(0x0a4a5e);
+          mm.opacity=0.11;
+        }
+        // ease emissive peaks so cores don't wash out
+        if(mm.emissive && mm.emissiveIntensity!=null){
+          mm.emissiveIntensity=Math.min(0.75,(mm.emissiveIntensity||0.3)*0.7);
+        }
+      });
     });
 
-    // === Floor extras: ground halo, pulse rings, hologram beam ===
-    const ex=buildFloorExtras(PLACE_X,PLACE_Z);
-    scene.add(ex.group);arExtras=ex;
+    // --- Floor extras, attached to anchor so they move WITH placement ---
+    const ex=buildFloorExtras();
+    arAnchor.add(ex.group);
+    // but floor extras must NOT be scaled by anchor.scale; counter-scale:
+    ex.group.scale.setScalar(1/scale);
+    ex.group.position.y=-((MODEL_HEIGHT/2+FLOAT_GAP)/scale); // bring back to anchor origin (floor)
+    arExtras=ex;
 
-    // === Camera — eye level, looking at model center ===
-    cam.fov=65;cam.aspect=window.innerWidth/window.innerHeight;cam.updateProjectionMatrix();
+    // --- Reticle (placement cursor) ---
+    arReticle=buildReticle();
+    scene.add(arReticle);
+
+    // --- Camera setup ---
+    cam.fov=68;cam.aspect=window.innerWidth/window.innerHeight;cam.near=0.01;cam.far=100;cam.updateProjectionMatrix();
     cam.position.set(0,EYE_H,0);
-    cam.lookAt(PLACE_X, FLOAT_GAP + MODEL_HEIGHT/2, PLACE_Z);
-    const camBaseQuat=cam.quaternion.clone();
+    cam.lookAt(0,EYE_H,-1);
 
-    arPrevSize={w:cv.clientWidth,h:cv.clientHeight};
     renderer.setSize(window.innerWidth,window.innerHeight,false);
     cv.style.width='100%';cv.style.height='100%';cv.style.background='transparent';
 
-    // === Device orientation parallax (scene appears locked to real space) ===
-    let oBeta=0,oGamma=0,oAlpha=0,oBaseAlpha=null;
+    // --- Device orientation tracking ---
+    let oA=null,oB=null,oG=null;
     function onOrient(e){
       if(e.alpha==null)return;
-      oAlpha=e.alpha;oBeta=e.beta||0;oGamma=e.gamma||0;
-      if(oBaseAlpha==null)oBaseAlpha=oAlpha;
+      oA=e.alpha;oB=e.beta;oG=e.gamma;
     }
     async function enableOrient(){
       try{
@@ -822,40 +850,60 @@ try{(function(){
     }
     enableOrient();
 
-    // === Main render loop ===
-    const tmpQ=new THREE.Quaternion(),tmpE=new THREE.Euler();
+    // --- Tap to place ---
+    function onTap(e){
+      if(arPlaced||!arReticle||!arReticle.visible)return;
+      if(e.target===btnExit)return;
+      // lock model at reticle world position
+      arAnchor.position.copy(arReticle.position);
+      arAnchor.visible=true;
+      scene.remove(arReticle);arReticle=null;
+      arPlaced=true;
+      if(hintEl)hintEl.innerHTML='Схема закреплена. Обходите её — она остаётся на месте.';
+      setTimeout(()=>{if(hintEl)hintEl.style.opacity='0';},4500);
+    }
+    overlay.addEventListener('click',onTap,{once:false});
+    arAnchor.userData.tapHandler=onTap;
+    if(hintEl){hintEl.style.opacity='1';hintEl.innerHTML='Наведите телефон на пол рядом с собой и нажмите, чтобы разместить схему.';}
+
+    // --- Render loop ---
+    const tmpRay=new THREE.Vector3(),camFwd=new THREE.Vector3();
     renderer.setAnimationLoop(()=>{
       const t=(Date.now()-arStartT)*0.001;
+      const orient=(typeof window.orientation==='number')?window.orientation:0;
+      if(oA!=null)setCamFromOrient(oA,oB,oG,orient);
 
-      // Very slow rotation
-      if(arAnchor)arAnchor.rotation.y=t*0.18;
+      // update reticle by projecting camera forward to y=0 plane
+      if(arReticle){
+        camFwd.set(0,0,-1).applyQuaternion(cam.quaternion);
+        if(camFwd.y<-0.08){
+          const k=-(cam.position.y)/camFwd.y;
+          if(k>0.3&&k<6){
+            tmpRay.copy(cam.position).addScaledVector(camFwd,k);
+            arReticle.position.set(tmpRay.x,0.002,tmpRay.z);
+            arReticle.visible=true;
+          }else arReticle.visible=false;
+        }else arReticle.visible=false;
+        // pulse reticle
+        const s=1+Math.sin(t*2.2)*0.06;arReticle.scale.setScalar(s);
+      }
 
-      // Floor pulse rings — expand outward and fade
+      // slow rotate placed model
+      if(arPlaced&&arAnchor)arAnchor.rotation.y=t*0.15;
+
       if(arExtras&&arExtras.pulses){
         arExtras.pulses.forEach(p=>{
-          const phase=((t*0.4)+p.phase)%1;
-          p.mesh.scale.setScalar(1+phase*2.6);
-          p.mesh.material.opacity=0.55*(1-phase);
+          const phase=((t*0.35)+p.phase)%1;
+          p.mesh.scale.setScalar(1+phase*2.4);
+          p.mesh.material.opacity=0.5*(1-phase);
         });
       }
-      // Beam subtle pulse
       if(arExtras&&arExtras.beam){
-        arExtras.beam.material.opacity=0.14+Math.sin(t*1.8)*0.06;
-      }
-
-      // Device-orientation parallax — subtle head/phone tracking
-      if(arOrientHandler&&oBaseAlpha!=null){
-        const dYaw=THREE.MathUtils.degToRad((oAlpha-oBaseAlpha));
-        const pitch=THREE.MathUtils.degToRad(Math.max(-40,Math.min(40,oBeta-70)));
-        const roll=THREE.MathUtils.degToRad(Math.max(-25,Math.min(25,oGamma)));
-        tmpE.set(-pitch*0.35,-dYaw*0.6,-roll*0.25,'YXZ');
-        tmpQ.setFromEuler(tmpE);
-        cam.quaternion.copy(camBaseQuat).multiply(tmpQ);
+        arExtras.beam.material.opacity=0.13+Math.sin(t*1.6)*0.05;
       }
 
       renderer.render(scene,cam);
     });
-    setTimeout(()=>{if(hintEl)hintEl.style.opacity='0.0';},6000);
   }
 
   function exitAR(){
@@ -864,8 +912,12 @@ try{(function(){
     if(arOrientHandler){try{window.removeEventListener('deviceorientation',arOrientHandler,true);}catch(e){}arOrientHandler=null;}
     if(arStream){arStream.getTracks().forEach(t=>{try{t.stop();}catch(e){}});arStream=null;}
     try{video.srcObject=null;}catch(e){}
-    if(arAnchor){scene.remove(arAnchor);arAnchor=null;}
-    if(arExtras){scene.remove(arExtras.group);arExtras=null;}
+    if(arAnchor){
+      if(arAnchor.userData.tapHandler){try{overlay.removeEventListener('click',arAnchor.userData.tapHandler);}catch(e){}}
+      scene.remove(arAnchor);arAnchor=null;
+    }
+    if(arReticle){scene.remove(arReticle);arReticle=null;}
+    arExtras=null;
     if(arStars){arStars.visible=true;arStars=null;}
     scene.fog=arPrevFog;arPrevFog=null;
     scene.background=arPrevBg;arPrevBg=null;
@@ -873,8 +925,8 @@ try{(function(){
     if(arParent){arParent.appendChild(cv);arParent=null;}
     cv.style.background='';
     overlay.style.display='none';
-    if(hintEl)hintEl.style.opacity='';
-    cam.fov=55;cam.updateProjectionMatrix();
+    if(hintEl){hintEl.style.opacity='';hintEl.innerHTML='Наведите телефон на пол рядом с собой и нажмите, чтобы разместить схему.';}
+    cam.fov=55;cam.near=0.1;cam.far=2000;cam.updateProjectionMatrix();
     sw(at);
     setTimeout(()=>{const w=cv.clientWidth,h=cv.clientHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();},50);
     renderer.setAnimationLoop(tick);
