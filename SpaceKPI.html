@@ -79,6 +79,23 @@
 #app #side::-webkit-scrollbar-thumb{background:rgba(127,119,221,0.25);border-radius:3px;}
 #app #side::-webkit-scrollbar-thumb:hover{background:rgba(127,119,221,0.5);}
 #app:fullscreen{width:100vw;height:100vh;border-radius:0;}
+@media (max-width:860px){
+  #app{font-size:13px;}
+  #app > div:first-child{padding:8px 10px !important;gap:6px !important;}
+  #app > div:first-child > div:first-child > div:first-child{font-size:12px !important;}
+  #app > div:first-child > div:first-child > div:last-child{font-size:9.5px !important;}
+  #app #tabs{padding:2px !important;}
+  #app .tab{padding:6px 9px !important;font-size:11px !important;}
+  #app #arbtn, #app #fs{padding:6px 10px !important;font-size:11px !important;}
+  #app #side{display:none !important;}
+  #app .hud{display:none !important;}
+  #app #hint{display:none !important;}
+}
+@media (max-width:600px){
+  #app > div:first-child > div:first-child{flex:1 1 100%;min-width:0;}
+  #app > div:first-child > div:first-child > div:first-child{font-size:11.5px !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #app > div:first-child > div:first-child > div:last-child{display:none !important;}
+}
 #app .secLbl{color:rgba(255,255,255,0.42);text-transform:uppercase;font-size:9.5px;letter-spacing:0.18em;margin-bottom:9px;font-weight:600;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
