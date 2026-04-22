@@ -19,6 +19,7 @@
 <button class="tab" data-tab="0">Архитектура</button>
 <button class="tab" data-tab="2">Зрелость</button>
 </div>
+<button id="share" title="Поделиться и AR" style="background:rgba(34,211,238,0.18);color:#fff;border:1px solid rgba(34,211,238,0.45);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;letter-spacing:0.01em;">⚡ AR / Поделиться</button>
 <button id="fs" title="На весь экран" style="background:rgba(127,119,221,0.22);color:#fff;border:1px solid rgba(127,119,221,0.38);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;letter-spacing:0.01em;">⛶ Полный экран</button>
 </div>
 </div>
@@ -81,6 +82,7 @@
 #app .secLbl{color:rgba(255,255,255,0.42);text-transform:uppercase;font-size:9.5px;letter-spacing:0.18em;margin-bottom:9px;font-weight:600;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
 (function(){
 const DIRS=[
@@ -641,13 +643,132 @@ if(at===1){
   LD.twins.children.forEach((c)=>{if(c.isMesh&&c.geometry&&c.geometry.type==='OctahedronGeometry')c.rotation.y=t*0.6;});
 }
 if(scene.userData.stars){scene.userData.stars.rotation.y+=0.00008;}
-renderer.render(scene,cam);requestAnimationFrame(tick);
+renderer.render(scene,cam);
 }
 function rsz(){renderer.setSize(W(),H(),false);cam.aspect=W()/H();cam.updateProjectionMatrix();}
 window.addEventListener('resize',rsz);
 setTimeout(rsz,50);
-sw(1);tick();
+// ==================== Share modal + AR ====================
+(function(){
+  const modal=document.getElementById('shareModal');
+  const qrCv=document.getElementById('qrCanvas');
+  const urlInp=document.getElementById('shareUrl');
+  const btnShare=document.getElementById('share');
+  const btnClose=document.getElementById('shareClose');
+  const btnCopy=document.getElementById('shareCopy');
+  const btnAR=document.getElementById('arLaunch');
+  const statusEl=document.getElementById('arStatus');
+  if(!btnShare)return;
+
+  function currentUrl(){return window.location.href.split('#')[0];}
+
+  function openShare(){
+    const u=currentUrl();
+    urlInp.value=u;
+    if(window.QRCode&&QRCode.toCanvas){
+      QRCode.toCanvas(qrCv,u,{width:260,margin:1,color:{dark:'#0a0e1a',light:'#ffffff'}},()=>{});
+    }else{
+      const ctx=qrCv.getContext('2d');qrCv.width=260;qrCv.height=260;
+      ctx.fillStyle='#000';ctx.fillRect(0,0,260,260);
+      ctx.fillStyle='#fff';ctx.font='12px monospace';ctx.fillText('QR library not loaded',20,130);
+    }
+    modal.style.display='flex';
+    checkAR();
+  }
+  function closeShare(){modal.style.display='none';}
+  btnShare.addEventListener('click',openShare);
+  btnClose.addEventListener('click',closeShare);
+  modal.addEventListener('click',e=>{if(e.target===modal)closeShare();});
+  btnCopy.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(urlInp.value);btnCopy.textContent='Готово';setTimeout(()=>btnCopy.textContent='Копия',1400);}
+    catch(e){urlInp.select();document.execCommand('copy');}
+  });
+
+  // ---------- AR support detection + launch ----------
+  async function checkAR(){
+    statusEl.textContent='';btnAR.style.display='none';
+    if(!navigator.xr){
+      statusEl.innerHTML='На этом устройстве WebXR недоступен.<br>Откройте страницу на Android в Chrome для запуска AR.';
+      return;
+    }
+    try{
+      const ok=await navigator.xr.isSessionSupported('immersive-ar');
+      if(ok){btnAR.style.display='block';statusEl.textContent='Устройство поддерживает AR. Нажмите кнопку ниже.';}
+      else{statusEl.innerHTML='AR-режим не поддерживается этим устройством.<br>Отсканируйте QR с телефона.';}
+    }catch(e){statusEl.textContent='AR недоступен: '+e.message;}
+  }
+
+  // Clone a group for XR safely (reuse materials/geometry)
+  function cloneForXR(g){return g.clone(true);}
+
+  let xrAnchor=null,xrOrigLoop=null,xrStars=null;
+  btnAR.addEventListener('click',async()=>{
+    if(!navigator.xr)return;
+    try{
+      renderer.xr.enabled=true;
+      const session=await navigator.xr.requestSession('immersive-ar',{requiredFeatures:['local-floor']});
+      await renderer.xr.setSession(session);
+      try{renderer.xr.setReferenceSpaceType('local-floor');}catch(e){}
+      closeShare();
+
+      // hide non-AR helpers
+      if(scene.userData.stars){xrStars=scene.userData.stars;xrStars.visible=false;}
+
+      // clone current scene group for AR (so user's desktop state stays)
+      const visible=SG[at]||SG[1];
+      const clone=cloneForXR(visible);
+      clone.visible=true;
+      // fit to human size (~1.6 m tall), float above floor
+      const bbox=new THREE.Box3().setFromObject(clone);
+      const size=new THREE.Vector3();bbox.getSize(size);
+      const maxDim=Math.max(size.x,size.y,size.z)||1;
+      const targetSize=1.6;
+      const scale=targetSize/maxDim;
+      xrAnchor=new THREE.Group();
+      xrAnchor.add(clone);
+      // center content, float above floor (center of bbox at ~1.3 m)
+      const center=new THREE.Vector3();bbox.getCenter(center);
+      clone.position.sub(center);
+      xrAnchor.scale.setScalar(scale);
+      xrAnchor.position.set(0,1.3,-1.8);
+      scene.add(xrAnchor);
+
+      renderer.setAnimationLoop((time,frame)=>{
+        if(xrAnchor)xrAnchor.rotation.y+=0.01;
+        renderer.render(scene,cam);
+      });
+
+      session.addEventListener('end',()=>{
+        if(xrAnchor){scene.remove(xrAnchor);xrAnchor=null;}
+        if(xrStars)xrStars.visible=true;
+        renderer.xr.enabled=false;
+        renderer.setAnimationLoop(tick);
+      });
+    }catch(e){statusEl.textContent='Не удалось запустить AR: '+(e.message||e);}
+  });
+})();
+
+sw(1);renderer.setAnimationLoop(tick);
 })();
 </script>
+<div id="shareModal" style="display:none;position:fixed;inset:0;background:rgba(4,6,13,0.85);backdrop-filter:blur(10px);z-index:1000;align-items:center;justify-content:center;font-family:'Inter',sans-serif;">
+<div style="background:linear-gradient(180deg,#0f1530 0%,#0a0e1a 100%);border:1px solid rgba(34,211,238,0.35);border-radius:14px;padding:32px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 40px rgba(34,211,238,0.15);color:#e8e8f0;position:relative;">
+<button id="shareClose" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.06);color:#fff;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;">×</button>
+<div style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:6px;font-weight:600;">Цифровая платформа · AR</div>
+<div style="font-size:20px;font-weight:700;letter-spacing:-0.015em;margin-bottom:18px;background:linear-gradient(90deg,#fff 0%,#7ce2ee 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Запустить схему в дополненной реальности</div>
+<div style="background:#fff;border-radius:10px;padding:14px;display:flex;justify-content:center;margin-bottom:16px;">
+<canvas id="qrCanvas" style="display:block;"></canvas>
+</div>
+<div style="font-size:12px;color:rgba(255,255,255,0.72);line-height:1.55;margin-bottom:14px;">
+Отсканируйте QR-код камерой телефона. Откроется эта же страница — на мобильном появится кнопка запуска AR, и схема в натуральную величину будет парить над полом через камеру.
+</div>
+<div style="display:flex;gap:8px;margin-bottom:10px;">
+<input id="shareUrl" readonly style="flex:1;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);color:#a8c8eb;padding:9px 12px;border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;">
+<button id="shareCopy" style="background:rgba(127,119,221,0.3);color:#fff;border:1px solid rgba(127,119,221,0.45);padding:9px 14px;border-radius:7px;cursor:pointer;font-size:11px;font-weight:500;font-family:inherit;">Копия</button>
+</div>
+<button id="arLaunch" style="width:100%;background:linear-gradient(135deg,#0891b2 0%,#6366f1 100%);color:#fff;border:none;padding:13px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;letter-spacing:0.02em;margin-top:4px;box-shadow:0 6px 18px rgba(34,211,238,0.25);display:none;">⚡ Запустить AR на этом устройстве</button>
+<div id="arStatus" style="font-size:11px;color:rgba(255,255,255,0.5);text-align:center;margin-top:10px;line-height:1.5;"></div>
+</div>
+</div>
 </body>
 </html>
