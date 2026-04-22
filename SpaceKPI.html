@@ -136,9 +136,9 @@ upCam();
 cv.addEventListener('pointerup',()=>{drag=false;cv.style.cursor='grab';});
 cv.addEventListener('wheel',e=>{e.preventDefault();cs.r=Math.max(80,Math.min(900,cs.r*(1+e.deltaY*0.001)));upCam();},{passive:false});
 
-const SG=[new THREE.Group(),new THREE.Group(),new THREE.Group()];
+const SG=[new THREE.Group(),new THREE.Group(),new THREE.Group(),new THREE.Group()];
 SG.forEach(g=>scene.add(g));
-const HOV=[[],[],[]];
+const HOV=[[],[],[],[]];
 
 function label(txt,col='#fff',sz=12,bg=null){
 const c=document.createElement('canvas'),ctx=c.getContext('2d'),pd=6,fp=sz*2.2;
@@ -198,7 +198,7 @@ it.d.forEach(did=>{if(dnodes[did])LA.links.add(ln(m.position,dnodes[did].positio
 });
 
 const LB={tl:new THREE.Group(),drv:new THREE.Group(),lv:new THREE.Group(),lk:new THREE.Group()};
-Object.values(LB).forEach(g=>SG[1].add(g));
+Object.values(LB).forEach(g=>SG[2].add(g));
 
 const ypos=[];
 MAT.forEach((m,i)=>{
@@ -206,7 +206,7 @@ const a=(i/MAT.length)*Math.PI*1.6-Math.PI/2,r=100-i*4,x=Math.cos(a)*r,z=Math.si
 const b=new THREE.Mesh(new THREE.CylinderGeometry(7,7,m.lvl*14,24),new THREE.MeshPhongMaterial({color:m.c,emissive:m.c,emissiveIntensity:0.4,transparent:true,opacity:0.85}));
 b.position.set(x,y-20+m.lvl*7,z);
 b.userData={name:`${m.y} — уровень ${m.lvl}`,info:`${m.y}: ${m.t}\n${m.d}`};
-LB.tl.add(b);HOV[1].push(b);
+LB.tl.add(b);HOV[2].push(b);
 const yl=label(`${m.y}`,'#fff',13,m.c);yl.position.set(x,y+m.lvl*14+3,z);LB.tl.add(yl);
 const tl=label(`Ур. ${m.lvl} · ${m.t}`,'#e8e8f0',9);tl.position.set(x,y-38,z);LB.tl.add(tl);
 ypos.push(b.position.clone());
@@ -225,13 +225,13 @@ DRV.forEach((d,i)=>{
 const a=(i/DRV.length)*Math.PI*2+Math.PI/4,x=Math.cos(a)*170,z=Math.sin(a)*170,y=170;
 const m=node('#f472b6',5.5);m.position.set(x,y,z);
 m.userData={name:d,info:`Драйвер развития процессов:\n${d}`};
-LB.drv.add(m);HOV[1].push(m);
+LB.drv.add(m);HOV[2].push(m);
 const l=label(d,'#fff',10,'rgba(244,114,182,0.3)');l.position.set(x,y+14,z);LB.drv.add(l);
 LB.lk.add(ln(m.position,ypos[ypos.length-1],'#f472b6',0.3));
 });
 
 const LC={ax:new THREE.Group(),cl:new THREE.Group(),gr:new THREE.Group()};
-Object.values(LC).forEach(g=>SG[2].add(g));
+Object.values(LC).forEach(g=>SG[3].add(g));
 
 const dx=16,dy=20,dz=16,nx=DIRS.length,ny=ITS.length;
 const ox=-nx*dx/2,oy=-ny*dy/2;
@@ -262,7 +262,7 @@ const z=-k*dz-8;
 const cube=new THREE.Mesh(new THREE.BoxGeometry(9,9,9),new THREE.MeshPhongMaterial({color:dir.c,emissive:dir.c,emissiveIntensity:0.4,transparent:true,opacity:0.82}));
 cube.position.set(x,y,z);
 cube.userData={name:`${dir.n} × ${it.n}`,info:`${dir.n} работает с ${it.n}\nПроцесс #${k+1} из ${pc}`};
-LC.cl.add(cube);HOV[2].push(cube);
+LC.cl.add(cube);HOV[3].push(cube);
 }
 });
 });
@@ -274,10 +274,120 @@ for(let j=0;j<=ny;j++){
 const y=oy+j*dy;LC.gr.add(ln(new THREE.Vector3(ox,y,0),new THREE.Vector3(ox+nx*dx,y,0),0x333344,0.3));
 }
 
+const LD={goals:new THREE.Group(),dirs:new THREE.Group(),dash:new THREE.Group(),emp:new THREE.Group(),idx:new THREE.Group(),sal:new THREE.Group(),twins:new THREE.Group(),team:new THREE.Group(),ai:new THREE.Group(),lk:new THREE.Group()};
+Object.values(LD).forEach(g=>SG[1].add(g));
+
+function hex2rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
+function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
+function haloTex(col){
+  const c=document.createElement('canvas');c.width=c.height=128;
+  const ctx=c.getContext('2d'),g=ctx.createRadialGradient(64,64,4,64,64,64);
+  const [r,gg,b]=hex2rgb(col);
+  g.addColorStop(0,`rgba(${r},${gg},${b},0.95)`);
+  g.addColorStop(0.25,`rgba(${r},${gg},${b},0.45)`);
+  g.addColorStop(0.55,`rgba(${r},${gg},${b},0.12)`);
+  g.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g;ctx.fillRect(0,0,128,128);
+  const t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearFilter;return t;
+}
+function gnode(col,sz,emiss){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(sz,24,24),new THREE.MeshPhongMaterial({color:col,emissive:col,emissiveIntensity:emiss||0.45,shininess:60,specular:0x222244}));
+  const halo=new THREE.Sprite(haloMat(col));halo.scale.set(sz*4.5,sz*4.5,1);halo.visible=false;
+  m.userData._halo=halo;LD.lk.add(halo);
+  return m;
+}
+function ringNode(parent,col,sz,x,y,z,name,info,emiss){
+  const m=gnode(col,sz,emiss);m.position.set(x,y,z);
+  m.userData.name=name;m.userData.info=info;
+  parent.add(m);HOV[1].push(m);return m;
+}
+
+const KPI_DIRS=['Производство Белорецк','Производство Технопарк','RnD и Технологии','Продажи','Снабжение','Развитие','Опер. эффективность','Персонал','Финансы','Безопасность','СОТПБ и ЭБ','Право','ИТ и Автоматизация','Администрирование','Техническая политика','Искусственный интеллект','Маркетинг','Покраска','Ресейл'];
+const KPI_DCOL=['#7c3aed','#8b5cf6','#eab308','#10b981','#f59e0b','#ec4899','#06b6d4','#84cc16','#14b8a6','#ef4444','#f97316','#a78bfa','#60a5fa','#94a3b8','#d946ef','#22d3ee','#fb7185','#65a30d','#f472b6'];
+
+const Y_GOAL=260,Y_DIR=160,Y_DASH=60,Y_EMP=-40,Y_IDX=-130,Y_SAL=-220;
+
+// L1: top goals (ring of 3)
+const goalNodes=[];
+for(let i=0;i<3;i++){
+  const a=(i/3)*Math.PI*2-Math.PI/2,x=Math.cos(a)*55,z=Math.sin(a)*55;
+  const m=ringNode(LD.goals,'#a78bfa',9,x,Y_GOAL,z,`Топ-цель ${i+1}`,`Стратегическая цель компании №${i+1}.\nКаскадируется на 19 направлений.`,0.7);
+  const l=label(`Цель ${i+1}`,'#fff',12,'rgba(167,139,250,0.45)');l.position.set(x,Y_GOAL+18,z);LD.goals.add(l);
+  goalNodes.push(m);
+}
+const goalCap=label('УРОВЕНЬ 01 · ТОП-ЦЕЛИ','#a78bfa',9);goalCap.position.set(0,Y_GOAL+38,0);LD.goals.add(goalCap);
+
+// L2: 19 directions (ring)
+const dirNodes=[];
+for(let i=0;i<19;i++){
+  const a=(i/19)*Math.PI*2,x=Math.cos(a)*180,z=Math.sin(a)*180;
+  const c=KPI_DCOL[i%KPI_DCOL.length];
+  const m=ringNode(LD.dirs,c,5.5,x,Y_DIR,z,KPI_DIRS[i],`Направление: ${KPI_DIRS[i]}\nКаскадирует топ-цели в собственный набор KPI.`,0.55);
+  const l=label(KPI_DIRS[i],'#fff',9);l.position.set(x*1.13,Y_DIR+9,z*1.13);LD.dirs.add(l);
+  dirNodes.push(m);
+  goalNodes.forEach(g=>LD.lk.add(ln(m.position,g.position,c,0.12)));
+}
+const dirCap=label('УРОВЕНЬ 02 · 19 НАПРАВЛЕНИЙ','#10b981',9);dirCap.position.set(0,Y_DIR+30,0);LD.dirs.add(dirCap);
+
+// L3: 20 dashboards (19 + 1 summary)
+const dashNodes=[];
+for(let i=0;i<20;i++){
+  const a=(i/20)*Math.PI*2,r=i===19?0:165,x=Math.cos(a)*r,z=Math.sin(a)*r,y=i===19?Y_DASH-8:Y_DASH;
+  const isSum=i===19;
+  const m=ringNode(LD.dash,isSum?'#60a5fa':'#3b82f6',isSum?7:4.5,x,y,z,isSum?'Сводный дашборд компании':`Дашборд: ${KPI_DIRS[i]}`,isSum?'Дашборд №20 — сводный.\nАгрегированные KPI всех 19 направлений, топ-цели в реальном времени.':`Дашборд по направлению «${KPI_DIRS[i]}».\nБизнес-метрики + сводная исполнительская дисциплина.`,isSum?0.75:0.5);
+  if(!isSum){LD.lk.add(ln(m.position,dirNodes[i].position,'#3b82f6',0.18));}
+  dashNodes.push(m);
+}
+const dashCap=label('УРОВЕНЬ 03 · 20 ДАШБОРДОВ','#3b82f6',9);dashCap.position.set(0,Y_DASH+24,0);LD.dash.add(dashCap);
+
+// L4: 5 employee data blocks (KPI должности, ИД, Оценка 360°, Аттестация, Анализ совещаний)
+const EMPS=[
+  {n:'KPI по должности',d:'Должностные показатели сотрудника, частично наследуемые из направления.'},
+  {n:'Исполнительская дисциплина',d:'Персональный коэффициент: задачи в срок, качество исполнения.'},
+  {n:'Оценка 360°',d:'Многосторонняя оценка: руководитель, коллеги, подчинённые, самооценка.'},
+  {n:'Аттестация',d:'Периодическая профессиональная аттестация сотрудника.'},
+  {n:'Анализ проведения совещаний',d:'Оценка эффективности совещаний, в которых участвует сотрудник.'}
+];
+const empNodes=[];
+for(let i=0;i<EMPS.length;i++){
+  const x=(i-(EMPS.length-1)/2)*70,z=0;
+  const m=ringNode(LD.emp,'#f87171',5.5,x,Y_EMP,z,EMPS[i].n,EMPS[i].d,0.55);
+  const l=label(EMPS[i].n,'#fff',9,'rgba(248,113,113,0.32)');l.position.set(x,Y_EMP+13,z);LD.emp.add(l);
+  empNodes.push(m);
+  // each employee block fed by all dashboards (simplified: link to nearest direction dash)
+  LD.lk.add(ln(m.position,dashNodes[19].position,'#f87171',0.14));
+}
+const empCap=label('УРОВЕНЬ 04 · ДАННЫЕ СОТРУДНИКА (5 БЛОКОВ)','#f87171',9);empCap.position.set(0,Y_EMP+30,0);LD.emp.add(empCap);
+
+// L5: index of influence (single)
+const idxNode=ringNode(LD.idx,'#fbbf24',8,0,Y_IDX,0,'Индекс влияния сотрудника','Сквозной показатель: α·KPI + β·ИД + γ·360°\nс учётом аттестации и анализа совещаний.',0.8);
+const idxCap=label('УРОВЕНЬ 05 · ИНДЕКС ВЛИЯНИЯ','#fbbf24',10);idxCap.position.set(0,Y_IDX+22,0);LD.idx.add(idxCap);
+empNodes.forEach(e=>LD.lk.add(ln(e.position,idxNode.position,'#fbbf24',0.25)));
+
+// L7: salary components (4)
+const SALS=[
+  {n:'KPI должности',d:'Доля по выполнению должностных KPI.'},
+  {n:'Исп. дисциплина',d:'Доля по персональной надёжности.'},
+  {n:'Оценка 360°',d:'Доля по многосторонней оценке.'},
+  {n:'Индекс влияния',d:'Доля по интегральному вкладу в цели.'}
+];
+const salNodes=[];
+for(let i=0;i<4;i++){
+  const x=(i-1.5)*55,z=0;
+  const m=ringNode(LD.sal,'#c084fc',5,x,Y_SAL,z,`Зарплата · ${SALS[i].n}`,SALS[i].d,0.55);
+  const l=label(SALS[i].n,'#fff',9,'rgba(192,132,252,0.32)');l.position.set(x,Y_SAL-13,z);LD.sal.add(l);
+  salNodes.push(m);
+  LD.lk.add(ln(m.position,idxNode.position,'#c084fc',0.18));
+}
+const salCap=label('УРОВЕНЬ 07 · РАСЧЁТ ЗАРПЛАТЫ','#c084fc',10);salCap.position.set(0,Y_SAL-30,0);LD.sal.add(salCap);
+
 const CFG=[
 {g:LA,lbl:{comp:'Компания',dirs:'Направления',procs:'Процессы',it:'ИТ-системы',links:'Связи'},
 col:{comp:'#7f77dd',dirs:'#eab308',procs:'#3b82f6',it:'#22d3ee',links:'#666'},
 cnt:{comp:1,dirs:19,procs:94,it:13,links:''}},
+{g:LD,lbl:{goals:'01 · Топ-цели',dirs:'02 · Направления',dash:'03 · Дашборды',emp:'04 · Сотрудники',idx:'05 · Индекс влияния',sal:'07 · Зарплата',twins:'Двойники руководителей',team:'Цифровая команда',ai:'ИИ-управление',lk:'Связи каскада'},
+col:{goals:'#a78bfa',dirs:'#10b981',dash:'#3b82f6',emp:'#f87171',idx:'#fbbf24',sal:'#c084fc',twins:'#f472b6',team:'#94a3b8',ai:'#22d3ee',lk:'#5b6275'},
+cnt:{goals:3,dirs:19,dash:20,emp:5,idx:1,sal:4,twins:19,team:'~120',ai:1,lk:''}},
 {g:LB,lbl:{tl:'Годы + уровни',drv:'Драйверы',lv:'Шкала 1–8',lk:'Связи'},
 col:{tl:'#f97316',drv:'#f472b6',lv:'#94a3b8',lk:'#666'},
 cnt:{tl:5,drv:4,lv:8,lk:''}},
@@ -287,6 +397,7 @@ cnt:{ax:3,cl:'~94',gr:''}}
 ];
 const LEG=[
 [['Компания','#7f77dd'],['Направления (19)','#eab308'],['Процессы (94)','#3b82f6'],['ИТ (13)','#22d3ee']],
+[['Топ-цели (3)','#a78bfa'],['Направления (19)','#10b981'],['Дашборды (20)','#3b82f6'],['Данные сотрудников','#f87171'],['Индекс влияния','#fbbf24'],['Зарплата','#c084fc'],['Двойники руководителей','#f472b6'],['Цифровая команда','#94a3b8'],['ИИ-ядро','#22d3ee']],
 [['2024 уровень 4','#1e40af'],['2025 ур.5','#2563eb'],['2026 ур.6','#eab308'],['2027 ур.7','#f97316'],['2028–30 ур.8','#dc2626'],['Драйверы','#f472b6']],
 [['X: направления','#60a5fa'],['Y: ИТ-системы','#fbbf24'],['Z: процессы','#ec4899'],['Куб = связь','#22d3ee']]
 ];
@@ -302,14 +413,15 @@ r.innerHTML=`<input type="checkbox" ${c.g[k].visible?'checked':''}><span class="
 box.appendChild(r);
 r.querySelector('input').addEventListener('change',e=>{c.g[k].visible=e.target.checked;});
 });
-document.getElementById('legend').innerHTML='<div style="color:rgba(255,255,255,0.5);text-transform:uppercase;font-size:10px;letter-spacing:1px;margin-bottom:6px;">Легенда</div>'+LEG[at].map(l=>`<div style="display:flex;gap:7px;align-items:center;margin-bottom:3px;font-size:11px;"><span style="width:9px;height:9px;border-radius:50%;background:${l[1]}"></span>${l[0]}</div>`).join('');
+document.getElementById('legend').innerHTML='<div class="secLbl">Легенда</div>'+LEG[at].map(l=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;font-size:11px;color:rgba(255,255,255,0.78);"><span style="width:9px;height:9px;border-radius:50%;background:${l[1]};box-shadow:0 0 6px ${l[1]};"></span>${l[0]}</div>`).join('');
 }
 
 function sw(i){
 setHover(null);
 at=i;SG.forEach((g,k)=>g.visible=(k===i));
 if(i===0){cs.r=380;cs.th=Math.PI/2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
-else if(i===1){cs.r=440;cs.th=Math.PI/2.2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
+else if(i===1){cs.r=560;cs.th=Math.PI/2.05;cs.ph=Math.PI/6;cs.tx=0;cs.ty=0;cs.tz=0;}
+else if(i===2){cs.r=440;cs.th=Math.PI/2.2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
 else{cs.r=360;cs.th=Math.PI/2.3;cs.ph=-Math.PI/4;cs.tx=0;cs.ty=0;cs.tz=-40;}
 upCam();
 document.querySelectorAll('#tabs .tab').forEach((b,k)=>b.classList.toggle('active',k===i));
@@ -386,7 +498,7 @@ let ar=true;
 document.getElementById('rot').addEventListener('change',e=>ar=e.target.checked);
 function tick(){
 if(ar&&!drag){cs.ph+=0.002;upCam();}
-if(at===2){LC.cl.rotation.y=Math.sin(Date.now()*0.0002)*0.06;}
+if(at===3){LC.cl.rotation.y=Math.sin(Date.now()*0.0002)*0.06;}
 renderer.render(scene,cam);requestAnimationFrame(tick);
 }
 function rsz(){renderer.setSize(W(),H(),false);cam.aspect=W()/H();cam.updateProjectionMatrix();}
