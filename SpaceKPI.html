@@ -277,6 +277,105 @@ const y=oy+j*dy;LC.gr.add(ln(new THREE.Vector3(ox,y,0),new THREE.Vector3(ox+nx*d
 const LD={goals:new THREE.Group(),dirs:new THREE.Group(),dash:new THREE.Group(),emp:new THREE.Group(),idx:new THREE.Group(),sal:new THREE.Group(),twins:new THREE.Group(),team:new THREE.Group(),ai:new THREE.Group(),lk:new THREE.Group()};
 Object.values(LD).forEach(g=>SG[1].add(g));
 
+function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
+function haloTex(col){
+  const c=document.createElement('canvas');c.width=c.height=128;
+  const ctx=c.getContext('2d'),g=ctx.createRadialGradient(64,64,4,64,64,64);
+  g.addColorStop(0,col);g.addColorStop(0.25,col.replace(')',',0.55)').replace('rgb','rgba'));g.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g;ctx.fillRect(0,0,128,128);
+  const t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearFilter;return t;
+}
+function gnode(col,sz,emiss){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(sz,24,24),new THREE.MeshPhongMaterial({color:col,emissive:col,emissiveIntensity:emiss||0.45,shininess:60,specular:0x222244}));
+  const halo=new THREE.Sprite(haloMat(col));halo.scale.set(sz*4.5,sz*4.5,1);halo.visible=false;
+  m.userData._halo=halo;LD.lk.add(halo);
+  return m;
+}
+function ringNode(parent,col,sz,x,y,z,name,info,emiss){
+  const m=gnode(col,sz,emiss);m.position.set(x,y,z);
+  m.userData.name=name;m.userData.info=info;
+  parent.add(m);HOV[1].push(m);return m;
+}
+
+const KPI_DIRS=['Производство Белорецк','Производство Технопарк','RnD и Технологии','Продажи','Снабжение','Развитие','Опер. эффективность','Персонал','Финансы','Безопасность','СОТПБ и ЭБ','Право','ИТ и Автоматизация','Администрирование','Техническая политика','Искусственный интеллект','Маркетинг','Покраска','Ресейл'];
+const KPI_DCOL=['#7c3aed','#8b5cf6','#eab308','#10b981','#f59e0b','#ec4899','#06b6d4','#84cc16','#14b8a6','#ef4444','#f97316','#a78bfa','#60a5fa','#94a3b8','#d946ef','#22d3ee','#fb7185','#65a30d','#f472b6'];
+
+const Y_GOAL=260,Y_DIR=160,Y_DASH=60,Y_EMP=-40,Y_IDX=-130,Y_SAL=-220;
+
+// L1: top goals (ring of 3)
+const goalNodes=[];
+for(let i=0;i<3;i++){
+  const a=(i/3)*Math.PI*2-Math.PI/2,x=Math.cos(a)*55,z=Math.sin(a)*55;
+  const m=ringNode(LD.goals,'#a78bfa',9,x,Y_GOAL,z,`Топ-цель ${i+1}`,`Стратегическая цель компании №${i+1}.\nКаскадируется на 19 направлений.`,0.7);
+  const l=label(`Цель ${i+1}`,'#fff',12,'rgba(167,139,250,0.45)');l.position.set(x,Y_GOAL+18,z);LD.goals.add(l);
+  goalNodes.push(m);
+}
+const goalCap=label('УРОВЕНЬ 01 · ТОП-ЦЕЛИ','#a78bfa',9);goalCap.position.set(0,Y_GOAL+38,0);LD.goals.add(goalCap);
+
+// L2: 19 directions (ring)
+const dirNodes=[];
+for(let i=0;i<19;i++){
+  const a=(i/19)*Math.PI*2,x=Math.cos(a)*180,z=Math.sin(a)*180;
+  const c=KPI_DCOL[i%KPI_DCOL.length];
+  const m=ringNode(LD.dirs,c,5.5,x,Y_DIR,z,KPI_DIRS[i],`Направление: ${KPI_DIRS[i]}\nКаскадирует топ-цели в собственный набор KPI.`,0.55);
+  const l=label(KPI_DIRS[i],'#fff',9);l.position.set(x*1.13,Y_DIR+9,z*1.13);LD.dirs.add(l);
+  dirNodes.push(m);
+  goalNodes.forEach(g=>LD.lk.add(ln(m.position,g.position,c,0.12)));
+}
+const dirCap=label('УРОВЕНЬ 02 · 19 НАПРАВЛЕНИЙ','#10b981',9);dirCap.position.set(0,Y_DIR+30,0);LD.dirs.add(dirCap);
+
+// L3: 20 dashboards (19 + 1 summary)
+const dashNodes=[];
+for(let i=0;i<20;i++){
+  const a=(i/20)*Math.PI*2,r=i===19?0:165,x=Math.cos(a)*r,z=Math.sin(a)*r,y=i===19?Y_DASH-8:Y_DASH;
+  const isSum=i===19;
+  const m=ringNode(LD.dash,isSum?'#60a5fa':'#3b82f6',isSum?7:4.5,x,y,z,isSum?'Сводный дашборд компании':`Дашборд: ${KPI_DIRS[i]}`,isSum?'Дашборд №20 — сводный.\nАгрегированные KPI всех 19 направлений, топ-цели в реальном времени.':`Дашборд по направлению «${KPI_DIRS[i]}».\nБизнес-метрики + сводная исполнительская дисциплина.`,isSum?0.75:0.5);
+  if(!isSum){LD.lk.add(ln(m.position,dirNodes[i].position,'#3b82f6',0.18));}
+  dashNodes.push(m);
+}
+const dashCap=label('УРОВЕНЬ 03 · 20 ДАШБОРДОВ','#3b82f6',9);dashCap.position.set(0,Y_DASH+24,0);LD.dash.add(dashCap);
+
+// L4: 5 employee data blocks (KPI должности, ИД, Оценка 360°, Аттестация, Анализ совещаний)
+const EMPS=[
+  {n:'KPI по должности',d:'Должностные показатели сотрудника, частично наследуемые из направления.'},
+  {n:'Исполнительская дисциплина',d:'Персональный коэффициент: задачи в срок, качество исполнения.'},
+  {n:'Оценка 360°',d:'Многосторонняя оценка: руководитель, коллеги, подчинённые, самооценка.'},
+  {n:'Аттестация',d:'Периодическая профессиональная аттестация сотрудника.'},
+  {n:'Анализ проведения совещаний',d:'Оценка эффективности совещаний, в которых участвует сотрудник.'}
+];
+const empNodes=[];
+for(let i=0;i<EMPS.length;i++){
+  const x=(i-(EMPS.length-1)/2)*70,z=0;
+  const m=ringNode(LD.emp,'#f87171',5.5,x,Y_EMP,z,EMPS[i].n,EMPS[i].d,0.55);
+  const l=label(EMPS[i].n,'#fff',9,'rgba(248,113,113,0.32)');l.position.set(x,Y_EMP+13,z);LD.emp.add(l);
+  empNodes.push(m);
+  // each employee block fed by all dashboards (simplified: link to nearest direction dash)
+  LD.lk.add(ln(m.position,dashNodes[19].position,'#f87171',0.14));
+}
+const empCap=label('УРОВЕНЬ 04 · ДАННЫЕ СОТРУДНИКА (5 БЛОКОВ)','#f87171',9);empCap.position.set(0,Y_EMP+30,0);LD.emp.add(empCap);
+
+// L5: index of influence (single)
+const idxNode=ringNode(LD.idx,'#fbbf24',8,0,Y_IDX,0,'Индекс влияния сотрудника','Сквозной показатель: α·KPI + β·ИД + γ·360°\nс учётом аттестации и анализа совещаний.',0.8);
+const idxCap=label('УРОВЕНЬ 05 · ИНДЕКС ВЛИЯНИЯ','#fbbf24',10);idxCap.position.set(0,Y_IDX+22,0);LD.idx.add(idxCap);
+empNodes.forEach(e=>LD.lk.add(ln(e.position,idxNode.position,'#fbbf24',0.25)));
+
+// L7: salary components (4)
+const SALS=[
+  {n:'KPI должности',d:'Доля по выполнению должностных KPI.'},
+  {n:'Исп. дисциплина',d:'Доля по персональной надёжности.'},
+  {n:'Оценка 360°',d:'Доля по многосторонней оценке.'},
+  {n:'Индекс влияния',d:'Доля по интегральному вкладу в цели.'}
+];
+const salNodes=[];
+for(let i=0;i<4;i++){
+  const x=(i-1.5)*55,z=0;
+  const m=ringNode(LD.sal,'#c084fc',5,x,Y_SAL,z,`Зарплата · ${SALS[i].n}`,SALS[i].d,0.55);
+  const l=label(SALS[i].n,'#fff',9,'rgba(192,132,252,0.32)');l.position.set(x,Y_SAL-13,z);LD.sal.add(l);
+  salNodes.push(m);
+  LD.lk.add(ln(m.position,idxNode.position,'#c084fc',0.18));
+}
+const salCap=label('УРОВЕНЬ 07 · РАСЧЁТ ЗАРПЛАТЫ','#c084fc',10);salCap.position.set(0,Y_SAL-30,0);LD.sal.add(salCap);
+
 const CFG=[
 {g:LA,lbl:{comp:'Компания',dirs:'Направления',procs:'Процессы',it:'ИТ-системы',links:'Связи'},
 col:{comp:'#7f77dd',dirs:'#eab308',procs:'#3b82f6',it:'#22d3ee',links:'#666'},
