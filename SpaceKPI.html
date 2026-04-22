@@ -483,25 +483,69 @@ for(let i=0;i<19;i++){
 }
 const teamCap=label('ПОЛНАЯ ЦИФРОВАЯ КОМАНДА · АНАЛОГ ШТАТА (95 ЕДИНИЦ)','#94a3b8',10,'rgba(148,163,184,0.22)');teamCap.position.set(0,TWIN_Y-55,0);LD.team.add(teamCap);
 
-// AI orchestration: large translucent envelope sphere + central core
-const aiCore=new THREE.Mesh(new THREE.IcosahedronGeometry(14,1),new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:0.95,shininess:120,transparent:true,opacity:0.92,specular:0x99e8f0}));
-aiCore.position.set(0,Y_EMP+18,0);
-aiCore.userData={name:'ИИ-ядро управления','info':'Сквозной ИИ-модуль:\n• Аномалии · Диагностика\n• Рекомендации · Алерты\n• Предиктивная аналитика\nУправляет всеми процессами и системами компании.'};
-const aiHalo=new THREE.Sprite(haloMat('#22d3ee'));aiHalo.scale.set(80,80,1);aiHalo.visible=false;aiHalo.position.copy(aiCore.position);
-aiCore.userData._halo=aiHalo;LD.lk.add(aiHalo);
+// AI orchestration: envelope + pulsing core + analytical orbital ring
+const AI_Y=Y_EMP+18;
+const aiCore=new THREE.Mesh(new THREE.IcosahedronGeometry(16,1),new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:1.1,shininess:140,transparent:true,opacity:0.95,specular:0xaaf0ff,flatShading:true}));
+aiCore.position.set(0,AI_Y,0);
+aiCore.userData={name:'ИИ-ядро · Сквозной аналитический модуль',info:'ЧТО АНАЛИЗИРУЕТ ИИ:\n\n• ДЕТЕКЦИЯ АНОМАЛИЙ — 5 типов (выбросы, падения, всплески, паттерны, кросс-противоречия)\n• ДИАГНОСТИКА — корневые причины, цепочки влияния, бенчмарки\n• РЕКОМЕНДАЦИИ — корректирующие действия, перераспределение ресурсов\n• АЛЕРТЫ — ранние предупреждения, эскалация, тихие зоны\n• ПРЕДИКТИВ — 9 сценариев: слабое звено, просадка направлений,\n  каскадные риски, выгорание, прогноз топ-целей, кадровые риски,\n  симуляция планов, сезонные прогнозы, еженедельный рейтинг'};
+const aiHalo=new THREE.Sprite(haloMat('#22d3ee'));aiHalo.scale.set(110,110,1);aiHalo.visible=false;aiHalo.position.copy(aiCore.position);
+aiCore.userData._halo=aiHalo;LD.ai.add(aiHalo);
 LD.ai.add(aiCore);HOV[1].push(aiCore);
 
-const aiEnv=new THREE.Mesh(new THREE.SphereGeometry(330,32,24),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.035,side:THREE.BackSide,depthWrite:false}));
-LD.ai.add(aiEnv);
-const aiWire=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(330,2)),new THREE.LineBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.08}));
-LD.ai.add(aiWire);
-scene.userData.aiCore=aiCore;scene.userData.aiWire=aiWire;
+// core inner glow shell
+const aiInner=new THREE.Mesh(new THREE.SphereGeometry(24,32,32),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.1,depthWrite:false}));
+aiInner.position.copy(aiCore.position);LD.ai.add(aiInner);
 
-// AI tendrils to every key node
-[...goalNodes,...dirNodes,...dashNodes,...empNodes,idxNode,...salNodes,...twinNodes].forEach(n=>{
-  LD.ai.add(ln(aiCore.position,n.position,'#22d3ee',0.05));
+// three nested envelope shells — wireframe
+const ENV_R=[360,310,260];
+const envShells=[];
+ENV_R.forEach((R,k)=>{
+  const w=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(R,k===0?2:1)),new THREE.LineBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.12-k*0.025}));
+  w.position.copy(aiCore.position);LD.ai.add(w);envShells.push(w);
+  const f=new THREE.Mesh(new THREE.SphereGeometry(R,32,24),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.022+k*0.008,side:THREE.BackSide,depthWrite:false}));
+  f.position.copy(aiCore.position);LD.ai.add(f);
 });
-const aiCap=label('ИИ-ЯДРО · УПРАВЛЕНИЕ ВСЕМИ ПРОЦЕССАМИ','#22d3ee',10,'rgba(34,211,238,0.22)');aiCap.position.set(0,Y_EMP+42,0);LD.ai.add(aiCap);
+scene.userData.aiCore=aiCore;scene.userData.envShells=envShells;
+
+// expanding scan ring (equatorial) — animated
+const scanRing=new THREE.Mesh(new THREE.RingGeometry(40,43,96),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false}));
+scanRing.rotation.x=Math.PI/2;scanRing.position.copy(aiCore.position);LD.ai.add(scanRing);
+scene.userData.scanRing=scanRing;
+
+// static bright equatorial rings at several radii
+[120,200,300].forEach(r=>{
+  const rg=new THREE.Mesh(new THREE.RingGeometry(r,r+0.8,128),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.18,side:THREE.DoubleSide,depthWrite:false}));
+  rg.rotation.x=Math.PI/2;rg.position.copy(aiCore.position);LD.ai.add(rg);
+});
+
+// orbital function cards — 5 categories of AI work visible around the core
+const AI_FUNCS=[
+  {t:'АНОМАЛИИ · 5 ТИПОВ',d:'Выбросы · Падения · Всплески · Паттерны · Кросс-противоречия'},
+  {t:'ДИАГНОСТИКА',d:'Корневые причины · Цепочки влияния · Бенчмарки · Контекст'},
+  {t:'РЕКОМЕНДАЦИИ',d:'Корректирующие действия · Перераспределение · Обучение'},
+  {t:'АЛЕРТЫ · ЭСКАЛАЦИЯ',d:'Ранние предупреждения · Тихие зоны · Пороги'},
+  {t:'ПРЕДИКТИВ · 9 СЦЕНАРИЕВ',d:'Слабое звено · Просадка · Каскады · Выгорание · Топ-цели'}
+];
+AI_FUNCS.forEach((f,i)=>{
+  const a=(i/AI_FUNCS.length)*Math.PI*2-Math.PI/2,r=380,x=Math.cos(a)*r,z=Math.sin(a)*r,y=AI_Y+90;
+  const lb=label(f.t,'#e6fbff',12,'rgba(34,211,238,0.55)');lb.position.set(x,y,z);LD.ai.add(lb);
+  const ds=label(f.d,'#9ee8f2',8);ds.position.set(x,y-14,z);LD.ai.add(ds);
+  // marker node
+  const mk=new THREE.Mesh(new THREE.OctahedronGeometry(4,0),new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:0.9,flatShading:true}));
+  mk.position.set(x*0.85,y-5,z*0.85);LD.ai.add(mk);
+  mk.userData={name:f.t,info:f.d};HOV[1].push(mk);
+  LD.ai.add(ln(mk.position,aiCore.position,'#22d3ee',0.4));
+});
+
+// tendrils to every key data source — brighter, to show AI analyzes all
+const AI_TARGETS=[...goalNodes,...dirNodes,...dashNodes,...empNodes,idxNode,...salNodes,...twinNodes];
+AI_TARGETS.forEach(n=>{
+  LD.ai.add(ln(aiCore.position,n.position,'#22d3ee',0.09));
+});
+
+// caption
+const aiCap=label('СКВОЗНОЙ ИИ · ОХВАТЫВАЕТ ВСЕ ДАННЫЕ И СИСТЕМЫ КОМПАНИИ','#22d3ee',12,'rgba(34,211,238,0.35)');aiCap.position.set(0,AI_Y-34,0);LD.ai.add(aiCap);
+const aiCap2=label('анализирует · предсказывает · рекомендует · эскалирует','#9ee8f2',9);aiCap2.position.set(0,AI_Y-52,0);LD.ai.add(aiCap2);
 
 const CFG=[
 {g:LA,lbl:{comp:'Компания',dirs:'Направления',procs:'Процессы',it:'ИТ-системы',links:'Связи'},
@@ -617,9 +661,14 @@ function tick(){
 if(ar&&!drag){cs.ph+=0.002;upCam();}
 if(at===1){
   const t=Date.now()*0.001;
-  if(scene.userData.aiCore){scene.userData.aiCore.rotation.y=t*0.3;scene.userData.aiCore.rotation.x=t*0.18;scene.userData.aiCore.material.emissiveIntensity=0.75+Math.sin(t*1.6)*0.2;}
-  if(scene.userData.aiWire){scene.userData.aiWire.rotation.y=-t*0.04;}
-  LD.twins.children.forEach((c,i)=>{if(c.isMesh)c.rotation.y=t*0.5+i;});
+  if(scene.userData.aiCore){scene.userData.aiCore.rotation.y=t*0.35;scene.userData.aiCore.rotation.x=t*0.22;scene.userData.aiCore.material.emissiveIntensity=0.9+Math.sin(t*1.8)*0.25;}
+  if(scene.userData.envShells){scene.userData.envShells.forEach((s,i)=>{s.rotation.y=t*0.03*(i+1)*(i%2?-1:1);s.rotation.x=t*0.01*(i+1);s.material.opacity=(0.1-i*0.02)+Math.sin(t*0.9+i)*0.03;});}
+  if(scene.userData.scanRing){
+    const phase=(t*0.35)%1;
+    scene.userData.scanRing.scale.setScalar(0.6+phase*8.5);
+    scene.userData.scanRing.material.opacity=0.55*(1-phase);
+  }
+  LD.twins.children.forEach((c)=>{if(c.isMesh&&c.geometry&&c.geometry.type==='OctahedronGeometry')c.rotation.y=t*0.6;});
 }
 if(scene.userData.bigStars){scene.userData.bigStars.rotation.y+=0.0003;scene.userData.bigStars.material.opacity=0.75+Math.sin(Date.now()*0.0012)*0.2;}
 if(scene.userData.accentStars){scene.userData.accentStars.rotation.y+=0.0005;scene.userData.accentStars.material.size=7+Math.sin(Date.now()*0.002)*2;}
