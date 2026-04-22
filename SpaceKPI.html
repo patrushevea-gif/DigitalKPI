@@ -762,7 +762,7 @@ try{(function(){
     cam.quaternion.multiply(_q0.setFromAxisAngle(_zee,-o));
   }
 
-  async function enterAR(){
+  async function enterAR(orientGranted){
     hideErr();
     overlay.style.display='block';
     try{arStream=await startCam();}
@@ -832,23 +832,17 @@ try{(function(){
     renderer.setSize(window.innerWidth,window.innerHeight,false);
     cv.style.width='100%';cv.style.height='100%';cv.style.background='transparent';
 
-    // --- Device orientation tracking ---
+    // --- Device orientation tracking (permission requested in click handler) ---
     let oA=null,oB=null,oG=null;
     function onOrient(e){
-      if(e.alpha==null)return;
-      oA=e.alpha;oB=e.beta;oG=e.gamma;
+      if(e.alpha==null&&e.webkitCompassHeading==null)return;
+      oA=(e.alpha!=null)?e.alpha:(360-e.webkitCompassHeading);
+      oB=e.beta;oG=e.gamma;
     }
-    async function enableOrient(){
-      try{
-        if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
-          const p=await DeviceOrientationEvent.requestPermission();
-          if(p!=='granted')return;
-        }
-        window.addEventListener('deviceorientation',onOrient,true);
-        arOrientHandler=onOrient;
-      }catch(e){}
+    if(orientGranted!==false){
+      window.addEventListener('deviceorientation',onOrient,true);
+      arOrientHandler=onOrient;
     }
-    enableOrient();
 
     // --- Tap to place ---
     function onTap(e){
@@ -873,19 +867,27 @@ try{(function(){
       const orient=(typeof window.orientation==='number')?window.orientation:0;
       if(oA!=null)setCamFromOrient(oA,oB,oG,orient);
 
-      // update reticle by projecting camera forward to y=0 plane
+      // update reticle: always visible, either at floor-hit point or 1.5 m ahead on floor
       if(arReticle){
         camFwd.set(0,0,-1).applyQuaternion(cam.quaternion);
-        if(camFwd.y<-0.08){
+        let px,pz;
+        if(camFwd.y<-0.12){
           const k=-(cam.position.y)/camFwd.y;
-          if(k>0.3&&k<6){
-            tmpRay.copy(cam.position).addScaledVector(camFwd,k);
-            arReticle.position.set(tmpRay.x,0.002,tmpRay.z);
-            arReticle.visible=true;
-          }else arReticle.visible=false;
-        }else arReticle.visible=false;
+          if(k>0.2&&k<8){
+            px=cam.position.x+camFwd.x*k;
+            pz=cam.position.z+camFwd.z*k;
+          }
+        }
+        if(px===undefined){
+          // fallback: project forward onto horizontal, place 1.5 m ahead at floor
+          const fxz=Math.hypot(camFwd.x,camFwd.z)||1;
+          px=cam.position.x+(camFwd.x/fxz)*1.5;
+          pz=cam.position.z+(camFwd.z/fxz)*1.5;
+        }
+        arReticle.position.set(px,0.002,pz);
+        arReticle.visible=true;
         // pulse reticle
-        const s=1+Math.sin(t*2.2)*0.06;arReticle.scale.setScalar(s);
+        const s=1+Math.sin(t*2.2)*0.08;arReticle.scale.setScalar(s);
       }
 
       // slow rotate placed model
@@ -932,7 +934,17 @@ try{(function(){
     renderer.setAnimationLoop(tick);
   }
 
-  btnAR.addEventListener('click',enterAR);
+  btnAR.addEventListener('click',async()=>{
+    // Request orientation permission FIRST within user gesture (iOS 13+ requirement)
+    let orientGranted=true;
+    try{
+      if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+        const p=await DeviceOrientationEvent.requestPermission();
+        orientGranted=(p==='granted');
+      }
+    }catch(e){orientGranted=false;}
+    enterAR(orientGranted);
+  });
   btnExit.addEventListener('click',exitAR);
   window.addEventListener('keydown',e=>{if(e.key==='Escape'&&arActive)exitAR();});
   window.addEventListener('resize',()=>{
