@@ -20,6 +20,7 @@
 <button class="tab" data-tab="2">Зрелость</button>
 </div>
 <button id="arbtn" title="Запустить AR-демонстрацию" style="background:rgba(34,211,238,0.18);color:#fff;border:1px solid rgba(34,211,238,0.45);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;letter-spacing:0.01em;">⚡ AR-демо</button>
+<button id="arbtn2" title="Объёмный AR · настоящий SLAM (WebXR / AR Quick Look)" style="background:rgba(167,139,250,0.18);color:#fff;border:1px solid rgba(167,139,250,0.45);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;letter-spacing:0.01em;">🌐 AR 3D</button>
 <button id="fs" title="На весь экран" style="background:rgba(127,119,221,0.22);color:#fff;border:1px solid rgba(127,119,221,0.38);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;letter-spacing:0.01em;">⛶ Полный экран</button>
 </div>
 </div>
@@ -99,6 +100,7 @@
 #app .secLbl{color:rgba(255,255,255,0.42);text-transform:uppercase;font-size:9.5px;letter-spacing:0.18em;margin-bottom:9px;font-weight:600;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/exporters/GLTFExporter.js"></script>
 <div id="arOverlay" style="display:none;position:fixed;inset:0;z-index:1000;background:#000;">
 <video id="arVideo" autoplay playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;background:#000;"></video>
 <div id="arSlot" style="position:absolute;inset:0;z-index:2;pointer-events:auto;"></div>
@@ -681,6 +683,7 @@ try{(function(){
   const btnExit=document.getElementById('arExit');
   const errEl=document.getElementById('arErr');
   const hintEl=document.getElementById('arHint');
+  const btnAR2=document.getElementById('arbtn2');
   if(!btnAR||!overlay||!video||!slot||!btnExit)return;
 
   let arActive=false,arAnchor=null,arStars=null,arStream=null,arParent=null,arPrevClear=null,arPrevFog=null,arPrevBg=null,arPrevSize=null;
@@ -705,6 +708,8 @@ try{(function(){
   }
 
   let arExtras=null,arOrientHandler=null,arStartT=0,arReticle=null,arPlaced=false,arRaf=null;
+  let arXRSession=null,arHitTestSource=null,arLocalFloorRef=null,arXRMode=false;
+  const isIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 
   function cloneMaterials(root){
     root.traverse(o=>{if(o.material){if(Array.isArray(o.material))o.material=o.material.map(m=>m.clone());else o.material=o.material.clone();}});
@@ -760,6 +765,108 @@ try{(function(){
     cam.quaternion.setFromEuler(_euler);
     cam.quaternion.multiply(_q1);
     cam.quaternion.multiply(_q0.setFromAxisAngle(_zee,-o));
+  }
+
+  // === AR 3D (true SLAM): WebXR on Android, AR Quick Look on iOS ===
+  function exportGLB(group){
+    return new Promise((resolve,reject)=>{
+      if(typeof THREE.GLTFExporter==='undefined'){reject(new Error('GLTFExporter не загружен'));return;}
+      const exp=new THREE.GLTFExporter();
+      exp.parse(group,(glb)=>resolve(new Blob([glb],{type:'model/gltf-binary'})),reject,{binary:true,animations:[]});
+    });
+  }
+
+  function prepModelForExport(srcGroup){
+    const clone=srcGroup.clone(true);
+    cloneMaterials(clone);
+    clone.traverse(o=>{
+      if(!o.material)return;
+      const ms=Array.isArray(o.material)?o.material:[o.material];
+      ms.forEach(mm=>{
+        if(mm.emissive&&mm.emissiveIntensity!=null) mm.emissiveIntensity=Math.min(0.6,(mm.emissiveIntensity||0.3)*0.55);
+      });
+      if(o.userData&&o.userData.isEnv){
+        o.scale.setScalar(2.0);
+        const mat=ms[0]; mat.color.setHex(0x06202c); mat.opacity=0.26; mat.transparent=true; mat.depthWrite=false;
+      }
+    });
+    // Scale whole scene to ~1.5 m tall so AR Quick Look places it at human scale
+    clone.updateMatrixWorld(true);
+    const bbox=new THREE.Box3(),tmpBox=new THREE.Box3();
+    clone.traverse(o=>{
+      if(!o.isMesh||!o.geometry)return;
+      if(o.userData&&o.userData.isEnv)return;
+      if(!o.geometry.boundingBox)o.geometry.computeBoundingBox();
+      tmpBox.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld);
+      bbox.union(tmpBox);
+    });
+    const c=new THREE.Vector3(); bbox.getCenter(c); clone.position.sub(c);
+    const sz=new THREE.Vector3(); bbox.getSize(sz);
+    const targetH=1.5;
+    const k=targetH/Math.max(sz.y,1);
+    const wrap=new THREE.Group();
+    wrap.scale.setScalar(k);
+    wrap.add(clone);
+    clone.position.y+=sz.y/2; // lift so bottom sits on wrap origin (floor)
+    return wrap;
+  }
+
+  async function triggerARQuickLook(srcGroup){
+    if(hintEl){hintEl.style.opacity='1';hintEl.innerHTML='Экспорт модели для AR Quick Look…';}
+    overlay.style.display='block';
+    let blob;
+    try{
+      const wrap=prepModelForExport(srcGroup);
+      blob=await exportGLB(wrap);
+    }catch(e){
+      showErr('Ошибка экспорта модели: '+(e.message||e));
+      return;
+    }
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.rel='ar'; a.href=url;
+    const img=document.createElement('img');
+    img.style.cssText='width:1px;height:1px;';
+    a.appendChild(img);
+    a.style.cssText='position:fixed;left:-9999px;';
+    document.body.appendChild(a);
+    a.click();
+    if(hintEl) hintEl.innerHTML='Если AR Quick Look не открылся — файл будет скачан. Откройте его в Finder/Files и нажмите для AR.';
+    setTimeout(()=>{ try{URL.revokeObjectURL(url);}catch(e){} try{a.remove();}catch(e){} overlay.style.display='none'; if(hintEl)hintEl.innerHTML='Наведите телефон на пол рядом с собой и нажмите, чтобы разместить схему.'; },90000);
+  }
+
+  async function tryWebXRAR(){
+    if(!navigator.xr) return false;
+    let supported=false;
+    try{ supported=await navigator.xr.isSessionSupported('immersive-ar'); }catch(e){ return false; }
+    if(!supported) return false;
+    let session;
+    try{
+      session=await navigator.xr.requestSession('immersive-ar',{
+        requiredFeatures:['hit-test'],
+        optionalFeatures:['dom-overlay','local-floor'],
+        domOverlay:{root:overlay}
+      });
+    }catch(e){ return false; }
+    renderer.xr.enabled=true;
+    await renderer.xr.setSession(session);
+    let viewerRef,localFloor,hitTestSource;
+    try{
+      viewerRef=await session.requestReferenceSpace('viewer');
+      try{ localFloor=await session.requestReferenceSpace('local-floor'); }catch(e){ localFloor=null; }
+      hitTestSource=await session.requestHitTestSource({space:viewerRef});
+    }catch(e){
+      try{session.end();}catch(_){}
+      renderer.xr.enabled=false;
+      return false;
+    }
+    arXRSession=session; arHitTestSource=hitTestSource; arLocalFloorRef=localFloor; arXRMode=true;
+    session.addEventListener('end',()=>{
+      arXRMode=false; arXRSession=null; arHitTestSource=null; arLocalFloorRef=null;
+      renderer.xr.enabled=false;
+      if(arActive) exitAR2();
+    });
+    return true;
   }
 
   async function enterAR(orientGranted){
@@ -959,6 +1066,210 @@ try{(function(){
     renderer.setAnimationLoop(tick);
   }
 
+  async function enterAR2(orientGranted){
+    hideErr();
+    overlay.style.display='block';
+
+    // Try true WebXR AR first (Android Chrome + ARCore)
+    const xrStarted=await tryWebXRAR();
+
+    if(!xrStarted){
+      // Fallback: camera + orientation
+      try{arStream=await startCam();}
+      catch(e){showErr(e.message||String(e));overlay.style.display='none';return;}
+    } else {
+      video.style.display='none';
+    }
+
+    arActive=true;arStartT=Date.now();arPlaced=false;
+    arParent=cv.parentNode;slot.appendChild(cv);
+    arPrevFog=scene.fog;scene.fog=null;
+    arPrevBg=scene.background;scene.background=null;
+    arPrevClear=renderer.getClearAlpha();
+    renderer.setClearColor(0x000000,0);
+    if(scene.userData.stars){arStars=scene.userData.stars;arStars.visible=false;}
+
+    const MODEL_HEIGHT=1.5, FLOAT_GAP=0.25, EYE_H=1.55;
+    const visible=SG[at]||SG[1];
+    const clone=visible.clone(true);
+    cloneMaterials(clone);
+    clone.updateMatrixWorld(true);
+    const bbox=new THREE.Box3(),tmpBox=new THREE.Box3();
+    clone.traverse(o=>{
+      if(!o.isMesh||!o.geometry)return;
+      if(o.userData&&o.userData.isEnv)return;
+      if(!o.geometry.boundingBox)o.geometry.computeBoundingBox();
+      tmpBox.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld);
+      bbox.union(tmpBox);
+    });
+    const c=new THREE.Vector3();bbox.getCenter(c);clone.position.sub(c);
+    const sz=new THREE.Vector3();bbox.getSize(sz);
+    const scale=MODEL_HEIGHT/Math.max(sz.y,1);
+
+    arAnchor=new THREE.Group();
+    arAnchor.scale.setScalar(scale);
+    arAnchor.add(clone);
+    clone.position.y+=(MODEL_HEIGHT/2+FLOAT_GAP)/scale;
+    arAnchor.visible=false;
+    scene.add(arAnchor);
+
+    clone.traverse(o=>{
+      if(!o.material)return;
+      const ms=Array.isArray(o.material)?o.material:[o.material];
+      ms.forEach(mm=>{
+        if(mm.emissive&&mm.emissiveIntensity!=null) mm.emissiveIntensity=Math.min(0.6,(mm.emissiveIntensity||0.3)*0.55);
+      });
+      if(o.userData&&o.userData.isEnv){
+        o.scale.setScalar(2.0);
+        const mat=ms[0];
+        mat.color.setHex(0x06202c); mat.opacity=0.26; mat.depthWrite=false; mat.transparent=true;
+        const R=(o.userData.envR||300)*2.0;
+        const ring=new THREE.Mesh(new THREE.RingGeometry(R*0.99,R,192),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));
+        ring.rotation.x=Math.PI/2;o.add(ring);
+        const ring2=ring.clone();ring2.material=ring.material.clone();ring2.material.opacity=0.35;
+        ring2.rotation.x=0;ring2.rotation.z=Math.PI/2;o.add(ring2);
+      }
+    });
+
+    const ex=buildFloorExtras();
+    arAnchor.add(ex.group);
+    ex.group.scale.setScalar(1/scale);
+    ex.group.position.y=-((MODEL_HEIGHT/2+FLOAT_GAP)/scale);
+    arExtras=ex;
+
+    arReticle=buildReticle();
+    scene.add(arReticle);
+
+    if(!arXRMode){
+      cam.fov=68;cam.aspect=window.innerWidth/window.innerHeight;cam.near=0.01;cam.far=100;cam.updateProjectionMatrix();
+      cam.position.set(0,EYE_H,0);
+      cam.lookAt(0,EYE_H,-1);
+      renderer.setSize(window.innerWidth,window.innerHeight,false);
+    }
+    cv.style.width='100%';cv.style.height='100%';cv.style.background='transparent';
+
+    let oA=null,oB=null,oG=null;
+    function onOrient(e){
+      if(e.alpha==null&&e.webkitCompassHeading==null)return;
+      oA=(e.alpha!=null)?e.alpha:(360-e.webkitCompassHeading);
+      oB=e.beta;oG=e.gamma;
+    }
+    if(!arXRMode && orientGranted!==false){
+      window.addEventListener('deviceorientation',onOrient,true);
+      arOrientHandler=onOrient;
+    }
+
+    function onTap(e){
+      if(arPlaced||!arReticle||!arReticle.visible)return;
+      if(e.target===btnExit)return;
+      arAnchor.position.copy(arReticle.position);
+      arAnchor.visible=true;
+      scene.remove(arReticle);arReticle=null;
+      arPlaced=true;
+      if(hintEl)hintEl.innerHTML='Схема закреплена. Обходите её — она остаётся на месте.';
+      setTimeout(()=>{if(hintEl)hintEl.style.opacity='0';},4500);
+    }
+    overlay.addEventListener('click',onTap,{once:false});
+    arAnchor.userData.tapHandler=onTap;
+    if(hintEl){
+      hintEl.style.opacity='1';
+      hintEl.innerHTML=arXRMode
+        ? 'Наведите на пол — система найдёт поверхность. Нажмите для размещения.'
+        : 'Наведите телефон на пол рядом с собой и нажмите, чтобы разместить схему.';
+    }
+
+    const camFwd=new THREE.Vector3();
+    const _reticleMat=new THREE.Matrix4();
+    renderer.setAnimationLoop((timestamp, frame)=>{
+      const t=(Date.now()-arStartT)*0.001;
+
+      if(arXRMode&&frame&&arHitTestSource){
+        if(arReticle){
+          const hits=frame.getHitTestResults(arHitTestSource);
+          if(hits.length>0){
+            const refSp=arLocalFloorRef||renderer.xr.getReferenceSpace();
+            const pose=hits[0].getPose(refSp);
+            if(pose){
+              _reticleMat.fromArray(pose.transform.matrix);
+              arReticle.visible=true;
+              arReticle.position.setFromMatrixPosition(_reticleMat);
+              const s=1+Math.sin(t*2.2)*0.08; arReticle.scale.setScalar(s);
+            }
+          } else {
+            arReticle.visible=false;
+          }
+        }
+      } else if(!arXRMode){
+        const orient=(typeof window.orientation==='number')?window.orientation:0;
+        if(oA!=null) setCamFromOrient(oA,oB,oG,orient);
+        if(arReticle){
+          camFwd.set(0,0,-1).applyQuaternion(cam.quaternion);
+          let px,pz;
+          if(camFwd.y<-0.12){
+            const k=-(cam.position.y)/camFwd.y;
+            if(k>0.2&&k<8){px=cam.position.x+camFwd.x*k;pz=cam.position.z+camFwd.z*k;}
+          }
+          if(px===undefined){
+            const fxz=Math.hypot(camFwd.x,camFwd.z)||1;
+            px=cam.position.x+(camFwd.x/fxz)*1.5;
+            pz=cam.position.z+(camFwd.z/fxz)*1.5;
+          }
+          arReticle.position.set(px,0.002,pz);
+          arReticle.visible=true;
+          const s=1+Math.sin(t*2.2)*0.08;arReticle.scale.setScalar(s);
+        }
+      }
+
+      if(arPlaced&&arAnchor) arAnchor.rotation.y=t*0.15;
+
+      if(arExtras&&arExtras.pulses){
+        arExtras.pulses.forEach(p=>{
+          const phase=((t*0.35)+p.phase)%1;
+          p.mesh.scale.setScalar(1+phase*2.4);
+          p.mesh.material.opacity=0.5*(1-phase);
+        });
+      }
+      if(arExtras&&arExtras.beam){
+        arExtras.beam.material.opacity=0.13+Math.sin(t*1.6)*0.05;
+      }
+
+      renderer.render(scene,cam);
+    });
+  }
+
+  function exitAR2(){
+    if(!arActive){overlay.style.display='none';return;}
+    arActive=false;
+    if(arXRSession){
+      const s=arXRSession;
+      arXRSession=null; arHitTestSource=null; arLocalFloorRef=null; arXRMode=false;
+      try{s.end();}catch(e){}
+      renderer.xr.enabled=false;
+    }
+    video.style.display='';
+    if(arOrientHandler){try{window.removeEventListener('deviceorientation',arOrientHandler,true);}catch(e){}arOrientHandler=null;}
+    if(arStream){arStream.getTracks().forEach(t=>{try{t.stop();}catch(e){}});arStream=null;}
+    try{video.srcObject=null;}catch(e){}
+    if(arAnchor){
+      if(arAnchor.userData.tapHandler){try{overlay.removeEventListener('click',arAnchor.userData.tapHandler);}catch(e){}}
+      scene.remove(arAnchor);arAnchor=null;
+    }
+    if(arReticle){scene.remove(arReticle);arReticle=null;}
+    arExtras=null;
+    if(arStars){arStars.visible=true;arStars=null;}
+    scene.fog=arPrevFog;arPrevFog=null;
+    scene.background=arPrevBg;arPrevBg=null;
+    renderer.setClearColor(0x000000,arPrevClear==null?1:arPrevClear);
+    if(arParent){arParent.appendChild(cv);arParent=null;}
+    cv.style.background='';
+    overlay.style.display='none';
+    if(hintEl){hintEl.style.opacity='';hintEl.innerHTML='Наведите телефон на пол рядом с собой и нажмите, чтобы разместить схему.';}
+    cam.fov=55;cam.near=0.1;cam.far=2000;cam.updateProjectionMatrix();
+    sw(at);
+    setTimeout(()=>{const w=cv.clientWidth,h=cv.clientHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();},50);
+    renderer.setAnimationLoop(tick);
+  }
+
   btnAR.addEventListener('click',async()=>{
     // Request orientation permission FIRST within user gesture (iOS 13+ requirement)
     let orientGranted=true;
@@ -970,10 +1281,27 @@ try{(function(){
     }catch(e){orientGranted=false;}
     enterAR(orientGranted);
   });
-  btnExit.addEventListener('click',exitAR);
-  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&arActive)exitAR();});
+
+  if(btnAR2) btnAR2.addEventListener('click',async()=>{
+    if(isIOS()){
+      await triggerARQuickLook(SG[at]||SG[1]);
+      return;
+    }
+    let orientGranted=true;
+    try{
+      if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+        const p=await DeviceOrientationEvent.requestPermission();
+        orientGranted=(p==='granted');
+      }
+    }catch(e){orientGranted=false;}
+    enterAR2(orientGranted);
+  });
+  function exitAnyAR(){ if(arXRSession||arXRMode) exitAR2(); else exitAR(); }
+  btnExit.addEventListener('click',exitAnyAR);
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&arActive)exitAnyAR();});
   window.addEventListener('resize',()=>{
     if(!arActive)return;
+    if(arXRMode)return; // XR session manages its own viewport
     renderer.setSize(window.innerWidth,window.innerHeight,false);
     cam.aspect=window.innerWidth/window.innerHeight;cam.updateProjectionMatrix();
   });
