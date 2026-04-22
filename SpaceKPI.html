@@ -812,27 +812,50 @@ try{(function(){
   }
 
   async function triggerARQuickLook(srcGroup){
-    if(hintEl){hintEl.style.opacity='1';hintEl.innerHTML='Экспорт модели для AR Quick Look…';}
+    if(hintEl){hintEl.style.opacity='1';hintEl.innerHTML='Подготовка AR модели…';}
     overlay.style.display='block';
-    let blob;
+    let buffer;
     try{
       const wrap=prepModelForExport(srcGroup);
-      blob=await exportGLB(wrap);
+      const blob=await exportGLB(wrap);
+      buffer=await blob.arrayBuffer();
     }catch(e){
-      showErr('Ошибка экспорта модели: '+(e.message||e));
+      showErr('Ошибка экспорта: '+(e.message||e));
+      overlay.style.display='none';
       return;
     }
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.rel='ar'; a.href=url;
-    const img=document.createElement('img');
-    img.style.cssText='width:1px;height:1px;';
-    a.appendChild(img);
-    a.style.cssText='position:fixed;left:-9999px;';
-    document.body.appendChild(a);
-    a.click();
-    if(hintEl) hintEl.innerHTML='Если AR Quick Look не открылся — файл будет скачан. Откройте его в Finder/Files и нажмите для AR.';
-    setTimeout(()=>{ try{URL.revokeObjectURL(url);}catch(e){} try{a.remove();}catch(e){} overlay.style.display='none'; if(hintEl)hintEl.innerHTML='Наведите телефон на пол рядом с собой и нажмите, чтобы разместить схему.'; },90000);
+    // AR Quick Look needs a real same-origin HTTPS URL (blob:// is blocked by iOS system process)
+    const arURL=new URL('./kpi-model-ar.glb',location.href).href;
+    const sw=navigator.serviceWorker&&navigator.serviceWorker.controller;
+    if(sw){
+      // Post GLB to Service Worker, then open AR Quick Look at real URL
+      await new Promise(res=>{
+        const ch=new MessageChannel();
+        ch.port1.onmessage=()=>res();
+        // transfer buffer to SW (zero-copy)
+        sw.postMessage({type:'CACHE_GLB',buffer,url:arURL},[buffer]);
+        // If SW doesn't respond in 600 ms continue anyway
+        setTimeout(res,600);
+      });
+      const a=document.createElement('a');
+      a.rel='ar'; a.href=arURL;
+      a.appendChild(document.createElement('img'));
+      a.style.cssText='position:fixed;left:-9999px;';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ try{a.remove();}catch(e){} overlay.style.display='none'; if(hintEl)hintEl.innerHTML='Наведите телефон на пол рядом с собой и нажмите, чтобы разместить схему.'; },3000);
+    }else{
+      // SW not yet active (first page load) — fallback blob URL (may trigger download)
+      const blobURL=URL.createObjectURL(new Blob([buffer],{type:'model/gltf-binary'}));
+      const a=document.createElement('a');
+      a.rel='ar'; a.href=blobURL;
+      a.appendChild(document.createElement('img'));
+      a.style.cssText='position:fixed;left:-9999px;';
+      document.body.appendChild(a);
+      a.click();
+      if(hintEl) hintEl.innerHTML='Перезагрузите страницу и нажмите AR 3D снова для лучшей совместимости.';
+      setTimeout(()=>{ try{URL.revokeObjectURL(blobURL);}catch(e){} try{a.remove();}catch(e){} overlay.style.display='none'; if(hintEl)hintEl.innerHTML='Наведите телефон на пол рядом с собой и нажмите, чтобы разместить схему.'; },90000);
+    }
   }
 
   async function tryWebXRAR(){
@@ -1308,6 +1331,11 @@ try{(function(){
 })();}catch(e){console.error('[AR init]',e);}
 
 sw(1);renderer.setAnimationLoop(tick);
+
+// Register Service Worker for iOS AR Quick Look (real same-origin URL for GLB)
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw-ar.js').catch(e=>console.warn('SW:',e));
+}
 })();
 </script>
 </body>
