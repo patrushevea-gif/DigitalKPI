@@ -19,7 +19,7 @@
 <button class="tab" data-tab="0">Архитектура</button>
 <button class="tab" data-tab="2">Зрелость</button>
 </div>
-<button id="share" title="Поделиться и AR" style="background:rgba(34,211,238,0.18);color:#fff;border:1px solid rgba(34,211,238,0.45);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;letter-spacing:0.01em;">⚡ AR / Поделиться</button>
+<button id="arbtn" title="Запустить AR-демонстрацию" style="background:rgba(34,211,238,0.18);color:#fff;border:1px solid rgba(34,211,238,0.45);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;letter-spacing:0.01em;">⚡ AR-демо</button>
 <button id="fs" title="На весь экран" style="background:rgba(127,119,221,0.22);color:#fff;border:1px solid rgba(127,119,221,0.38);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;letter-spacing:0.01em;">⛶ Полный экран</button>
 </div>
 </div>
@@ -79,28 +79,33 @@
 #app #side::-webkit-scrollbar-thumb{background:rgba(127,119,221,0.25);border-radius:3px;}
 #app #side::-webkit-scrollbar-thumb:hover{background:rgba(127,119,221,0.5);}
 #app:fullscreen{width:100vw;height:100vh;border-radius:0;}
+@media (max-width:860px){
+  #app{font-size:13px;}
+  #app > div:first-child{padding:8px 10px !important;gap:6px !important;}
+  #app > div:first-child > div:first-child > div:first-child{font-size:12px !important;}
+  #app > div:first-child > div:first-child > div:last-child{font-size:9.5px !important;}
+  #app #tabs{padding:2px !important;}
+  #app .tab{padding:6px 9px !important;font-size:11px !important;}
+  #app #arbtn, #app #fs{padding:6px 10px !important;font-size:11px !important;}
+  #app #side{display:none !important;}
+  #app .hud{display:none !important;}
+  #app #hint{display:none !important;}
+}
+@media (max-width:600px){
+  #app > div:first-child > div:first-child{flex:1 1 100%;min-width:0;}
+  #app > div:first-child > div:first-child > div:first-child{font-size:11.5px !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #app > div:first-child > div:first-child > div:last-child{display:none !important;}
+}
 #app .secLbl{color:rgba(255,255,255,0.42);text-transform:uppercase;font-size:9.5px;letter-spacing:0.18em;margin-bottom:9px;font-weight:600;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
-<div id="shareModal" style="display:none;position:fixed;inset:0;background:rgba(4,6,13,0.85);backdrop-filter:blur(10px);z-index:1000;align-items:center;justify-content:center;font-family:'Inter',sans-serif;">
-<div style="background:linear-gradient(180deg,#0f1530 0%,#0a0e1a 100%);border:1px solid rgba(34,211,238,0.35);border-radius:14px;padding:32px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 40px rgba(34,211,238,0.15);color:#e8e8f0;position:relative;">
-<button id="shareClose" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.06);color:#fff;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;">×</button>
-<div style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:6px;font-weight:600;">Цифровая платформа · AR</div>
-<div style="font-size:20px;font-weight:700;letter-spacing:-0.015em;margin-bottom:18px;background:linear-gradient(90deg,#fff 0%,#7ce2ee 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Запустить схему в дополненной реальности</div>
-<div style="background:#fff;border-radius:10px;padding:14px;display:flex;justify-content:center;margin-bottom:16px;">
-<canvas id="qrCanvas" style="display:block;"></canvas>
-</div>
-<div style="font-size:12px;color:rgba(255,255,255,0.72);line-height:1.55;margin-bottom:14px;">
-Отсканируйте QR-код камерой телефона. Откроется эта же страница — на мобильном появится кнопка запуска AR, и схема в натуральную величину будет парить над полом через камеру.
-</div>
-<div style="display:flex;gap:8px;margin-bottom:10px;">
-<input id="shareUrl" readonly style="flex:1;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);color:#a8c8eb;padding:9px 12px;border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;">
-<button id="shareCopy" style="background:rgba(127,119,221,0.3);color:#fff;border:1px solid rgba(127,119,221,0.45);padding:9px 14px;border-radius:7px;cursor:pointer;font-size:11px;font-weight:500;font-family:inherit;">Копия</button>
-</div>
-<button id="arLaunch" style="width:100%;background:linear-gradient(135deg,#0891b2 0%,#6366f1 100%);color:#fff;border:none;padding:13px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;letter-spacing:0.02em;margin-top:4px;box-shadow:0 6px 18px rgba(34,211,238,0.25);display:none;">⚡ Запустить AR на этом устройстве</button>
-<div id="arStatus" style="font-size:11px;color:rgba(255,255,255,0.5);text-align:center;margin-top:10px;line-height:1.5;"></div>
-</div>
+<div id="arOverlay" style="display:none;position:fixed;inset:0;z-index:1000;background:#000;">
+<video id="arVideo" autoplay playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;background:#000;"></video>
+<div id="arSlot" style="position:absolute;inset:0;z-index:2;pointer-events:auto;"></div>
+<div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:4;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.88);text-shadow:0 2px 8px rgba(0,0,0,0.8);font-weight:600;pointer-events:none;">AR · цифровая платформа KPI</div>
+<div id="arHint" style="position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:4;font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,0.75);text-shadow:0 2px 8px rgba(0,0,0,0.8);text-align:center;max-width:90%;pointer-events:none;">Двигайте телефон — схема парит перед вами и вращается</div>
+<button id="arExit" style="position:absolute;top:14px;right:14px;z-index:5;background:rgba(0,0,0,0.55);color:#fff;border:1px solid rgba(255,255,255,0.35);padding:10px 16px;border-radius:999px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;backdrop-filter:blur(10px);">✕ Выход</button>
+<div id="arErr" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:6;max-width:86%;background:rgba(15,18,30,0.95);border:1px solid rgba(239,68,68,0.5);border-radius:10px;padding:20px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;line-height:1.55;text-align:center;"></div>
 </div>
 <script>
 (function(){
@@ -667,126 +672,119 @@ renderer.render(scene,cam);
 function rsz(){renderer.setSize(W(),H(),false);cam.aspect=W()/H();cam.updateProjectionMatrix();}
 window.addEventListener('resize',rsz);
 setTimeout(rsz,50);
-// ==================== Share modal + AR ====================
+// ==================== AR demo (camera passthrough) ====================
 try{(function(){
-  const modal=document.getElementById('shareModal');
-  const qrCv=document.getElementById('qrCanvas');
-  const urlInp=document.getElementById('shareUrl');
-  const btnShare=document.getElementById('share');
-  const btnClose=document.getElementById('shareClose');
-  const btnCopy=document.getElementById('shareCopy');
-  const btnAR=document.getElementById('arLaunch');
-  const statusEl=document.getElementById('arStatus');
-  if(!btnShare||!modal||!btnClose||!btnCopy||!btnAR)return;
+  const btnAR=document.getElementById('arbtn');
+  const overlay=document.getElementById('arOverlay');
+  const video=document.getElementById('arVideo');
+  const slot=document.getElementById('arSlot');
+  const btnExit=document.getElementById('arExit');
+  const errEl=document.getElementById('arErr');
+  const hintEl=document.getElementById('arHint');
+  if(!btnAR||!overlay||!video||!slot||!btnExit)return;
 
-  function currentUrl(){return window.location.href.split('#')[0];}
+  let arActive=false,arAnchor=null,arStars=null,arStream=null,arParent=null,arPrevClear=null,arPrevFog=null,arPrevBg=null,arPrevSize=null;
 
-  function drawQR(url){
-    if(typeof qrcode!=='undefined'){
-      try{
-        const qr=qrcode(0,'M');qr.addData(url);qr.make();
-        const modules=qr.getModuleCount(),pad=2,cs=Math.max(3,Math.floor(260/(modules+pad*2))),sz=(modules+pad*2)*cs;
-        qrCv.width=sz;qrCv.height=sz;qrCv.style.width=qrCv.style.height='260px';
-        const ctx=qrCv.getContext('2d');
-        ctx.fillStyle='#fff';ctx.fillRect(0,0,sz,sz);
-        ctx.fillStyle='#0a0e1a';
-        for(let r=0;r<modules;r++){for(let c=0;c<modules;c++){if(qr.isDark(r,c))ctx.fillRect((c+pad)*cs,(r+pad)*cs,cs,cs);}}
-        return true;
-      }catch(e){console.warn('qrcode-generator failed',e);}
-    }
-    return false;
-  }
-  function showImgFallback(url){
-    const parent=qrCv.parentNode;if(!parent)return;
-    let img=parent.querySelector('img.qrimg');
-    if(!img){
-      img=document.createElement('img');img.className='qrimg';img.alt='QR';img.style.cssText='display:block;width:260px;height:260px;';
-      parent.appendChild(img);
-    }
-    img.src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=M&margin=1&data='+encodeURIComponent(url);
-    qrCv.style.display='none';img.style.display='block';
-  }
-  function openShare(){
-    const u=currentUrl();
-    urlInp.value=u;
-    qrCv.style.display='block';
-    const img=qrCv.parentNode&&qrCv.parentNode.querySelector('img.qrimg');if(img)img.style.display='none';
-    if(!drawQR(u))showImgFallback(u);
-    modal.style.display='flex';
-    checkAR();
-  }
-  function closeShare(){modal.style.display='none';}
-  btnShare.addEventListener('click',openShare);
-  btnClose.addEventListener('click',closeShare);
-  modal.addEventListener('click',e=>{if(e.target===modal)closeShare();});
-  btnCopy.addEventListener('click',async()=>{
-    try{await navigator.clipboard.writeText(urlInp.value);btnCopy.textContent='Готово';setTimeout(()=>btnCopy.textContent='Копия',1400);}
-    catch(e){urlInp.select();document.execCommand('copy');}
-  });
+  function showErr(msg){errEl.innerHTML=msg;errEl.style.display='block';}
+  function hideErr(){errEl.style.display='none';errEl.innerHTML='';}
 
-  // ---------- AR support detection + launch ----------
-  async function checkAR(){
-    statusEl.textContent='';btnAR.style.display='none';
-    if(!navigator.xr){
-      statusEl.innerHTML='На этом устройстве WebXR недоступен.<br>Откройте страницу на Android в Chrome для запуска AR.';
-      return;
+  async function startCam(){
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+      throw new Error('Камера недоступна в этом браузере. Откройте страницу по HTTPS в Safari/Chrome.');
     }
+    let stream;
     try{
-      const ok=await navigator.xr.isSessionSupported('immersive-ar');
-      if(ok){btnAR.style.display='block';statusEl.textContent='Устройство поддерживает AR. Нажмите кнопку ниже.';}
-      else{statusEl.innerHTML='AR-режим не поддерживается этим устройством.<br>Отсканируйте QR с телефона.';}
-    }catch(e){statusEl.textContent='AR недоступен: '+e.message;}
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+    }catch(e1){
+      try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});}
+      catch(e2){throw new Error('Не удалось получить доступ к камере: '+(e2.message||e2));}
+    }
+    video.srcObject=stream;
+    try{await video.play();}catch(e){}
+    return stream;
   }
 
-  // Clone a group for XR safely (reuse materials/geometry)
-  function cloneForXR(g){return g.clone(true);}
+  async function enterAR(){
+    hideErr();
+    overlay.style.display='block';
+    try{arStream=await startCam();}
+    catch(e){showErr(e.message||String(e));return;}
 
-  let xrAnchor=null,xrOrigLoop=null,xrStars=null;
-  btnAR.addEventListener('click',async()=>{
-    if(!navigator.xr)return;
-    try{
-      renderer.xr.enabled=true;
-      const session=await navigator.xr.requestSession('immersive-ar',{requiredFeatures:['local-floor']});
-      await renderer.xr.setSession(session);
-      try{renderer.xr.setReferenceSpaceType('local-floor');}catch(e){}
-      closeShare();
+    arActive=true;
+    // move the main canvas into the AR slot so renderer keeps working
+    arParent=cv.parentNode;
+    slot.appendChild(cv);
+    // transparent scene + no fog + hide stars
+    arPrevFog=scene.fog;scene.fog=null;
+    arPrevBg=scene.background;scene.background=null;
+    arPrevClear=renderer.getClearAlpha();
+    renderer.setClearColor(0x000000,0);
+    if(scene.userData.stars){arStars=scene.userData.stars;arStars.visible=false;}
 
-      // hide non-AR helpers
-      if(scene.userData.stars){xrStars=scene.userData.stars;xrStars.visible=false;}
+    // clone current visible tab into anchor
+    const visible=SG[at]||SG[1];
+    const clone=visible.clone(true);
+    clone.visible=true;
+    const bbox=new THREE.Box3().setFromObject(clone);
+    const c=new THREE.Vector3();bbox.getCenter(c);clone.position.sub(c);
+    const sz=new THREE.Vector3();bbox.getSize(sz);
+    const maxDim=Math.max(sz.x,sz.y,sz.z)||1;
+    arAnchor=new THREE.Group();arAnchor.add(clone);
+    arAnchor.userData.baseScale=180/maxDim; // scene units; camera logic below
+    arAnchor.scale.setScalar(arAnchor.userData.baseScale);
+    arAnchor.position.set(0,0,-260);
+    scene.add(arAnchor);
 
-      // clone current scene group for AR (so user's desktop state stays)
-      const visible=SG[at]||SG[1];
-      const clone=cloneForXR(visible);
-      clone.visible=true;
-      // fit to human size (~1.6 m tall), float above floor
-      const bbox=new THREE.Box3().setFromObject(clone);
-      const size=new THREE.Vector3();bbox.getSize(size);
-      const maxDim=Math.max(size.x,size.y,size.z)||1;
-      const targetSize=1.6;
-      const scale=targetSize/maxDim;
-      xrAnchor=new THREE.Group();
-      xrAnchor.add(clone);
-      // center content, float above floor (center of bbox at ~1.3 m)
-      const center=new THREE.Vector3();bbox.getCenter(center);
-      clone.position.sub(center);
-      xrAnchor.scale.setScalar(scale);
-      xrAnchor.position.set(0,1.3,-1.8);
-      scene.add(xrAnchor);
+    // camera reset — straight on, fov slightly wider for phone
+    cam.fov=65;cam.aspect=window.innerWidth/window.innerHeight;cam.updateProjectionMatrix();
+    cam.position.set(0,0,0);cam.lookAt(0,0,-1);
 
-      renderer.setAnimationLoop((time,frame)=>{
-        if(xrAnchor)xrAnchor.rotation.y+=0.01;
-        renderer.render(scene,cam);
-      });
+    arPrevSize={w:cv.clientWidth,h:cv.clientHeight};
+    renderer.setSize(window.innerWidth,window.innerHeight,false);
+    cv.style.width='100%';cv.style.height='100%';cv.style.background='transparent';
 
-      session.addEventListener('end',()=>{
-        if(xrAnchor){scene.remove(xrAnchor);xrAnchor=null;}
-        if(xrStars)xrStars.visible=true;
-        renderer.xr.enabled=false;
-        renderer.setAnimationLoop(tick);
-      });
-    }catch(e){statusEl.textContent='Не удалось запустить AR: '+(e.message||e);}
+    renderer.setAnimationLoop(()=>{
+      if(arAnchor){arAnchor.rotation.y+=0.006;}
+      renderer.render(scene,cam);
+    });
+    // hide hint after 6s
+    setTimeout(()=>{if(hintEl)hintEl.style.opacity='0.0';},6000);
+  }
+
+  function exitAR(){
+    if(!arActive){overlay.style.display='none';return;}
+    arActive=false;
+    // stop camera
+    if(arStream){arStream.getTracks().forEach(t=>{try{t.stop();}catch(e){}});arStream=null;}
+    try{video.srcObject=null;}catch(e){}
+    // remove anchor
+    if(arAnchor){scene.remove(arAnchor);arAnchor=null;}
+    // restore stars, fog, bg
+    if(arStars){arStars.visible=true;arStars=null;}
+    scene.fog=arPrevFog;arPrevFog=null;
+    scene.background=arPrevBg;arPrevBg=null;
+    renderer.setClearColor(0x000000,arPrevClear==null?1:arPrevClear);
+    // restore canvas parent
+    if(arParent){arParent.appendChild(cv);arParent=null;}
+    cv.style.background='';
+    overlay.style.display='none';
+    if(hintEl)hintEl.style.opacity='';
+    // restore normal view
+    cam.fov=55;cam.updateProjectionMatrix();
+    sw(at);
+    setTimeout(()=>{const w=cv.clientWidth,h=cv.clientHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();},50);
+    renderer.setAnimationLoop(tick);
+  }
+
+  btnAR.addEventListener('click',enterAR);
+  btnExit.addEventListener('click',exitAR);
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&arActive)exitAR();});
+  window.addEventListener('resize',()=>{
+    if(!arActive)return;
+    renderer.setSize(window.innerWidth,window.innerHeight,false);
+    cam.aspect=window.innerWidth/window.innerHeight;cam.updateProjectionMatrix();
   });
-})();}catch(e){console.error('[share/AR init]',e);}
+})();}catch(e){console.error('[AR init]',e);}
 
 sw(1);renderer.setAnimationLoop(tick);
 })();
