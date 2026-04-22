@@ -15,8 +15,8 @@
 </div>
 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
 <div id="tabs" style="display:flex;gap:2px;background:rgba(255,255,255,0.04);padding:3px;border-radius:9px;border:1px solid rgba(255,255,255,0.06);">
-<button class="tab active" data-tab="0">Архитектура</button>
-<button class="tab" data-tab="1">KPI</button>
+<button class="tab active" data-tab="1">KPI</button>
+<button class="tab" data-tab="0">Архитектура</button>
 <button class="tab" data-tab="2">Зрелость</button>
 </div>
 <button id="fs" title="На весь экран" style="background:rgba(127,119,221,0.22);color:#fff;border:1px solid rgba(127,119,221,0.38);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;letter-spacing:0.01em;">⛶ Полный экран</button>
@@ -616,8 +616,8 @@ const LEG=[
 [['2024 уровень 4','#1e40af'],['2025 ур.5','#2563eb'],['2026 ур.6','#eab308'],['2027 ур.7','#f97316'],['2028–30 ур.8','#dc2626'],['Драйверы','#f472b6']]
 ];
 
-let at=0;
-SG.forEach((g,i)=>g.visible=(i===0));
+let at=1;
+SG.forEach((g,i)=>g.visible=(i===1));
 
 function renderL(){
 const c=CFG[at],box=document.getElementById('layers');box.innerHTML='';
@@ -741,7 +741,7 @@ renderer.render(scene,cam);requestAnimationFrame(tick);
 function rsz(){renderer.setSize(W(),H(),false);cam.aspect=W()/H();cam.updateProjectionMatrix();}
 window.addEventListener('resize',rsz);
 setTimeout(rsz,50);
-renderL();upCam();tick();
+sw(1);tick();
 })();
 </script>
 </body>
