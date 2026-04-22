@@ -1,4 +1,12 @@
-
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Россильбер · Цифровая платформа KPI</title>
+<style>html,body{margin:0;padding:0;background:#04060d;overflow:hidden;height:100%;}</style>
+</head>
+<body>
 <div id="app" style="width:100%;height:100vh;background:radial-gradient(ellipse at 30% 0%,#1a1f3a 0%,#0a0e1a 45%,#04060d 100%);border-radius:0;overflow:hidden;font-family:'Inter','Anthropic Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#e8e8f0;display:flex;flex-direction:column;position:relative;">
 <div style="padding:14px 22px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;backdrop-filter:blur(12px);background:rgba(10,14,26,0.55);z-index:10;">
 <div>
@@ -10,7 +18,6 @@
 <button class="tab active" data-tab="0">Архитектура</button>
 <button class="tab" data-tab="1">KPI</button>
 <button class="tab" data-tab="2">Зрелость</button>
-<button class="tab" data-tab="3">Матрица</button>
 </div>
 <button id="fs" title="На весь экран" style="background:rgba(127,119,221,0.22);color:#fff;border:1px solid rgba(127,119,221,0.38);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;letter-spacing:0.01em;">⛶ Полный экран</button>
 </div>
@@ -29,14 +36,42 @@
 </div>
 <div id="canvasWrap" style="flex:1;position:relative;min-width:0;">
 <canvas id="cv" style="display:block;width:100%;height:100%;cursor:grab;"></canvas>
-<div id="tip" style="position:absolute;background:rgba(15,18,30,0.92);border:1px solid rgba(127,119,221,0.35);padding:7px 11px;border-radius:7px;font-size:11px;display:none;pointer-events:none;max-width:260px;z-index:5;backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,0.4);font-weight:500;"></div>
-<div id="hint" style="position:absolute;bottom:10px;right:14px;font-size:10px;color:rgba(255,255,255,0.3);font-weight:400;letter-spacing:0.05em;">Тащите · колесо зум · клик детали</div>
+<div class="corner-tr"></div>
+<div class="corner-bl"></div>
+<div class="scanlines"></div>
+<div class="hud hud-tl">
+<div><span class="pulse"></span><span class="ok">SYSTEM ONLINE</span></div>
+<div class="dim">ROSSILBER · DIGITAL PLATFORM</div>
+<div>MODE: <span id="hudMode">ARCHITECTURE</span></div>
+<div class="dim">NODES: <span id="hudNodes">127</span> · LINKS: <span id="hudLinks">312</span></div>
+</div>
+<div class="hud hud-br">
+<div>T+<span id="hudT">0000</span>s</div>
+<div class="dim">FPS: <span id="hudFps">60</span></div>
+<div class="dim">Тащите · колесо зум · клик детали</div>
+</div>
+<div id="tip" style="position:absolute;background:rgba(8,14,28,0.95);border:1px solid rgba(127,200,255,0.4);padding:8px 12px;border-radius:4px;font-size:11px;display:none;pointer-events:none;max-width:280px;z-index:6;backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,0.6),0 0 0 1px rgba(34,211,238,0.1);font-weight:500;font-family:'JetBrains Mono',monospace;letter-spacing:0.02em;color:#e0f2ff;"></div>
 </div>
 </div>
 </div>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 #app{letter-spacing:-0.005em;}
+#app .mono{font-family:'JetBrains Mono','IBM Plex Mono',ui-monospace,monospace;font-feature-settings:'cv11';}
+#app #canvasWrap::before,#app #canvasWrap::after{content:'';position:absolute;width:22px;height:22px;pointer-events:none;z-index:4;}
+#app #canvasWrap::before{top:10px;left:10px;border-top:1.5px solid rgba(127,200,255,0.6);border-left:1.5px solid rgba(127,200,255,0.6);box-shadow:0 0 8px rgba(127,200,255,0.3);}
+#app #canvasWrap::after{bottom:10px;right:10px;border-bottom:1.5px solid rgba(127,200,255,0.6);border-right:1.5px solid rgba(127,200,255,0.6);box-shadow:0 0 8px rgba(127,200,255,0.3);}
+#app .corner-tr,#app .corner-bl{position:absolute;width:22px;height:22px;pointer-events:none;z-index:4;}
+#app .corner-tr{top:10px;right:10px;border-top:1.5px solid rgba(127,200,255,0.6);border-right:1.5px solid rgba(127,200,255,0.6);box-shadow:0 0 8px rgba(127,200,255,0.3);}
+#app .corner-bl{bottom:10px;left:10px;border-bottom:1.5px solid rgba(127,200,255,0.6);border-left:1.5px solid rgba(127,200,255,0.6);box-shadow:0 0 8px rgba(127,200,255,0.3);}
+#app .scanlines{position:absolute;inset:0;pointer-events:none;z-index:3;background:repeating-linear-gradient(0deg,rgba(127,200,255,0.02) 0px,rgba(127,200,255,0.02) 1px,transparent 1px,transparent 3px);mix-blend-mode:screen;opacity:0.6;}
+#app .hud{position:absolute;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(168,200,235,0.72);letter-spacing:0.08em;pointer-events:none;z-index:4;text-transform:uppercase;line-height:1.7;}
+#app .hud .dim{color:rgba(168,200,235,0.38);}
+#app .hud .ok{color:#6ee7b7;}
+#app .hud .pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:#6ee7b7;box-shadow:0 0 8px #6ee7b7;margin-right:6px;vertical-align:middle;animation:app-pulse 1.6s ease-in-out infinite;}
+@keyframes app-pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.35;transform:scale(0.7);}}
+#app .hud-tl{top:14px;left:18px;}
+#app .hud-br{bottom:14px;right:24px;text-align:right;}
 #app .tab{background:none;border:none;color:rgba(255,255,255,0.55);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;transition:all 0.18s ease;letter-spacing:0.01em;}
 #app .tab:hover{color:#fff;background:rgba(255,255,255,0.04);}
 #app .tab.active{background:linear-gradient(135deg,rgba(127,119,221,0.45) 0%,rgba(99,102,241,0.35) 100%);color:#fff;box-shadow:0 0 18px rgba(127,119,221,0.35),inset 0 1px 0 rgba(255,255,255,0.12);}
@@ -93,27 +128,75 @@ const dl=new THREE.DirectionalLight(0xffffff,0.55);dl.position.set(120,140,90);s
 const dl2=new THREE.DirectionalLight(0xa78bfa,0.25);dl2.position.set(-120,-60,-100);scene.add(dl2);
 
 (function(){
-  const N=1800,pos=new Float32Array(N*3),col=new Float32Array(N*3);
+  function starSprite(col,sz){
+    const c=document.createElement('canvas');c.width=c.height=64;
+    const ctx=c.getContext('2d'),g=ctx.createRadialGradient(32,32,0,32,32,32);
+    g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(0.2,col);g.addColorStop(0.5,col.replace('1)','0.35)'));g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g;ctx.fillRect(0,0,64,64);
+    const t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearFilter;return t;
+  }
+  const starTex=starSprite('rgba(220,225,255,1)',1);
+
+  // layer 1: dense distant star field (small, vertex colors)
+  const N=3400,pos=new Float32Array(N*3),col=new Float32Array(N*3),sz=new Float32Array(N);
   for(let i=0;i<N;i++){
-    const r=900+Math.random()*900,th=Math.acos(2*Math.random()-1),ph=Math.random()*Math.PI*2;
+    const r=800+Math.random()*1100,th=Math.acos(2*Math.random()-1),ph=Math.random()*Math.PI*2;
     pos[i*3]=r*Math.sin(th)*Math.cos(ph);pos[i*3+1]=r*Math.cos(th);pos[i*3+2]=r*Math.sin(th)*Math.sin(ph);
-    const t=Math.random();const c=t<0.7?[1,1,1]:t<0.88?[0.78,0.85,1]:[1,0.88,0.75];
+    const t=Math.random();const c=t<0.55?[1,1,1]:t<0.78?[0.75,0.82,1]:t<0.92?[1,0.88,0.75]:[1,0.72,0.62];
     col[i*3]=c[0];col[i*3+1]=c[1];col[i*3+2]=c[2];
+    sz[i]=0.6+Math.random()*1.8;
   }
   const g=new THREE.BufferGeometry();
   g.setAttribute('position',new THREE.BufferAttribute(pos,3));
   g.setAttribute('color',new THREE.BufferAttribute(col,3));
-  const m=new THREE.PointsMaterial({size:1.6,sizeAttenuation:true,transparent:true,opacity:0.85,vertexColors:true,depthWrite:false});
+  const m=new THREE.PointsMaterial({size:1.8,sizeAttenuation:true,transparent:true,opacity:0.92,vertexColors:true,depthWrite:false,map:starTex,blending:THREE.AdditiveBlending});
   const stars=new THREE.Points(g,m);scene.add(stars);scene.userData.stars=stars;
 
-  const N2=80,pos2=new Float32Array(N2*3);
+  // layer 2: mid bright stars (twinkling)
+  const N2=160,pos2=new Float32Array(N2*3);
   for(let i=0;i<N2;i++){
-    const r=500+Math.random()*400,th=Math.acos(2*Math.random()-1),ph=Math.random()*Math.PI*2;
+    const r=450+Math.random()*500,th=Math.acos(2*Math.random()-1),ph=Math.random()*Math.PI*2;
     pos2[i*3]=r*Math.sin(th)*Math.cos(ph);pos2[i*3+1]=r*Math.cos(th);pos2[i*3+2]=r*Math.sin(th)*Math.sin(ph);
   }
   const g2=new THREE.BufferGeometry();g2.setAttribute('position',new THREE.BufferAttribute(pos2,3));
-  const m2=new THREE.PointsMaterial({size:3.2,sizeAttenuation:true,transparent:true,opacity:0.9,color:0xc4bcf5,depthWrite:false});
+  const m2=new THREE.PointsMaterial({size:4.5,sizeAttenuation:true,transparent:true,opacity:0.95,color:0xc4bcf5,depthWrite:false,map:starTex,blending:THREE.AdditiveBlending});
   const bigStars=new THREE.Points(g2,m2);scene.add(bigStars);scene.userData.bigStars=bigStars;
+
+  // layer 3: foreground bright accents
+  const N3=40,pos3=new Float32Array(N3*3),col3=new Float32Array(N3*3);
+  for(let i=0;i<N3;i++){
+    const r=320+Math.random()*260,th=Math.acos(2*Math.random()-1),ph=Math.random()*Math.PI*2;
+    pos3[i*3]=r*Math.sin(th)*Math.cos(ph);pos3[i*3+1]=r*Math.cos(th);pos3[i*3+2]=r*Math.sin(th)*Math.sin(ph);
+    const tt=Math.random();const cc=tt<0.5?[0.95,0.78,1]:tt<0.8?[0.75,0.9,1]:[1,0.85,0.7];
+    col3[i*3]=cc[0];col3[i*3+1]=cc[1];col3[i*3+2]=cc[2];
+  }
+  const g3=new THREE.BufferGeometry();g3.setAttribute('position',new THREE.BufferAttribute(pos3,3));g3.setAttribute('color',new THREE.BufferAttribute(col3,3));
+  const m3=new THREE.PointsMaterial({size:8,sizeAttenuation:true,transparent:true,opacity:0.9,depthWrite:false,map:starTex,blending:THREE.AdditiveBlending,vertexColors:true});
+  const accentStars=new THREE.Points(g3,m3);scene.add(accentStars);scene.userData.accentStars=accentStars;
+
+  // nebula clouds — large translucent billboards
+  function nebulaTex(colA,colB){
+    const c=document.createElement('canvas');c.width=c.height=256;
+    const ctx=c.getContext('2d');
+    for(let k=0;k<90;k++){
+      const x=Math.random()*256,y=Math.random()*256,r=20+Math.random()*85;
+      const gr=ctx.createRadialGradient(x,y,0,x,y,r);
+      gr.addColorStop(0,Math.random()<0.5?colA:colB);gr.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=gr;ctx.fillRect(0,0,256,256);
+    }
+    const t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearFilter;return t;
+  }
+  const nebs=[
+    {c:['rgba(120,90,200,0.16)','rgba(60,120,220,0.1)'],p:[-700,220,-600],s:900},
+    {c:['rgba(200,80,160,0.12)','rgba(120,40,200,0.08)'],p:[650,-120,-750],s:1000},
+    {c:['rgba(40,180,220,0.12)','rgba(100,80,200,0.08)'],p:[-100,-500,800],s:1100},
+    {c:['rgba(220,150,90,0.08)','rgba(200,80,100,0.06)'],p:[500,400,600],s:800}
+  ];
+  const nebGroup=new THREE.Group();scene.add(nebGroup);scene.userData.neb=nebGroup;
+  nebs.forEach(n=>{
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:nebulaTex(n.c[0],n.c[1]),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));
+    s.position.set(n.p[0],n.p[1],n.p[2]);s.scale.set(n.s,n.s,1);nebGroup.add(s);
+  });
 })();
 
 const cs={r:380,th:Math.PI/2,ph:0,tx:0,ty:0,tz:0};
@@ -274,8 +357,48 @@ for(let j=0;j<=ny;j++){
 const y=oy+j*dy;LC.gr.add(ln(new THREE.Vector3(ox,y,0),new THREE.Vector3(ox+nx*dx,y,0),0x333344,0.3));
 }
 
-const LD={goals:new THREE.Group(),dirs:new THREE.Group(),dash:new THREE.Group(),emp:new THREE.Group(),idx:new THREE.Group(),sal:new THREE.Group(),twins:new THREE.Group(),team:new THREE.Group(),ai:new THREE.Group(),lk:new THREE.Group()};
+const LD={hud:new THREE.Group(),goals:new THREE.Group(),dirs:new THREE.Group(),dash:new THREE.Group(),emp:new THREE.Group(),idx:new THREE.Group(),sal:new THREE.Group(),twins:new THREE.Group(),team:new THREE.Group(),ai:new THREE.Group(),lk:new THREE.Group()};
 Object.values(LD).forEach(g=>SG[1].add(g));
+
+// Industrial hex grid floor + vertical level rails + axis
+(function(){
+  const floorY=-280;
+  // hex grid
+  const hexR=22,cols=13,rows=13;
+  const pts=[];
+  for(let q=-cols;q<=cols;q++){
+    for(let r=-rows;r<=rows;r++){
+      const x=hexR*1.5*q;
+      const z=hexR*Math.sqrt(3)*(r+(q%2?0.5:0));
+      if(x*x+z*z>420*420)continue;
+      for(let k=0;k<6;k++){
+        const a1=k*Math.PI/3,a2=(k+1)*Math.PI/3;
+        pts.push(x+Math.cos(a1)*hexR,floorY,z+Math.sin(a1)*hexR);
+        pts.push(x+Math.cos(a2)*hexR,floorY,z+Math.sin(a2)*hexR);
+      }
+    }
+  }
+  const fg=new THREE.BufferGeometry();fg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(pts),3));
+  const fm=new THREE.LineBasicMaterial({color:0x3b7ec7,transparent:true,opacity:0.12});
+  LD.hud.add(new THREE.LineSegments(fg,fm));
+  // glow disc
+  const disc=new THREE.Mesh(new THREE.CircleGeometry(440,64),new THREE.MeshBasicMaterial({color:0x1a3a66,transparent:true,opacity:0.18,side:THREE.DoubleSide,depthWrite:false}));
+  disc.rotation.x=-Math.PI/2;disc.position.y=floorY-0.5;LD.hud.add(disc);
+  // rings
+  [180,260,360,440].forEach((r,i)=>{
+    const g=new THREE.Mesh(new THREE.RingGeometry(r,r+0.6,128),new THREE.MeshBasicMaterial({color:i===3?0x22d3ee:0x4e7fbf,transparent:true,opacity:0.25-i*0.04,side:THREE.DoubleSide,depthWrite:false}));
+    g.rotation.x=-Math.PI/2;g.position.y=floorY+0.2;LD.hud.add(g);
+  });
+  // central axis beam
+  const beamPts=[new THREE.Vector3(0,floorY,0),new THREE.Vector3(0,300,0)];
+  const bg=new THREE.BufferGeometry().setFromPoints(beamPts);
+  LD.hud.add(new THREE.Line(bg,new THREE.LineBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.12})));
+  // level rails — horizontal dashed rings at each Y level
+  [260,160,60,-40,-130,-220].forEach(y=>{
+    const g=new THREE.Mesh(new THREE.RingGeometry(230,230.6,128),new THREE.MeshBasicMaterial({color:0x4e7fbf,transparent:true,opacity:0.1,side:THREE.DoubleSide,depthWrite:false}));
+    g.rotation.x=-Math.PI/2;g.position.y=y;LD.hud.add(g);
+  });
+})();
 
 function hex2rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
 function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
@@ -381,25 +504,132 @@ for(let i=0;i<4;i++){
 }
 const salCap=label('УРОВЕНЬ 07 · РАСЧЁТ ЗАРПЛАТЫ','#c084fc',10);salCap.position.set(0,Y_SAL-30,0);LD.sal.add(salCap);
 
+// Digital twin leaders — prominent diamond above each direction, always labelled
+const twinNodes=[];
+const TWIN_Y=Y_DIR+80;
+for(let i=0;i<19;i++){
+  const a=(i/19)*Math.PI*2,r=200,x=Math.cos(a)*r,z=Math.sin(a)*r;
+  const c=KPI_DCOL[i%KPI_DCOL.length];
+  const m=new THREE.Mesh(new THREE.OctahedronGeometry(8,0),new THREE.MeshPhongMaterial({color:c,emissive:c,emissiveIntensity:0.85,shininess:120,specular:0x99aaff,flatShading:true}));
+  m.position.set(x,TWIN_Y,z);
+  m.userData={name:`Рук. · ${KPI_DIRS[i]}`,info:`ЦИФРОВОЙ ДВОЙНИК РУКОВОДИТЕЛЯ\nНаправление: ${KPI_DIRS[i]}\n\n• Администрирует все процессы направления\n• Принимает операционные решения под контролем ИИ\n• Ведёт собственную команду цифровых подчинённых`};
+  // persistent halo ring
+  const ringG=new THREE.Mesh(new THREE.RingGeometry(10.5,13.5,32),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.45,side:THREE.DoubleSide,depthWrite:false}));
+  ringG.position.copy(m.position);ringG.lookAt(0,TWIN_Y,0);ringG.rotateX(Math.PI/2);
+  LD.twins.add(ringG);
+  const haloHover=new THREE.Sprite(haloMat(c));haloHover.scale.set(36,36,1);haloHover.visible=false;haloHover.position.copy(m.position);
+  m.userData._halo=haloHover;LD.twins.add(haloHover);
+  LD.twins.add(m);HOV[1].push(m);
+  // always-on label
+  const lb=label(`Рук. ${i+1}`,'#fff',10,`rgba(${hex2rgb(c).join(',')},0.65)`);
+  lb.position.set(x*1.08,TWIN_Y+15,z*1.08);LD.twins.add(lb);
+  // vertical connector from twin down to its direction
+  LD.twins.add(ln(m.position,dirNodes[i].position,c,0.55));
+  twinNodes.push(m);
+}
+const twinCap=label('19 ЦИФРОВЫХ ДВОЙНИКОВ РУКОВОДИТЕЛЕЙ НАПРАВЛЕНИЙ','#f472b6',11,'rgba(244,114,182,0.28)');twinCap.position.set(0,TWIN_Y+38,0);LD.twins.add(twinCap);
+
+// Digital subordinates — team pod hanging UNDER each leader twin, visible cluster
+for(let i=0;i<19;i++){
+  const c=KPI_DCOL[i%KPI_DCOL.length];
+  const tw=twinNodes[i].position;
+  const aRad=Math.atan2(tw.z,tw.x);
+  // each leader gets 5 subordinates arranged in a mini-constellation
+  const cnt=5;
+  for(let k=0;k<cnt;k++){
+    const aa=(k/cnt)*Math.PI*2+aRad,rr=14+((k%2)?4:0);
+    const px=tw.x+Math.cos(aa)*rr*0.55-Math.cos(aRad)*8;
+    const pz=tw.z+Math.sin(aa)*rr*0.55-Math.sin(aRad)*8;
+    const py=tw.y-22-((k%2)?6:0);
+    const sub=new THREE.Mesh(new THREE.SphereGeometry(2.4,14,14),new THREE.MeshPhongMaterial({color:c,emissive:c,emissiveIntensity:0.55,shininess:60}));
+    sub.position.set(px,py,pz);
+    sub.userData={name:`Сотрудник · ${KPI_DIRS[i]}`,info:`ЦИФРОВОЙ АНАЛОГ СОТРУДНИКА\nНаправление: ${KPI_DIRS[i]}\nПодчиняется цифровому двойнику руководителя.\nЧасть полной цифровой команды компании (полный аналог штата).`};
+    LD.team.add(sub);HOV[1].push(sub);
+    // link from subordinate up to its leader
+    LD.team.add(ln(sub.position,tw,c,0.22));
+  }
+}
+const teamCap=label('ПОЛНАЯ ЦИФРОВАЯ КОМАНДА · АНАЛОГ ШТАТА (95 ЕДИНИЦ)','#94a3b8',10,'rgba(148,163,184,0.22)');teamCap.position.set(0,TWIN_Y-55,0);LD.team.add(teamCap);
+
+// AI orchestration: envelope + pulsing core + analytical orbital ring
+const AI_Y=Y_EMP+18;
+const aiCore=new THREE.Mesh(new THREE.IcosahedronGeometry(16,1),new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:1.1,shininess:140,transparent:true,opacity:0.95,specular:0xaaf0ff,flatShading:true}));
+aiCore.position.set(0,AI_Y,0);
+aiCore.userData={name:'ИИ-ядро · Сквозной аналитический модуль',info:'ЧТО АНАЛИЗИРУЕТ ИИ:\n\n• ДЕТЕКЦИЯ АНОМАЛИЙ — 5 типов (выбросы, падения, всплески, паттерны, кросс-противоречия)\n• ДИАГНОСТИКА — корневые причины, цепочки влияния, бенчмарки\n• РЕКОМЕНДАЦИИ — корректирующие действия, перераспределение ресурсов\n• АЛЕРТЫ — ранние предупреждения, эскалация, тихие зоны\n• ПРЕДИКТИВ — 9 сценариев: слабое звено, просадка направлений,\n  каскадные риски, выгорание, прогноз топ-целей, кадровые риски,\n  симуляция планов, сезонные прогнозы, еженедельный рейтинг'};
+const aiHalo=new THREE.Sprite(haloMat('#22d3ee'));aiHalo.scale.set(110,110,1);aiHalo.visible=false;aiHalo.position.copy(aiCore.position);
+aiCore.userData._halo=aiHalo;LD.ai.add(aiHalo);
+LD.ai.add(aiCore);HOV[1].push(aiCore);
+
+// core inner glow shell
+const aiInner=new THREE.Mesh(new THREE.SphereGeometry(24,32,32),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.1,depthWrite:false}));
+aiInner.position.copy(aiCore.position);LD.ai.add(aiInner);
+
+// three nested envelope shells — wireframe
+const ENV_R=[360,310,260];
+const envShells=[];
+ENV_R.forEach((R,k)=>{
+  const w=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(R,k===0?2:1)),new THREE.LineBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.12-k*0.025}));
+  w.position.copy(aiCore.position);LD.ai.add(w);envShells.push(w);
+  const f=new THREE.Mesh(new THREE.SphereGeometry(R,32,24),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.022+k*0.008,side:THREE.BackSide,depthWrite:false}));
+  f.position.copy(aiCore.position);LD.ai.add(f);
+});
+scene.userData.aiCore=aiCore;scene.userData.envShells=envShells;
+
+// expanding scan ring (equatorial) — animated
+const scanRing=new THREE.Mesh(new THREE.RingGeometry(40,43,96),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false}));
+scanRing.rotation.x=Math.PI/2;scanRing.position.copy(aiCore.position);LD.ai.add(scanRing);
+scene.userData.scanRing=scanRing;
+
+// static bright equatorial rings at several radii
+[120,200,300].forEach(r=>{
+  const rg=new THREE.Mesh(new THREE.RingGeometry(r,r+0.8,128),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.18,side:THREE.DoubleSide,depthWrite:false}));
+  rg.rotation.x=Math.PI/2;rg.position.copy(aiCore.position);LD.ai.add(rg);
+});
+
+// orbital function cards — 5 categories of AI work visible around the core
+const AI_FUNCS=[
+  {t:'АНОМАЛИИ · 5 ТИПОВ',d:'Выбросы · Падения · Всплески · Паттерны · Кросс-противоречия'},
+  {t:'ДИАГНОСТИКА',d:'Корневые причины · Цепочки влияния · Бенчмарки · Контекст'},
+  {t:'РЕКОМЕНДАЦИИ',d:'Корректирующие действия · Перераспределение · Обучение'},
+  {t:'АЛЕРТЫ · ЭСКАЛАЦИЯ',d:'Ранние предупреждения · Тихие зоны · Пороги'},
+  {t:'ПРЕДИКТИВ · 9 СЦЕНАРИЕВ',d:'Слабое звено · Просадка · Каскады · Выгорание · Топ-цели'}
+];
+AI_FUNCS.forEach((f,i)=>{
+  const a=(i/AI_FUNCS.length)*Math.PI*2-Math.PI/2,r=380,x=Math.cos(a)*r,z=Math.sin(a)*r,y=AI_Y+90;
+  const lb=label(f.t,'#e6fbff',12,'rgba(34,211,238,0.55)');lb.position.set(x,y,z);LD.ai.add(lb);
+  const ds=label(f.d,'#9ee8f2',8);ds.position.set(x,y-14,z);LD.ai.add(ds);
+  // marker node
+  const mk=new THREE.Mesh(new THREE.OctahedronGeometry(4,0),new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:0.9,flatShading:true}));
+  mk.position.set(x*0.85,y-5,z*0.85);LD.ai.add(mk);
+  mk.userData={name:f.t,info:f.d};HOV[1].push(mk);
+  LD.ai.add(ln(mk.position,aiCore.position,'#22d3ee',0.4));
+});
+
+// tendrils to every key data source — brighter, to show AI analyzes all
+const AI_TARGETS=[...goalNodes,...dirNodes,...dashNodes,...empNodes,idxNode,...salNodes,...twinNodes];
+AI_TARGETS.forEach(n=>{
+  LD.ai.add(ln(aiCore.position,n.position,'#22d3ee',0.09));
+});
+
+// caption
+const aiCap=label('СКВОЗНОЙ ИИ · ОХВАТЫВАЕТ ВСЕ ДАННЫЕ И СИСТЕМЫ КОМПАНИИ','#22d3ee',12,'rgba(34,211,238,0.35)');aiCap.position.set(0,AI_Y-34,0);LD.ai.add(aiCap);
+const aiCap2=label('анализирует · предсказывает · рекомендует · эскалирует','#9ee8f2',9);aiCap2.position.set(0,AI_Y-52,0);LD.ai.add(aiCap2);
+
 const CFG=[
 {g:LA,lbl:{comp:'Компания',dirs:'Направления',procs:'Процессы',it:'ИТ-системы',links:'Связи'},
 col:{comp:'#7f77dd',dirs:'#eab308',procs:'#3b82f6',it:'#22d3ee',links:'#666'},
 cnt:{comp:1,dirs:19,procs:94,it:13,links:''}},
-{g:LD,lbl:{goals:'01 · Топ-цели',dirs:'02 · Направления',dash:'03 · Дашборды',emp:'04 · Сотрудники',idx:'05 · Индекс влияния',sal:'07 · Зарплата',twins:'Двойники руководителей',team:'Цифровая команда',ai:'ИИ-управление',lk:'Связи каскада'},
-col:{goals:'#a78bfa',dirs:'#10b981',dash:'#3b82f6',emp:'#f87171',idx:'#fbbf24',sal:'#c084fc',twins:'#f472b6',team:'#94a3b8',ai:'#22d3ee',lk:'#5b6275'},
-cnt:{goals:3,dirs:19,dash:20,emp:5,idx:1,sal:4,twins:19,team:'~120',ai:1,lk:''}},
+{g:LD,lbl:{hud:'HUD · решётка',goals:'01 · Топ-цели',dirs:'02 · Направления',dash:'03 · Дашборды',emp:'04 · Сотрудники',idx:'05 · Индекс влияния',sal:'07 · Зарплата',twins:'Двойники руководителей',team:'Цифровая команда',ai:'ИИ-управление',lk:'Связи каскада'},
+col:{hud:'#3b7ec7',goals:'#a78bfa',dirs:'#10b981',dash:'#3b82f6',emp:'#f87171',idx:'#fbbf24',sal:'#c084fc',twins:'#f472b6',team:'#94a3b8',ai:'#22d3ee',lk:'#5b6275'},
+cnt:{hud:'',goals:3,dirs:19,dash:20,emp:5,idx:1,sal:4,twins:19,team:95,ai:1,lk:''}},
 {g:LB,lbl:{tl:'Годы + уровни',drv:'Драйверы',lv:'Шкала 1–8',lk:'Связи'},
 col:{tl:'#f97316',drv:'#f472b6',lv:'#94a3b8',lk:'#666'},
-cnt:{tl:5,drv:4,lv:8,lk:''}},
-{g:LC,lbl:{ax:'Оси',cl:'Ячейки',gr:'Сетка'},
-col:{ax:'#60a5fa',cl:'#22d3ee',gr:'#475569'},
-cnt:{ax:3,cl:'~94',gr:''}}
+cnt:{tl:5,drv:4,lv:8,lk:''}}
 ];
 const LEG=[
 [['Компания','#7f77dd'],['Направления (19)','#eab308'],['Процессы (94)','#3b82f6'],['ИТ (13)','#22d3ee']],
 [['Топ-цели (3)','#a78bfa'],['Направления (19)','#10b981'],['Дашборды (20)','#3b82f6'],['Данные сотрудников','#f87171'],['Индекс влияния','#fbbf24'],['Зарплата','#c084fc'],['Двойники руководителей','#f472b6'],['Цифровая команда','#94a3b8'],['ИИ-ядро','#22d3ee']],
-[['2024 уровень 4','#1e40af'],['2025 ур.5','#2563eb'],['2026 ур.6','#eab308'],['2027 ур.7','#f97316'],['2028–30 ур.8','#dc2626'],['Драйверы','#f472b6']],
-[['X: направления','#60a5fa'],['Y: ИТ-системы','#fbbf24'],['Z: процессы','#ec4899'],['Куб = связь','#22d3ee']]
+[['2024 уровень 4','#1e40af'],['2025 ур.5','#2563eb'],['2026 ур.6','#eab308'],['2027 ур.7','#f97316'],['2028–30 ур.8','#dc2626'],['Драйверы','#f472b6']]
 ];
 
 let at=0;
@@ -416,13 +646,18 @@ r.querySelector('input').addEventListener('change',e=>{c.g[k].visible=e.target.c
 document.getElementById('legend').innerHTML='<div class="secLbl">Легенда</div>'+LEG[at].map(l=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;font-size:11px;color:rgba(255,255,255,0.78);"><span style="width:9px;height:9px;border-radius:50%;background:${l[1]};box-shadow:0 0 6px ${l[1]};"></span>${l[0]}</div>`).join('');
 }
 
+const HUD_MODES=['АРХИТЕКТУРА · 3D ПРОЦЕССОВ','KPI · ЦИФРОВАЯ ПЛАТФОРМА','ЗРЕЛОСТЬ · ТРАЕКТОРИЯ 2024–28'];
+const HUD_NODES=[127,185,42];
+const HUD_LINKS=[312,428,56];
 function sw(i){
 setHover(null);
+const m=document.getElementById('hudMode');if(m)m.textContent=HUD_MODES[i]||'';
+const n=document.getElementById('hudNodes');if(n)n.textContent=HUD_NODES[i]||0;
+const l=document.getElementById('hudLinks');if(l)l.textContent=HUD_LINKS[i]||0;
 at=i;SG.forEach((g,k)=>g.visible=(k===i));
 if(i===0){cs.r=380;cs.th=Math.PI/2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
-else if(i===1){cs.r=560;cs.th=Math.PI/2.05;cs.ph=Math.PI/6;cs.tx=0;cs.ty=0;cs.tz=0;}
-else if(i===2){cs.r=440;cs.th=Math.PI/2.2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
-else{cs.r=360;cs.th=Math.PI/2.3;cs.ph=-Math.PI/4;cs.tx=0;cs.ty=0;cs.tz=-40;}
+else if(i===1){cs.r=700;cs.th=Math.PI/2.15;cs.ph=Math.PI/5;cs.tx=0;cs.ty=30;cs.tz=0;}
+else{cs.r=440;cs.th=Math.PI/2.2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
 upCam();
 document.querySelectorAll('#tabs .tab').forEach((b,k)=>b.classList.toggle('active',k===i));
 document.getElementById('info').innerHTML='';
@@ -494,11 +729,30 @@ info.innerHTML=`<div style="color:#fff;font-weight:500;margin-bottom:3px;">${d.n
 }
 });
 
-let ar=true;
+let ar=true,_tStart=Date.now(),_fps=60,_fpsT=_tStart,_fpsN=0;
 document.getElementById('rot').addEventListener('change',e=>ar=e.target.checked);
 function tick(){
+  _fpsN++;const now=Date.now();
+  if(now-_fpsT>=500){_fps=Math.round(_fpsN*1000/(now-_fpsT));_fpsN=0;_fpsT=now;
+    const hT=document.getElementById('hudT');if(hT)hT.textContent=String(Math.floor((now-_tStart)/1000)).padStart(4,'0');
+    const hF=document.getElementById('hudFps');if(hF)hF.textContent=_fps;
+  }
 if(ar&&!drag){cs.ph+=0.002;upCam();}
-if(at===3){LC.cl.rotation.y=Math.sin(Date.now()*0.0002)*0.06;}
+if(at===1){
+  const t=Date.now()*0.001;
+  if(scene.userData.aiCore){scene.userData.aiCore.rotation.y=t*0.35;scene.userData.aiCore.rotation.x=t*0.22;scene.userData.aiCore.material.emissiveIntensity=0.9+Math.sin(t*1.8)*0.25;}
+  if(scene.userData.envShells){scene.userData.envShells.forEach((s,i)=>{s.rotation.y=t*0.03*(i+1)*(i%2?-1:1);s.rotation.x=t*0.01*(i+1);s.material.opacity=(0.1-i*0.02)+Math.sin(t*0.9+i)*0.03;});}
+  if(scene.userData.scanRing){
+    const phase=(t*0.35)%1;
+    scene.userData.scanRing.scale.setScalar(0.6+phase*8.5);
+    scene.userData.scanRing.material.opacity=0.55*(1-phase);
+  }
+  LD.twins.children.forEach((c)=>{if(c.isMesh&&c.geometry&&c.geometry.type==='OctahedronGeometry')c.rotation.y=t*0.6;});
+}
+if(scene.userData.bigStars){scene.userData.bigStars.rotation.y+=0.0003;scene.userData.bigStars.material.opacity=0.75+Math.sin(Date.now()*0.0012)*0.2;}
+if(scene.userData.accentStars){scene.userData.accentStars.rotation.y+=0.0005;scene.userData.accentStars.material.size=7+Math.sin(Date.now()*0.002)*2;}
+if(scene.userData.stars){scene.userData.stars.rotation.y+=0.00008;}
+if(scene.userData.neb){scene.userData.neb.rotation.y+=0.00004;}
 renderer.render(scene,cam);requestAnimationFrame(tick);
 }
 function rsz(){renderer.setSize(W(),H(),false);cam.aspect=W()/H();cam.updateProjectionMatrix();}
@@ -507,3 +761,5 @@ setTimeout(rsz,50);
 renderL();upCam();tick();
 })();
 </script>
+</body>
+</html>
