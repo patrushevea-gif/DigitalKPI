@@ -487,9 +487,9 @@ aiInner.position.copy(aiCore.position);LD.ai.add(aiInner);
 
 // single smooth translucent envelope — "AI covers everything"
 const envFill=new THREE.Mesh(new THREE.SphereGeometry(360,48,32),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.045,side:THREE.BackSide,depthWrite:false}));
-envFill.position.copy(aiCore.position);LD.ai.add(envFill);
+envFill.position.copy(aiCore.position);envFill.userData.isEnv=1;envFill.userData.envR=360;LD.ai.add(envFill);
 const envFill2=new THREE.Mesh(new THREE.SphereGeometry(280,48,32),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.04,side:THREE.BackSide,depthWrite:false}));
-envFill2.position.copy(aiCore.position);LD.ai.add(envFill2);
+envFill2.position.copy(aiCore.position);envFill2.userData.isEnv=1;envFill2.userData.envR=280;LD.ai.add(envFill2);
 scene.userData.aiCore=aiCore;scene.userData.envFill=envFill;
 
 // expanding scan ring (equatorial) — animated
@@ -781,7 +781,16 @@ try{(function(){
     const visible=SG[at]||SG[1];
     const clone=visible.clone(true);
     cloneMaterials(clone);
-    const bbox=new THREE.Box3().setFromObject(clone);
+    // Bounding box of CONTENT only (excludes envelope spheres so model fills MODEL_HEIGHT)
+    clone.updateMatrixWorld(true);
+    const bbox=new THREE.Box3(),tmpBox=new THREE.Box3();
+    clone.traverse(o=>{
+      if(!o.isMesh||!o.geometry)return;
+      if(o.userData&&o.userData.isEnv)return;
+      if(!o.geometry.boundingBox)o.geometry.computeBoundingBox();
+      tmpBox.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld);
+      bbox.union(tmpBox);
+    });
     const c=new THREE.Vector3();bbox.getCenter(c);clone.position.sub(c);
     const sz=new THREE.Vector3();bbox.getSize(sz);
     const scale=MODEL_HEIGHT/Math.max(sz.y,1);
@@ -795,21 +804,37 @@ try{(function(){
     arAnchor.visible=false; // hidden until placed
     scene.add(arAnchor);
 
-    // Dim the AI envelope so it reads as a shape instead of a bright glow
+    // Dim cores + re-style the AI envelope: darker, 2x larger, visible outline
+    const envelopeMeshes=[];
     clone.traverse(o=>{
       if(!o.material)return;
       const ms=Array.isArray(o.material)?o.material:[o.material];
+      // ease emissive peaks so bright cores don't wash out on camera
       ms.forEach(mm=>{
-        // darken semi-transparent cyan shells (envFill)
-        if(mm.transparent && mm.color && mm.color.getHex()===0x22d3ee && mm.opacity<0.12){
-          mm.color.setHex(0x0a4a5e);
-          mm.opacity=0.11;
-        }
-        // ease emissive peaks so cores don't wash out
         if(mm.emissive && mm.emissiveIntensity!=null){
-          mm.emissiveIntensity=Math.min(0.75,(mm.emissiveIntensity||0.3)*0.7);
+          mm.emissiveIntensity=Math.min(0.6,(mm.emissiveIntensity||0.3)*0.55);
         }
       });
+      if(o.userData&&o.userData.isEnv){
+        envelopeMeshes.push(o);
+        // darker, more opaque, 2x larger
+        o.scale.setScalar(2.0);
+        const mat=ms[0];
+        mat.color.setHex(0x06202c);
+        mat.opacity=0.26;
+        mat.depthWrite=false;
+        mat.transparent=true;
+        // visible silhouette: thin outline ring at the equator
+        const R=(o.userData.envR||300)*2.0;
+        const ring=new THREE.Mesh(
+          new THREE.RingGeometry(R*0.99,R,192),
+          new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false})
+        );
+        ring.rotation.x=Math.PI/2;o.add(ring);
+        // second perpendicular ring for a clear 3D hint
+        const ring2=ring.clone();ring2.material=ring.material.clone();ring2.material.opacity=0.35;
+        ring2.rotation.x=0;ring2.rotation.z=Math.PI/2;o.add(ring2);
+      }
     });
 
     // --- Floor extras, attached to anchor so they move WITH placement ---
