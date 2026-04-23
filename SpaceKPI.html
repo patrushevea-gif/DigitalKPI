@@ -390,6 +390,55 @@ platter1.rotation.x=-Math.PI/2;platter1.position.y=LE_Y_BOTTOM-16;LE.dirsL.add(p
 const platter2=new THREE.Mesh(new THREE.RingGeometry(LE_R_BOTTOM+18,LE_R_BOTTOM+22,128),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.18,side:THREE.DoubleSide,depthWrite:false}));
 platter2.rotation.x=-Math.PI/2;platter2.position.y=LE_Y_BOTTOM-16;LE.dirsL.add(platter2);
 
+// ---- Middle layer: IT infrastructure (dynamic, rotating) ----
+const leItNodes=[
+  {n:'1С:ERP',c:'#22d3ee',g:'1C',info:'Ядро учёта (Пр-во, Снабж., Финансы)'},
+  {n:'1С:MES',c:'#06b6d4',g:'1C',info:'Производственные заказы'},
+  {n:'1С:LIMS',c:'#0ea5e9',g:'1C',info:'Лаборатория / Качество'},
+  {n:'1С:WMS',c:'#3b82f6',g:'1C',info:'Склад'},
+  {n:'1С:Док-оборот',c:'#6366f1',g:'1C',info:'Электронный документооборот'},
+  {n:'1С:ЗУП+KPI',c:'#8b5cf6',g:'1C',info:'Кадры / Зарплата / KPI'},
+  {n:'1С:ITILIUM',c:'#a78bfa',g:'1C',info:'ИТ-сервис менеджмент'},
+  {n:'1С:Аналитика',c:'#c084fc',g:'1C',info:'Отчётность / BI'},
+  {n:'1С:Безопасность',c:'#f472b6',g:'1C',info:'Охрана труда'},
+  {n:'1С:SKUD',c:'#ec4899',g:'1C',info:'Контроль доступа'},
+  {n:'Bitrix · ОП',c:'#fbbf24',g:'BX',info:'Операционные задачи'},
+  {n:'Bitrix · Такт',c:'#f59e0b',g:'BX',info:'Тактические задачи'},
+  {n:'Bitrix · Топ',c:'#f97316',g:'BX',info:'Топ-задачи / Руководство'},
+  {n:'OBSIDIAN',c:'#a855f7',g:'KB',info:'База знаний / Регламенты'},
+  {n:'SCADA',c:'#10b981',g:'OT',info:'Промышленная автоматика'},
+  {n:'AI / ML',c:'#22d3ee',g:'AI',info:'Модели / Прогнозирование'}
+];
+leItNodes.forEach((it,i)=>{
+  const ang=i*Math.PI*2/leItNodes.length;
+  const x=Math.cos(ang)*LE_R_MID, z=Math.sin(ang)*LE_R_MID;
+  // Crystal box for each IT module
+  const geo=new THREE.BoxGeometry(14,14,14);
+  const m=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({color:it.c,emissive:it.c,emissiveIntensity:0.4,shininess:80,transparent:true,opacity:0.9}));
+  m.position.set(x,LE_Y_MID,z);
+  m.userData={name:it.n,info:it.info,it:1};
+  LE.itOrbit.add(m);HOV[0].push(m);
+  // Edge highlight (wireframe)
+  const wf=new THREE.Mesh(new THREE.BoxGeometry(14.8,14.8,14.8),new THREE.MeshBasicMaterial({color:it.c,wireframe:true,transparent:true,opacity:0.5}));
+  wf.position.copy(m.position);LE.itOrbit.add(wf);
+  // Label below the box
+  const lab=label(it.n,'#fff',10);lab.position.set(x,LE_Y_MID-18,z);
+  LE.itOrbit.add(lab);
+});
+
+// Central IT core ring (stays still, visual anchor)
+const coreRing=new THREE.Mesh(new THREE.TorusGeometry(LE_R_MID+4,0.8,12,128),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.35}));
+coreRing.rotation.x=Math.PI/2;coreRing.position.y=LE_Y_MID;LE.itCore.add(coreRing);
+const coreRing2=coreRing.clone();coreRing2.material=coreRing.material.clone();coreRing2.material.color.setHex(0xa78bfa);coreRing2.material.opacity=0.25;
+coreRing2.rotation.x=Math.PI/2;coreRing2.scale.setScalar(0.55);LE.itCore.add(coreRing2);
+
+// Central hub sphere (IT backbone)
+const itHub=new THREE.Mesh(new THREE.IcosahedronGeometry(22,2),new THREE.MeshPhongMaterial({color:0x0a1628,emissive:0x22d3ee,emissiveIntensity:0.3,shininess:110,transparent:true,opacity:0.75,wireframe:false}));
+itHub.position.y=LE_Y_MID;LE.itCore.add(itHub);
+const itHubWf=new THREE.Mesh(new THREE.IcosahedronGeometry(23,1),new THREE.MeshBasicMaterial({color:0x22d3ee,wireframe:true,transparent:true,opacity:0.55}));
+itHubWf.position.y=LE_Y_MID;LE.itCore.add(itHubWf);
+const itHubLab=label('IT · Интеграционное ядро','#22d3ee',11);itHubLab.position.set(0,LE_Y_MID+28,0);LE.itCore.add(itHubLab);
+
 function hex2rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
 function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
 function haloTex(col){
