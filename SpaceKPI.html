@@ -607,6 +607,60 @@ for(let i=0;i<AGENT_COUNT;i++){
 const agRing=new THREE.Mesh(new THREE.TorusGeometry(LE_R_MID+70,0.5,10,128),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.18}));
 agRing.rotation.x=Math.PI/2;agRing.position.y=LE_Y_MID;LE.agents.add(agRing);
 
+// ---- AI module: core + envelope + 5 satellite cards + beams ----
+const LE_AI_Y=LE_Y_MID+70;
+const leAiOrbit=new THREE.Group();LE.ai.add(leAiOrbit);
+LE.ai.userData.orbit=leAiOrbit; // whole AI assembly can rotate as one
+
+// AI core (icosahedron, strong emissive)
+const leAiCore=new THREE.Mesh(
+  new THREE.IcosahedronGeometry(17,1),
+  new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:1.1,shininess:140,transparent:true,opacity:0.96,specular:0xaaf0ff,flatShading:true})
+);
+leAiCore.position.set(0,LE_AI_Y,0);
+leAiCore.userData={name:'ИИ · Ядро аналитики',info:'Сквозной аналитический модуль. Связан со всей IT-инфраструктурой и питает дашборды.'};
+leAiOrbit.add(leAiCore);HOV[0].push(leAiCore);
+LE.ai.userData.core=leAiCore;
+// Inner wireframe
+const leAiWf=new THREE.Mesh(new THREE.IcosahedronGeometry(19,1),new THREE.MeshBasicMaterial({color:0x22d3ee,wireframe:true,transparent:true,opacity:0.55}));
+leAiWf.position.copy(leAiCore.position);leAiOrbit.add(leAiWf);
+// Soft envelope sphere
+const leAiEnv=new THREE.Mesh(new THREE.SphereGeometry(110,48,32),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.06,side:THREE.BackSide,depthWrite:false}));
+leAiEnv.position.copy(leAiCore.position);leAiEnv.userData.isEnv=1;leAiEnv.userData.envR=110;leAiOrbit.add(leAiEnv);
+// Scan ring pulses around AI core
+const leScanRing=new THREE.Mesh(new THREE.RingGeometry(28,31,96),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));
+leScanRing.rotation.x=Math.PI/2;leScanRing.position.copy(leAiCore.position);leAiOrbit.add(leScanRing);
+LE.ai.userData.scan=leScanRing;
+// 5 AI satellite cards around the core
+const LE_AI=[
+  {t:'АНОМАЛИИ · 5 ТИПОВ',d:'Выбросы · Падения · Всплески · Паттерны · Кросс'},
+  {t:'ДИАГНОСТИКА',d:'Корневые причины · Цепочки влияния · Бенчмарки'},
+  {t:'РЕКОМЕНДАЦИИ',d:'Корректирующие действия · Перераспределение'},
+  {t:'АЛЕРТЫ · ЭСКАЛАЦИЯ',d:'Ранние предупреждения · Тихие зоны · Пороги'},
+  {t:'ПРЕДИКТИВ · 9 СЦЕНАРИЕВ',d:'Прогноз целей · Каскады · Выгорание · Сезонность'}
+];
+const leAiSatRot=new THREE.Group();leAiSatRot.position.set(0,LE_AI_Y,0);leAiOrbit.add(leAiSatRot);
+LE.ai.userData.satRot=leAiSatRot;
+LE_AI.forEach((f,i)=>{
+  const a=(i/LE_AI.length)*Math.PI*2-Math.PI/2,r=95,x=Math.cos(a)*r,z=Math.sin(a)*r,y=30;
+  // marker diamond
+  const mk=new THREE.Mesh(new THREE.OctahedronGeometry(4,0),new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:0.9,flatShading:true}));
+  mk.position.set(x*0.75,y-5,z*0.75);
+  mk.userData={name:f.t,info:f.d};leAiSatRot.add(mk);HOV[0].push(mk);
+  const lb=label(f.t,'#e6fbff',11);lb.position.set(x,y,z);leAiSatRot.add(lb);
+  const ds=label(f.d,'#9ee8f2',8);ds.position.set(x,y-13,z);leAiSatRot.add(ds);
+  leAiSatRot.add(ln(mk.position,new THREE.Vector3(0,0,0),'#22d3ee',0.4));
+});
+
+// Beams: AI → IT hub (down) and AI → main dashboard (up)
+LE.lk.add(ln(leAiCore.position,new THREE.Vector3(0,LE_Y_MID,0),'#22d3ee',0.55));
+LE.lk.add(ln(leAiCore.position,new THREE.Vector3(0,mainY,0),'#a78bfa',0.5));
+// Beam visual (thicker cylinders) between AI and IT hub
+const aiItBeam=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.4,LE_AI_Y-LE_Y_MID,8),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.35}));
+aiItBeam.position.set(0,(LE_AI_Y+LE_Y_MID)/2,0);LE.lk.add(aiItBeam);
+const aiDashBeam=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.4,mainY-LE_AI_Y,8),new THREE.MeshBasicMaterial({color:0xa78bfa,transparent:true,opacity:0.35}));
+aiDashBeam.position.set(0,(mainY+LE_AI_Y)/2,0);LE.lk.add(aiDashBeam);
+
 function hex2rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
 function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
 function haloTex(col){
