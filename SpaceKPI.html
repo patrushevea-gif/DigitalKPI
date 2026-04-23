@@ -15,6 +15,7 @@
 </div>
 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
 <div id="tabs" style="display:flex;gap:2px;background:rgba(255,255,255,0.04);padding:3px;border-radius:9px;border:1px solid rgba(255,255,255,0.06);">
+<button class="tab" data-tab="4">Архитектура 2.0</button>
 <button class="tab active" data-tab="1">KPI</button>
 <button class="tab" data-tab="0">Архитектура</button>
 <button class="tab" data-tab="2">Зрелость</button>
@@ -182,7 +183,7 @@ upCam();
 cv.addEventListener('pointerup',()=>{drag=false;cv.style.cursor='grab';});
 cv.addEventListener('wheel',e=>{e.preventDefault();cs.r=Math.max(80,Math.min(900,cs.r*(1+e.deltaY*0.001)));upCam();},{passive:false});
 
-const SG=[new THREE.Group(),new THREE.Group(),new THREE.Group(),new THREE.Group()];
+const SG=[new THREE.Group(),new THREE.Group(),new THREE.Group(),new THREE.Group(),new THREE.Group()];
 SG.forEach(g=>scene.add(g));
 const HOV=[[],[],[],[]];
 
@@ -543,31 +544,37 @@ col:{goals:'#a78bfa',dirs:'#10b981',dash:'#3b82f6',emp:'#f87171',idx:'#fbbf24',s
 cnt:{goals:3,dirs:19,dash:20,emp:5,idx:1,sal:4,twins:19,team:95,ai:1,lk:''}},
 {g:LB,lbl:{tl:'Годы + уровни',drv:'Драйверы',lv:'Шкала 1–8',lk:'Связи'},
 col:{tl:'#f97316',drv:'#f472b6',lv:'#94a3b8',lk:'#666'},
-cnt:{tl:5,drv:4,lv:8,lk:''}}
+cnt:{tl:5,drv:4,lv:8,lk:''}},
+null,
+{g:{},lbl:{},col:{},cnt:{}}
 ];
 const LEG=[
 [['Компания','#7f77dd'],['Направления (19)','#eab308'],['Процессы (94)','#3b82f6'],['ИТ (13)','#22d3ee']],
 [['Топ-цели (3)','#a78bfa'],['Направления (19)','#10b981'],['Дашборды (20)','#3b82f6'],['Данные сотрудников','#f87171'],['Индекс влияния','#fbbf24'],['Зарплата','#c084fc'],['Двойники руководителей','#f472b6'],['Цифровая команда','#94a3b8'],['ИИ-ядро','#22d3ee']],
-[['2024 уровень 4','#1e40af'],['2025 ур.5','#2563eb'],['2026 ур.6','#eab308'],['2027 ур.7','#f97316'],['2028–30 ур.8','#dc2626'],['Драйверы','#f472b6']]
+[['2024 уровень 4','#1e40af'],['2025 ур.5','#2563eb'],['2026 ур.6','#eab308'],['2027 ур.7','#f97316'],['2028–30 ур.8','#dc2626'],['Драйверы','#f472b6']],
+[],
+[]
 ];
 
 let at=1;
 SG.forEach((g,i)=>g.visible=(i===1));
 
 function renderL(){
-const c=CFG[at],box=document.getElementById('layers');box.innerHTML='';
+const c=CFG[at]||{g:{},lbl:{},col:{},cnt:{}},box=document.getElementById('layers');box.innerHTML='';
 Object.keys(c.g).forEach(k=>{
 const r=document.createElement('label');r.className='lrow';
 r.innerHTML=`<input type="checkbox" ${c.g[k].visible?'checked':''}><span class="ldot" style="background:${c.col[k]||'#888'}"></span><span>${c.lbl[k]||k}</span><span class="lcnt">${c.cnt[k]!==undefined?c.cnt[k]:''}</span>`;
 box.appendChild(r);
 r.querySelector('input').addEventListener('change',e=>{c.g[k].visible=e.target.checked;});
 });
-document.getElementById('legend').innerHTML='<div class="secLbl">Легенда</div>'+LEG[at].map(l=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;font-size:11px;color:rgba(255,255,255,0.78);"><span style="width:9px;height:9px;border-radius:50%;background:${l[1]};box-shadow:0 0 6px ${l[1]};"></span>${l[0]}</div>`).join('');
+const leg=LEG[at]||[];
+document.getElementById('legend').innerHTML=leg.length?('<div class="secLbl">Легенда</div>'+leg.map(l=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;font-size:11px;color:rgba(255,255,255,0.78);"><span style="width:9px;height:9px;border-radius:50%;background:${l[1]};box-shadow:0 0 6px ${l[1]};"></span>${l[0]}</div>`).join('')):'';
+if(at===4){document.getElementById('info').innerHTML='<div style="color:rgba(255,255,255,0.55);font-style:italic;">Архитектура 2.0 — пустой каркас. Контент будет добавлен.</div>';}
 }
 
-const HUD_MODES=['АРХИТЕКТУРА · 3D ПРОЦЕССОВ','KPI · ЦИФРОВАЯ ПЛАТФОРМА','ЗРЕЛОСТЬ · ТРАЕКТОРИЯ 2024–28'];
-const HUD_NODES=[127,185,42];
-const HUD_LINKS=[312,428,56];
+const HUD_MODES=['АРХИТЕКТУРА · 3D ПРОЦЕССОВ','KPI · ЦИФРОВАЯ ПЛАТФОРМА','ЗРЕЛОСТЬ · ТРАЕКТОРИЯ 2024–28','','АРХИТЕКТУРА 2.0 · В РАЗРАБОТКЕ'];
+const HUD_NODES=[127,185,42,0,0];
+const HUD_LINKS=[312,428,56,0,0];
 function sw(i){
 setHover(null);
 const m=document.getElementById('hudMode');if(m)m.textContent=HUD_MODES[i]||'';
@@ -576,6 +583,7 @@ const l=document.getElementById('hudLinks');if(l)l.textContent=HUD_LINKS[i]||0;
 at=i;SG.forEach((g,k)=>g.visible=(k===i));
 if(i===0){cs.r=380;cs.th=Math.PI/2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
 else if(i===1){cs.r=700;cs.th=Math.PI/2.15;cs.ph=Math.PI/5;cs.tx=0;cs.ty=30;cs.tz=0;}
+else if(i===4){cs.r=500;cs.th=Math.PI/2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
 else{cs.r=440;cs.th=Math.PI/2.2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
 upCam();
 document.querySelectorAll('#tabs .tab').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.tab)===i));
