@@ -188,14 +188,17 @@ SG.forEach(g=>scene.add(g));
 const HOV=[[],[],[],[]];
 
 function label(txt,col='#fff',sz=12,bg=null){
-const c=document.createElement('canvas'),ctx=c.getContext('2d'),pd=6,fp=sz*2.2;
-ctx.font=`500 ${fp}px 'Anthropic Sans',sans-serif`;
-const w=ctx.measureText(txt).width+pd*2,h=fp+pd*1.1;
+const c=document.createElement('canvas'),ctx=c.getContext('2d'),pd=8,fp=sz*2.4;
+ctx.font=`700 ${fp}px 'Inter','Anthropic Sans',sans-serif`;
+const w=ctx.measureText(txt).width+pd*2,h=fp+pd*1.2;
 c.width=w;c.height=h;
-ctx.font=`500 ${fp}px 'Anthropic Sans',sans-serif`;
-if(bg){ctx.fillStyle=bg;const r=6;ctx.beginPath();ctx.moveTo(r,0);ctx.lineTo(w-r,0);ctx.quadraticCurveTo(w,0,w,r);ctx.lineTo(w,h-r);ctx.quadraticCurveTo(w,h,w-r,h);ctx.lineTo(r,h);ctx.quadraticCurveTo(0,h,0,h-r);ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);ctx.closePath();ctx.fill();}
+ctx.font=`700 ${fp}px 'Inter','Anthropic Sans',sans-serif`;
+// Soft dark halo (no box) for readability on any background
+ctx.shadowColor='rgba(0,0,0,0.92)';ctx.shadowBlur=10;ctx.shadowOffsetX=0;ctx.shadowOffsetY=1;
 ctx.fillStyle=col;ctx.textBaseline='middle';ctx.fillText(txt,pd,h/2);
-const tx=new THREE.CanvasTexture(c);tx.minFilter=THREE.LinearFilter;
+// Second pass for stronger text contrast
+ctx.shadowBlur=0;ctx.fillText(txt,pd,h/2);
+const tx=new THREE.CanvasTexture(c);tx.minFilter=THREE.LinearFilter;tx.anisotropy=4;
 const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthWrite:false,depthTest:false}));
 s.scale.set(w*0.22,h*0.22,1);s.userData.isLbl=true;return s;
 }
