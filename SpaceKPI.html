@@ -339,6 +339,57 @@ const LE={
 };
 Object.values(LE).forEach(g=>SG[4].add(g));
 
+// ---- Layout constants ----
+const LE_Y_BOTTOM=-200, LE_Y_MID=0, LE_Y_TOP=200, LE_Y_PEAK=340;
+const LE_R_BOTTOM=340, LE_R_MID=170, LE_R_TOP=230;
+
+// ---- Bottom layer: 19 directions + processes (static) ----
+const leDirHubs={}; // id -> mesh
+DIRS.forEach((d,i)=>{
+  const ang=i*Math.PI*2/DIRS.length;
+  const x=Math.cos(ang)*LE_R_BOTTOM, z=Math.sin(ang)*LE_R_BOTTOM;
+  // Direction hub (crystal octahedron)
+  const hub=new THREE.Mesh(
+    new THREE.OctahedronGeometry(10,1),
+    new THREE.MeshPhongMaterial({color:d.c,emissive:d.c,emissiveIntensity:0.55,shininess:90,transparent:true,opacity:0.95})
+  );
+  hub.position.set(x,LE_Y_BOTTOM,z);
+  hub.userData={name:d.n,info:`Направление ${d.id}: ${d.n}`,dir:d.id};
+  LE.dirsL.add(hub);HOV[0].push(hub);
+  leDirHubs[d.id]=hub;
+  // Glow ring under the hub
+  const ringGeo=new THREE.RingGeometry(12,16,32);
+  const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:d.c,transparent:true,opacity:0.45,side:THREE.DoubleSide,depthWrite:false}));
+  ring.rotation.x=-Math.PI/2;ring.position.set(x,LE_Y_BOTTOM-8,z);
+  LE.dirsL.add(ring);
+  // Label above hub — transparent, bold
+  const lab=label(d.n,'#fff',11);lab.position.set(x*1.03,LE_Y_BOTTOM+22,z*1.03);
+  LE.dirsL.add(lab);
+  // Processes: small nodes in an arc around the hub, in a tangent direction
+  const pc=(PROCS.find(p=>p[0]===d.id)||[0,3])[1];
+  const names=PNAMES[d.id]||[];
+  const tgx=-Math.sin(ang),tgz=Math.cos(ang); // tangent direction
+  for(let j=0;j<pc;j++){
+    const off=(j-(pc-1)/2)*18;
+    const px=x+tgx*off, pz=z+tgz*off, py=LE_Y_BOTTOM-14;
+    const pn=new THREE.Mesh(
+      new THREE.SphereGeometry(3,12,12),
+      new THREE.MeshPhongMaterial({color:d.c,emissive:d.c,emissiveIntensity:0.35,shininess:60,transparent:true,opacity:0.9})
+    );
+    pn.position.set(px,py,pz);
+    pn.userData={name:names[j]||`Процесс ${j+1}`,info:`${d.n} · ${names[j]||''}`.trim(),dir:d.id};
+    LE.procs.add(pn);HOV[0].push(pn);
+    // tiny connector
+    LE.procs.add(ln(new THREE.Vector3(px,py,pz),new THREE.Vector3(x,LE_Y_BOTTOM,z),d.c,0.22));
+  }
+});
+
+// Bottom layer glow platter: two concentric rings
+const platter1=new THREE.Mesh(new THREE.RingGeometry(LE_R_BOTTOM-8,LE_R_BOTTOM+8,128),new THREE.MeshBasicMaterial({color:0x5b6ee8,transparent:true,opacity:0.25,side:THREE.DoubleSide,depthWrite:false}));
+platter1.rotation.x=-Math.PI/2;platter1.position.y=LE_Y_BOTTOM-16;LE.dirsL.add(platter1);
+const platter2=new THREE.Mesh(new THREE.RingGeometry(LE_R_BOTTOM+18,LE_R_BOTTOM+22,128),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.18,side:THREE.DoubleSide,depthWrite:false}));
+platter2.rotation.x=-Math.PI/2;platter2.position.y=LE_Y_BOTTOM-16;LE.dirsL.add(platter2);
+
 function hex2rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
 function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
 function haloTex(col){
