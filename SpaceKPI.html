@@ -498,6 +498,60 @@ DIRS.forEach((d,i)=>{
   LE.lk.add(ln(new THREE.Vector3(x,LE_Y_TOP,z),new THREE.Vector3(0,mainY,0),d.c,0.18));
 });
 
+// ---- Peak: 3 strategic goals + 5 motivation streams orbiting ----
+const GOALS=[
+  {n:'Рост выручки ×2 к 2028',c:'#a78bfa'},
+  {n:'Лидерство в отрасли',c:'#f472b6'},
+  {n:'Цифровая зрелость · ур.8',c:'#22d3ee'}
+];
+GOALS.forEach((g,i)=>{
+  const ang=i*Math.PI*2/3 - Math.PI/2;
+  const x=Math.cos(ang)*22, z=Math.sin(ang)*22;
+  const m=new THREE.Mesh(
+    new THREE.IcosahedronGeometry(9,1),
+    new THREE.MeshPhongMaterial({color:g.c,emissive:g.c,emissiveIntensity:0.85,shininess:120,transparent:true,opacity:0.98})
+  );
+  m.position.set(x,LE_Y_PEAK+28,z);
+  m.userData={name:'Стратегическая цель',info:g.n};
+  LE.goals.add(m);HOV[0].push(m);
+  // thin halo ring
+  const halo=new THREE.Mesh(new THREE.RingGeometry(10,12,48),new THREE.MeshBasicMaterial({color:g.c,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false}));
+  halo.rotation.x=Math.PI/2;halo.position.copy(m.position);LE.goals.add(halo);
+  const lab=label(g.n,'#fff',10);lab.position.set(x*1.1,LE_Y_PEAK+44,z*1.1);LE.goals.add(lab);
+});
+// Crown label
+const crownLab=label('СТРАТЕГИЧЕСКИЕ ЦЕЛИ · 2028','#a78bfa',13);crownLab.position.set(0,LE_Y_PEAK+68,0);LE.goals.add(crownLab);
+// Base glow disc for goals
+const goalBase=new THREE.Mesh(new THREE.RingGeometry(28,32,64),new THREE.MeshBasicMaterial({color:0xa78bfa,transparent:true,opacity:0.35,side:THREE.DoubleSide,depthWrite:false}));
+goalBase.rotation.x=-Math.PI/2;goalBase.position.y=LE_Y_PEAK+15;LE.goals.add(goalBase);
+
+// 5 motivation streams orbiting peak
+const MOTIV=[
+  {n:'KPI по должностям',c:'#a78bfa'},
+  {n:'Исполнительская дисциплина',c:'#22d3ee'},
+  {n:'Оценка 360',c:'#fbbf24'},
+  {n:'Аттестация',c:'#10b981'},
+  {n:'Анализ совещаний',c:'#f472b6'}
+];
+MOTIV.forEach((m,i)=>{
+  const ang=i*Math.PI*2/MOTIV.length;
+  const R=62, Y=LE_Y_PEAK+22;
+  const x=Math.cos(ang)*R, z=Math.sin(ang)*R;
+  // Diamond + wireframe
+  const d=new THREE.Mesh(
+    new THREE.OctahedronGeometry(5,0),
+    new THREE.MeshPhongMaterial({color:m.c,emissive:m.c,emissiveIntensity:0.55,shininess:100,transparent:true,opacity:0.95})
+  );
+  d.position.set(x,Y,z);d.userData={name:'Поток мотивации',info:m.n,motiv:1};
+  LE.motiv.add(d);HOV[0].push(d);
+  const lab=label(m.n,'#fff',9);lab.position.set(x*1.18,Y+10,z*1.18);LE.motiv.add(lab);
+  // link to goals center
+  LE.motiv.add(ln(new THREE.Vector3(x,Y,z),new THREE.Vector3(0,LE_Y_PEAK+28,0),m.c,0.22));
+});
+// motivation orbit ring
+const motivRing=new THREE.Mesh(new THREE.TorusGeometry(62,0.5,10,96),new THREE.MeshBasicMaterial({color:0xa78bfa,transparent:true,opacity:0.3}));
+motivRing.rotation.x=Math.PI/2;motivRing.position.y=LE_Y_PEAK+22;LE.motiv.add(motivRing);
+
 function hex2rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
 function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
 function haloTex(col){
