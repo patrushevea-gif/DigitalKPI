@@ -327,6 +327,18 @@ const y=oy+j*dy;LC.gr.add(ln(new THREE.Vector3(ox,y,0),new THREE.Vector3(ox+nx*d
 const LD={goals:new THREE.Group(),dirs:new THREE.Group(),dash:new THREE.Group(),emp:new THREE.Group(),idx:new THREE.Group(),sal:new THREE.Group(),twins:new THREE.Group(),team:new THREE.Group(),ai:new THREE.Group(),lk:new THREE.Group()};
 Object.values(LD).forEach(g=>SG[1].add(g));
 
+// ==================== LE · АРХИТЕКТУРА 2.0 ====================
+const LE={
+  procs:new THREE.Group(), dirsL:new THREE.Group(),
+  itCore:new THREE.Group(), itOrbit:new THREE.Group(),
+  dash:new THREE.Group(), dashMain:new THREE.Group(),
+  goals:new THREE.Group(), motiv:new THREE.Group(),
+  leaders:new THREE.Group(), agents:new THREE.Group(),
+  ai:new THREE.Group(),
+  lk:new THREE.Group()
+};
+Object.values(LE).forEach(g=>SG[4].add(g));
+
 function hex2rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
 function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
 function haloTex(col){
