@@ -439,6 +439,65 @@ const itHubWf=new THREE.Mesh(new THREE.IcosahedronGeometry(23,1),new THREE.MeshB
 itHubWf.position.y=LE_Y_MID;LE.itCore.add(itHubWf);
 const itHubLab=label('IT · Интеграционное ядро','#22d3ee',11);itHubLab.position.set(0,LE_Y_MID+28,0);LE.itCore.add(itHubLab);
 
+// ---- Top analytics layer: dashboards per direction + main dashboard ----
+function miniDashCanvas(col){
+  const c=document.createElement('canvas');c.width=128;c.height=72;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='rgba(8,12,24,0.88)';ctx.fillRect(0,0,c.width,c.height);
+  ctx.strokeStyle=col;ctx.lineWidth=1.4;ctx.strokeRect(1,1,c.width-2,c.height-2);
+  // bar chart
+  ctx.fillStyle=col;
+  const bars=[0.4,0.7,0.55,0.9,0.6,0.8,0.5];
+  bars.forEach((h,i)=>{const bh=h*42;ctx.fillRect(12+i*14,60-bh,9,bh);});
+  // top line
+  ctx.strokeStyle='rgba(255,255,255,0.55)';ctx.lineWidth=0.8;
+  ctx.beginPath();ctx.moveTo(6,12);ctx.lineTo(c.width-6,12);ctx.stroke();
+  return c;
+}
+DIRS.forEach((d,i)=>{
+  const ang=i*Math.PI*2/DIRS.length;
+  const x=Math.cos(ang)*LE_R_TOP, z=Math.sin(ang)*LE_R_TOP;
+  const tx=new THREE.CanvasTexture(miniDashCanvas(d.c));tx.minFilter=THREE.LinearFilter;
+  const panel=new THREE.Mesh(
+    new THREE.PlaneGeometry(26,15),
+    new THREE.MeshBasicMaterial({map:tx,transparent:true,opacity:0.95,side:THREE.DoubleSide,depthWrite:false})
+  );
+  panel.position.set(x,LE_Y_TOP,z);
+  panel.lookAt(0,LE_Y_TOP,0);
+  panel.userData={name:`Дашборд · ${d.n}`,info:`Аналитика направления ${d.n}`};
+  LE.dash.add(panel);HOV[0].push(panel);
+  // accent bar under panel
+  const bar=new THREE.Mesh(new THREE.BoxGeometry(26,0.6,0.6),new THREE.MeshBasicMaterial({color:d.c,transparent:true,opacity:0.85}));
+  bar.position.set(x,LE_Y_TOP-8.5,z);bar.lookAt(0,LE_Y_TOP-8.5,0);LE.dash.add(bar);
+  // subtle glow halo
+  const halo=new THREE.Mesh(new THREE.PlaneGeometry(30,19),new THREE.MeshBasicMaterial({color:d.c,transparent:true,opacity:0.12,side:THREE.DoubleSide,depthWrite:false}));
+  halo.position.set(x,LE_Y_TOP,z);halo.lookAt(0,LE_Y_TOP,0);halo.position.add(new THREE.Vector3(Math.cos(ang)*-0.5,0,Math.sin(ang)*-0.5));
+  LE.dash.add(halo);
+});
+
+// Central MAIN dashboard — hexagonal disc with concentric rings, floats above panels
+const mainY=LE_Y_TOP+42;
+const mainDisc=new THREE.Mesh(new THREE.CylinderGeometry(44,44,2.4,6),new THREE.MeshPhongMaterial({color:0x0a1628,emissive:0x22d3ee,emissiveIntensity:0.35,shininess:90,transparent:true,opacity:0.88}));
+mainDisc.position.y=mainY;LE.dashMain.add(mainDisc);
+const mainEdge=new THREE.Mesh(new THREE.TorusGeometry(44,0.7,12,96),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.75}));
+mainEdge.rotation.x=Math.PI/2;mainEdge.position.y=mainY;LE.dashMain.add(mainEdge);
+// inner ring
+const innerRing=new THREE.Mesh(new THREE.TorusGeometry(28,0.4,10,80),new THREE.MeshBasicMaterial({color:0xa78bfa,transparent:true,opacity:0.55}));
+innerRing.rotation.x=Math.PI/2;innerRing.position.y=mainY+1.4;LE.dashMain.add(innerRing);
+// core pulse
+const mainCore=new THREE.Mesh(new THREE.IcosahedronGeometry(10,1),new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:0.9,shininess:100,transparent:true,opacity:0.95}));
+mainCore.position.y=mainY+3.5;LE.dashMain.add(mainCore);
+mainCore.userData={name:'Главный дашборд',info:'Свод по компании. Агрегация всех направлений.'};HOV[0].push(mainCore);
+// label
+const mainLab=label('ГЛАВНЫЙ ДАШБОРД · СВОД','#fff',12);mainLab.position.set(0,mainY+22,0);LE.dashMain.add(mainLab);
+
+// ---- Links: each direction's dashboard → main dashboard ----
+DIRS.forEach((d,i)=>{
+  const ang=i*Math.PI*2/DIRS.length;
+  const x=Math.cos(ang)*LE_R_TOP, z=Math.sin(ang)*LE_R_TOP;
+  LE.lk.add(ln(new THREE.Vector3(x,LE_Y_TOP,z),new THREE.Vector3(0,mainY,0),d.c,0.18));
+});
+
 function hex2rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
 function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
 function haloTex(col){
