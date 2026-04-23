@@ -680,6 +680,20 @@ LE.lk.add(ln(new THREE.Vector3(0,LE_Y_PEAK+28,0),new THREE.Vector3(0,mainY,0),'#
 // Strategic goals ↓ IT core (top-down vision)
 LE.lk.add(ln(new THREE.Vector3(0,LE_Y_PEAK+28,0),new THREE.Vector3(0,LE_Y_MID,0),'#f472b6',0.18));
 
+// Central spine — faint glow column from base to peak
+const leSpineH=(LE_Y_PEAK+28)-(LE_Y_BOTTOM);
+const leSpine=new THREE.Mesh(
+  new THREE.CylinderGeometry(1.2,1.2,leSpineH,12,1,true),
+  new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.16,side:THREE.DoubleSide,depthWrite:false})
+);
+leSpine.position.set(0,(LE_Y_PEAK+28+LE_Y_BOTTOM)/2,0);LE.lk.add(leSpine);
+// Base glow disc under pyramid
+const leBaseGlow=new THREE.Mesh(new THREE.CircleGeometry(480,96),new THREE.MeshBasicMaterial({color:0x1e293b,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));
+leBaseGlow.rotation.x=-Math.PI/2;leBaseGlow.position.y=LE_Y_BOTTOM-20;LE.lk.add(leBaseGlow);
+// Outer grid ring for scale
+const leGridRing=new THREE.Mesh(new THREE.RingGeometry(475,478,128),new THREE.MeshBasicMaterial({color:0x5b6ee8,transparent:true,opacity:0.32,side:THREE.DoubleSide,depthWrite:false}));
+leGridRing.rotation.x=-Math.PI/2;leGridRing.position.y=LE_Y_BOTTOM-18;LE.lk.add(leGridRing);
+
 function hex2rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
 function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
 function haloTex(col){
