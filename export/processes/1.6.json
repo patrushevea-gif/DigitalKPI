@@ -1,0 +1,598 @@
+{
+  "code": "1.6",
+  "title": "Складское хозяйство",
+  "direction": "Производство",
+  "directionCode": "1",
+  "roles": [
+    "R&D",
+    "Администрирование",
+    "Безопасность",
+    "Качество",
+    "ОТ и ПБ, Э",
+    "Оперрационная эффективноасть",
+    "Персонал",
+    "Планирование",
+    "Право",
+    "Производство",
+    "Склад ГП",
+    "Снабжение",
+    "Финансы",
+    "завскладом",
+    "кладовщик склада сырья"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "Утвержденный план",
+      "methodology": "План продаж Складские остатки Сроки поставки",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Производство",
+          "action": "План производства"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "График поставок сформированный в 1С",
+      "methodology": "План производство Справочник номенклатуры",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Планирование",
+          "action": "График поставок сырья, тары и упаковки в ИС"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "План график поступления",
+      "methodology": "Сроки поставки",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Снабжение",
+          "action": "График поступление сырья, тары и упаковки в ИС"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "ТТН",
+      "methodology": "Приходные документы Справочник номенклатуры Сертификат скачества MSDS, SOA, TDS",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "завскладом",
+          "action": "Плановые поступление сырья, тары, материлов"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Допуск сырья",
+      "methodology": "ТУ Сертификат качества MSDS, SOA, TDS",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Качество",
+          "action": "Отбор сырья - входной контроль,"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Штрихкод с наименованием",
+      "methodology": "1С WMS",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "завскладом",
+          "action": "формирование штрихкода и маркировка сырья, направление заданий на ТСД"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": "адресное размещение",
+      "methodology": "1С WMS",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "кладовщик склада сырья",
+          "action": "Размещение и хранение складе НЕИЗВЕСТНЫЙ ТОВАР согласно заданий на ТСД"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": "годное сырье размещено по фифо",
+      "methodology": "1С WMS",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Качество",
+          "action": "перемещение на склад сырья согласно номенклатуры"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9 этап",
+      "product": "новая номенклатура",
+      "methodology": "Сертификат скачества MSDS, SOA, TDS ОТК",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "R&D",
+          "action": "Введение новой номенклатуры в 1С"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": "рекламация",
+      "methodology": "НТД 1С форма рекламации",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Качество",
+          "action": "Подготовка и направление рекламации поставщику"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "label": "11 этап",
+      "product": "Задание на перемещение",
+      "methodology": "1С WMS ОТК",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "завскладом",
+          "action": "формирование задания на перемещение на склад некондиции"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "label": "12 этап",
+      "product": "адресное размещение",
+      "methodology": "1С WMS",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "кладовщик склада сырья",
+          "action": "Размещение и хранение на складе НЕКОНДИЦИИ на ТСД"
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "label": "13 этап",
+      "product": "Отчет по срокам годности сырья",
+      "methodology": "Температура Влажность Условия хранения",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Качество",
+          "action": "Автоматизированный контроль условий хранения и сроков годности в ИС"
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "label": "14 этап",
+      "product": "Ответ поставщика",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Снабжение",
+          "action": "возврат сырья либо другие компесирующие мероприятия"
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "label": "15 этап",
+      "product": "Результат испытания",
+      "methodology": "ОЛИ, ОПИ, ОПП ОТК",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "R&D",
+          "action": "Проведение испытаний и принятие решение о возможности применения сырья со склада НЕКОНДИЦИЯ"
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "label": "16 этап",
+      "product": "Документ Перемещение",
+      "methodology": "1С",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Производство",
+          "action": "Заказ на перемещение сырья"
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "label": "17 этап",
+      "product": "Сформированное здание",
+      "methodology": "1С WMS",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "завскладом",
+          "action": "Формирование в WMS из задания на отбор сырья - задания кладовщику склада для формирования заявки производства"
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "label": "18 этап",
+      "product": "отобранное сырье и материалы",
+      "methodology": "1С WMS",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "кладовщик склада сырья",
+          "action": "сборка сырья, тары и упаковки"
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "label": "19 этап",
+      "product": "Сформированный документ Сборка",
+      "methodology": "1С",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Производство",
+          "action": "Производство продукции, формирование документа СБОРКА, перемещение ГП на склад"
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "label": "20 этап",
+      "product": "Отметка ОТК",
+      "methodology": "Анализ ГП ГОСТ ТУ",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Качество",
+          "action": "Проверка качества ГП"
+        }
+      ]
+    },
+    {
+      "number": 21,
+      "label": "21 этап",
+      "product": "ГП размещен по адресам",
+      "methodology": "1С WMS",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "завскладом",
+          "action": "Размещение ГП на складе"
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "label": "22 этап",
+      "product": "Отчет по условиям хранения",
+      "methodology": "ТУ",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Качество",
+          "action": "Контроль условий хранения и сроков годности"
+        }
+      ]
+    },
+    {
+      "number": 23,
+      "label": "23 этап",
+      "product": "Реализация товара",
+      "methodology": "1С",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "кладовщик склада сырья",
+          "action": "Отгрузка ГП клиентам"
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "label": "24 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 25,
+      "label": "25 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 26,
+      "label": "26 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 27,
+      "label": "27 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 28,
+      "label": "28 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 29,
+      "label": "29 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 29,
+      "toStage": 29,
+      "fromRole": "Оперрационная эффективноасть",
+      "toRole": "Персонал",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 3,
+      "fromRole": "Планирование",
+      "toRole": "кладовщик склада сырья",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Производство",
+      "toRole": "Планирование",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "кладовщик склада сырья",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "завскладом",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "кладовщик склада сырья",
+      "toRole": "Качество",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Снабжение",
+      "toRole": "Качество",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 13,
+      "toStage": 13,
+      "fromRole": "кладовщик склада сырья",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "завскладом",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 14,
+      "fromRole": "Снабжение",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 6,
+      "fromRole": "завскладом",
+      "toRole": "завскладом",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 9,
+      "fromRole": "Снабжение",
+      "toRole": "R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Качество",
+      "toRole": "Склад ГП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 10,
+      "fromRole": "кладовщик склада сырья",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 13,
+      "toStage": 15,
+      "fromRole": "кладовщик склада сырья",
+      "toRole": "Склад ГП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 14,
+      "toStage": 15,
+      "fromRole": "Качество",
+      "toRole": "R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 15,
+      "fromRole": "Склад ГП",
+      "toRole": "R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 17,
+      "toStage": 17,
+      "fromRole": "Производство",
+      "toRole": "Планирование",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 17,
+      "toStage": 17,
+      "fromRole": "кладовщик склада сырья",
+      "toRole": "Склад ГП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 17,
+      "fromRole": "Склад ГП",
+      "toRole": "Склад ГП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 15,
+      "fromRole": "Производство",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 18,
+      "toStage": 18,
+      "fromRole": "завскладом",
+      "toRole": "кладовщик склада сырья",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 19,
+      "toStage": 19,
+      "fromRole": "Планирование",
+      "toRole": "кладовщик склада сырья",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 20,
+      "toStage": 20,
+      "fromRole": "Производство",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 21,
+      "toStage": 21,
+      "fromRole": "кладовщик склада сырья",
+      "toRole": "Качество",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 22,
+      "toStage": 22,
+      "fromRole": "завскладом",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 22,
+      "toStage": 23,
+      "fromRole": "завскладом",
+      "toRole": "кладовщик склада сырья",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

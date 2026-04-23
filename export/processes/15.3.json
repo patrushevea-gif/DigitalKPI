@@ -1,0 +1,372 @@
+{
+  "code": "15.3",
+  "title": "ТОиР",
+  "direction": "Техническая политика",
+  "directionCode": "15",
+  "roles": [
+    "Главный инженер",
+    "Производство",
+    "Склад",
+    "Служба главного инженера.",
+    "Снабжение",
+    "ТБ"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "Утвержденный план ТОиР на год",
+      "methodology": "Разработать и утвердить план ОТиР на год",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный инженер",
+          "action": "Выдача задания для разработки планов ТОиР/ Утверждение"
+        },
+        {
+          "role": "Производство",
+          "action": "Согласование плана ТОиР на год, месяц"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "Утвержденный план ТОиР на месяц",
+      "methodology": "Разработать и утвердить план ОТиР на месяц",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Служба главного инженера.",
+          "action": "Разработка планов ТОиР на год, месяц"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "ППР на год",
+      "methodology": "Разработать ППР на год",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный инженер",
+          "action": "Выдача задания для разработки планов ППР/ Утверждение"
+        },
+        {
+          "role": "Производство",
+          "action": "Согласование ППР на год, месяц"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "ППР на месяц",
+      "methodology": "Разработать ППР на месяц",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Служба главного инженера.",
+          "action": "Разработка планов ППР на год, месяц"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Перечень запасных частей на оборудование.",
+      "methodology": "Разработать реестр запасных частей для оборудования.",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный инженер",
+          "action": "Уутверждение заявки на закупку ЗИП"
+        },
+        {
+          "role": "Служба главного инженера.",
+          "action": "Составление заявки на закупку ЗИП"
+        },
+        {
+          "role": "Снабжение",
+          "action": "Обработка заявки, закупка ЗИП"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Входной контроль ТМЦ",
+      "methodology": "Внешний осмотр оборудования, Комплектность по ведомости",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный инженер",
+          "action": "Входной контроль поступившего ТМЦ"
+        },
+        {
+          "role": "Склад",
+          "action": "Входной контроль поступившего ТМЦ"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": "Монтаж оборудования",
+      "methodology": "Прием оборудования в монтаж",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Служба главного инженера.",
+          "action": "Монтаж оборудования"
+        },
+        {
+          "role": "ТБ",
+          "action": "Контроль за соблюдением мер техники безопасности."
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": "Пуско-наладочные работы",
+      "methodology": "Разработка программы пусконаладлочных работ",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный инженер",
+          "action": "Комплексныее испытания оборудования"
+        },
+        {
+          "role": "Производство",
+          "action": "Проведение комплексных испытаний"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9 этап",
+      "product": "Передача оборудования в эксплуатацтю.",
+      "methodology": "Составления акта передачи приема в эксплуатацию.",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный инженер",
+          "action": "Передача оборудования в эксплуатацтю."
+        },
+        {
+          "role": "Производство",
+          "action": "Приемка оборудования в эксплуатацию."
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": "Инструкции по ремонту и обслуживанию оборудования",
+      "methodology": "Разработать и утвердить инструкции по ремонту и обслуживанию оборудования",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный инженер",
+          "action": "Утверждение Инструкций"
+        },
+        {
+          "role": "Служба главного инженера.",
+          "action": "Разработка инструкций"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "label": "11 этап",
+      "product": "Работы не учтенные в ТОиР",
+      "methodology": "Проведение аварийно- восстановительных работ",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Служба главного инженера.",
+          "action": "Проведение АВР"
+        },
+        {
+          "role": "Производство",
+          "action": "Заявка на проведение АВР"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Главный инженер",
+      "toRole": "Служба главного инженера.",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Служба главного инженера.",
+      "toRole": "Производство",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 8,
+      "toStage": 9,
+      "fromRole": "Служба главного инженера.",
+      "toRole": "Служба главного инженера.",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 6,
+      "toStage": 7,
+      "fromRole": "Служба главного инженера.",
+      "toRole": "Служба главного инженера.",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Служба главного инженера.",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Служба главного инженера.",
+      "toRole": "Склад",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Главный инженер",
+      "toRole": "Служба главного инженера.",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Производство",
+      "toRole": "ТБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "ТБ",
+      "toRole": "ТБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 11,
+      "fromRole": "Склад",
+      "toRole": "ТБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Служба главного инженера.",
+      "toRole": "ТБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Склад",
+      "toRole": "ТБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Главный инженер",
+      "toRole": "Служба главного инженера.",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "Служба главного инженера.",
+      "toRole": "Служба главного инженера.",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Служба главного инженера.",
+      "toRole": "Производство",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Главный инженер",
+      "toRole": "Главный инженер",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Служба главного инженера.",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Производство",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Главный инженер",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Служба главного инженера.",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Производство",
+      "toRole": "ТБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 11,
+      "fromRole": "Служба главного инженера.",
+      "toRole": "Производство",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": "Разработать и утвердить планы ТОиР на год.",
+    "currentState": "Отсутствие утвержденных планов",
+    "transformation": null,
+    "essence": null
+  }
+}

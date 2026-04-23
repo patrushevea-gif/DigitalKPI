@@ -1,0 +1,221 @@
+{
+  "code": "13.1",
+  "title": "Управление запросами на обслуживание",
+  "direction": "ИТ и Автоматизация",
+  "directionCode": "13",
+  "roles": [
+    "Руководитель отдела ИТ",
+    "Системный администратор",
+    "Старший системный администратор"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Системный администратор",
+          "action": "Получение запроса"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Системный администратор",
+          "action": "Классификация запроса"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Системный администратор",
+          "action": "Регистрация запроса"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Системный администратор",
+          "action": "Обработка запроса"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Системный администратор",
+          "action": "Эскалация"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Системный администратор",
+          "action": "Решение запроса"
+        },
+        {
+          "role": "Старший системный администратор",
+          "action": "Решение запроса"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Системный администратор",
+          "action": "Закрытие запроса"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководитель отдела ИТ",
+          "action": "Анализ и отчетность"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 2,
+      "toStage": 3,
+      "fromRole": "Системный администратор",
+      "toRole": "Системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Системный администратор",
+      "toRole": "Системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "Системный администратор",
+      "toRole": "Системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Системный администратор",
+      "toRole": "Старший системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Руководитель отдела ИТ",
+      "toRole": "Руководитель отдела ИТ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "Старший системный администратор",
+      "toRole": "Старший системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Системный администратор",
+      "toRole": "Руководитель отдела ИТ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 2,
+      "fromRole": "Системный администратор",
+      "toRole": "Системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Системный администратор",
+      "toRole": "Старший системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Системный администратор",
+      "toRole": "Старший системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "Старший системный администратор",
+      "toRole": "Старший системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "Системный администратор",
+      "toRole": "Системный администратор",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

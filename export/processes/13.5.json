@@ -1,0 +1,204 @@
+{
+  "code": "13.5",
+  "title": "Обеспечение доступами и ресурсами",
+  "direction": "ИТ и Автоматизация",
+  "directionCode": "13",
+  "roles": [
+    "Руководитель отдела",
+    "Системный администратор",
+    "Снабжение",
+    "Сотрудник отдела кадров"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "Решение",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководитель отдела",
+          "action": "Принятие решения о приеме нового сотрудника"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "Заявка",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководитель отдела",
+          "action": "Создание заявки на технику и доступы"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "Заявка в эл.виде",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководитель отдела",
+          "action": "Заполнение заявки в 1С"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "Технка закуплена",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Снабжение",
+          "action": "Отработка заявки на технику, закуп"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Вакансия",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Сотрудник отдела кадров",
+          "action": "Открытие вакансии, поиск кандидатов"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Приказ",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Сотрудник отдела кадров",
+          "action": "Прием сотрудника"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": "Эл.Письмо",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Сотрудник отдела кадров",
+          "action": "Передача ФИО и должности для создания уч.записи"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": "Эл.письмо",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Системный администратор",
+          "action": "Создание учетных записей, доступов к системам, почте"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 5,
+      "toStage": 8,
+      "fromRole": "Снабжение",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 5,
+      "fromRole": "Сотрудник отдела кадров",
+      "toRole": "Сотрудник отдела кадров",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Сотрудник отдела кадров",
+      "toRole": "Системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Системный администратор",
+      "toRole": "Системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Системный администратор",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "Сотрудник отдела кадров",
+      "toRole": "Сотрудник отдела кадров",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 7,
+      "fromRole": "Сотрудник отдела кадров",
+      "toRole": "Сотрудник отдела кадров",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 3,
+      "fromRole": "Руководитель отдела",
+      "toRole": "Руководитель отдела",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Руководитель отдела",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Снабжение",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": "Новый пользователь оснащен техникой и доступами и может начать работать на компьютере уже с первого дня приёма",
+    "currentState": "Заявку IT службе руководители отделов создают уже после приема сотрудника на работу, работник выходит на работу и не может выполнять свои обязанности, связанные с работой на ПК до закупки техники для него",
+    "transformation": null,
+    "essence": null
+  }
+}

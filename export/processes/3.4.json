@@ -1,0 +1,384 @@
+{
+  "code": "3.4",
+  "title": "Нормативно-технологическая документация",
+  "direction": "RnD и Технологии",
+  "directionCode": "3",
+  "roles": [
+    "Главный технолог",
+    "Директор R&D",
+    "ОТК",
+    "Операционный технолог Технолог",
+    "Планирование",
+    "Производство",
+    "Разработчик R&D",
+    "Управляющий директор"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "Передача R&D: Гл.технологу - СЛО для производства; Начальнику ОТК - СЛО для ОТК",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Разработчик R&D",
+          "action": "НТД на новый продукт"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "Технологическая карта (ТК)",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Операционный технолог Технолог",
+          "action": "Разработка технологической карты"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "Порядок производства ОПП",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Операционный технолог Технолог",
+          "action": "Корректировка ТК в процессе производства"
+        },
+        {
+          "role": "Производство",
+          "action": "Производство ОПП по разработанной ТК"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "Доработка разработанной ТК (при необходимости)",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный технолог",
+          "action": "Доработка разработанной ТК (при необходимости)"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Порядок производства ОПП",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Производство",
+          "action": "Производство ОПП по доработанной ТК (при необходимости)"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Утвержденная технологическая карта",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный технолог",
+          "action": "Утверждение ТК"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": "Временная технологическая инструкция (ВТИ)",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный технолог",
+          "action": "Разработка ВТИ"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": "Лист согласования к доработанной ВТИ, завершается утверждением приказа управляющего директора",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Управляющий директор",
+          "action": "Утверждение ВТИ"
+        },
+        {
+          "role": "ОТК",
+          "action": "согласование"
+        },
+        {
+          "role": "Производство",
+          "action": "согласование"
+        },
+        {
+          "role": "Разработчик R&D",
+          "action": "согласование"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9 этап",
+      "product": "Реестр хранения ТК и ВТИ в электронном варианте в Общей диске (:R)",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный технолог",
+          "action": "Хранение ТК и ВТИ в электронном виде в Общем диске (:R)"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": "Разрешенный доступ \"для чтения\" ТК и ВТИ в общем диске (:R)",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Директор R&D",
+          "action": "Разрешенный доступ \"для чтения\" ТК и ВТИ в общем диске (:R)"
+        },
+        {
+          "role": "Планирование",
+          "action": "Разрешенный доступ \"для чтения\" ТК и ВТИ в общем диске (:R)"
+        },
+        {
+          "role": "Главный технолог",
+          "action": "Разрешенный доступ \"для чтения\" ТК и ВТИ в общем диске (:R)"
+        },
+        {
+          "role": "Операционный технолог Технолог",
+          "action": "Разрешенный доступ \"для чтения\" ТК и ВТИ в общем диске (:R)"
+        },
+        {
+          "role": "ОТК",
+          "action": "Разрешенный доступ \"для чтения\" ТК и ВТИ в общем диске (:R)"
+        },
+        {
+          "role": "Производство",
+          "action": "Разрешенный доступ \"для чтения\" ТК и ВТИ в общем диске (:R)"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "label": "11 этап",
+      "product": "Реестр хранения ТК и ВТИ в бумажном варианте",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный технолог",
+          "action": "Архив ТК и ВТИ дублируется в бумажном варианте"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "label": "12 этап",
+      "product": "Система ТК в 1С",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный технолог",
+          "action": "Внедрение системы ТК в 1с"
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "label": "13 этап",
+      "product": "График пересмотра НТД (выпуск новой редакции при необходимости)",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный технолог",
+          "action": "Планирование и мониторинг графиков пересмотра НТД"
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "label": "14 этап",
+      "product": "\"Решение\" - оперативный документ для внесения внеплановых изменений в ВТИ, согласованное с СГИ, ОТК, Производство и утвержденное управляющим директором. При плановом пересмотре \"решения\" интегрируются в новую редакцию ВТИ",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Главный технолог",
+          "action": "Внесение изменений внеплановых"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Управляющий директор",
+      "toRole": "Планирование",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 1,
+      "fromRole": "Операционный технолог Технолог",
+      "toRole": "Разработчик R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 10,
+      "fromRole": "Операционный технолог Технолог",
+      "toRole": "Разработчик R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "ОТК",
+      "toRole": "Разработчик R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "ОТК",
+      "toRole": "Разработчик R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Операционный технолог Технолог",
+      "toRole": "Разработчик R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Производство",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 11,
+      "fromRole": "Управляющий директор",
+      "toRole": "Планирование",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 9,
+      "fromRole": "Директор R&D",
+      "toRole": "Планирование",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Директор R&D",
+      "toRole": "Планирование",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "ОТК",
+      "toRole": "ОТК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Директор R&D",
+      "toRole": "Операционный технолог Технолог",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Операционный технолог Технолог",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "ОТК",
+      "toRole": "Разработчик R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Главный технолог",
+      "toRole": "ОТК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Операционный технолог Технолог",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Разработчик R&D",
+      "toRole": "Разработчик R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 6,
+      "fromRole": "Операционный технолог Технолог",
+      "toRole": "Разработчик R&D",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

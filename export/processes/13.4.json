@@ -1,0 +1,162 @@
+{
+  "code": "13.4",
+  "title": "Управление активами и конфигурациями",
+  "direction": "ИТ и Автоматизация",
+  "directionCode": "13",
+  "roles": [
+    "Программист",
+    "Руководитель отдела ИТ",
+    "Системный администратор",
+    "Старший системный администратор"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Системный администратор",
+          "action": "Идентификация активов и конфигураций"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Старший системный администратор",
+          "action": "Регистрация и хранение данных"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Программист",
+          "action": "Управление изменениями конфигураций"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководитель отдела ИТ",
+          "action": "Контроль и аудит конфигураций"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководитель отдела ИТ",
+          "action": "Отчетность и анализ"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Старший системный администратор",
+          "action": "Обновление и поддержка данных"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Руководитель отдела ИТ",
+      "toRole": "Руководитель отдела ИТ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "Руководитель отдела ИТ",
+      "toRole": "Руководитель отдела ИТ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 2,
+      "fromRole": "Старший системный администратор",
+      "toRole": "Старший системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Руководитель отдела ИТ",
+      "toRole": "Старший системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "Старший системный администратор",
+      "toRole": "Старший системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 1,
+      "fromRole": "Системный администратор",
+      "toRole": "Старший системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Программист",
+      "toRole": "Старший системный администратор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Руководитель отдела ИТ",
+      "toRole": "Программист",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

@@ -1,0 +1,255 @@
+{
+  "code": "4.7",
+  "title": "Новые продажи",
+  "direction": "Продажи и маркетинг",
+  "directionCode": "4",
+  "roles": [
+    "Генеральный директор",
+    "Логист",
+    "Отдел продаж (Коммерческий директор)",
+    "Производство (Директор по производству)",
+    "РнД (Директор РнД)",
+    "Склад (Зав. Складом)",
+    "Специалист по НТД"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "Корректная и полная заявка на приобритение продукции",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж (Коммерческий директор)",
+          "action": "Поиск клиента"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "Коммерческое предложение за подписью руководителя",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж (Коммерческий директор)",
+          "action": "Первичный контакт и назначение встречи"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "Спецификация подписанная с двух сторон",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж (Коммерческий директор)",
+          "action": "Презентация и выяснение потребностей (получение ТЗ от клиента)"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Заказ в 1 системе учета и уведомление о необходимости отгрузки",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж (Коммерческий директор)",
+          "action": "Передача ТЗ в РнД и производство"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Процесс поиска водителя и машины на отгрузку",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Производство (Директор по производству)",
+          "action": "Проверка возможностей производства"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": "Готовый к отгрузке продукт, упакованный в соответствии с требованиями",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж (Коммерческий директор)",
+          "action": "Заявка на производство"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": "Данные на водителя и машину",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Производство (Директор по производству)",
+          "action": "Планирование производства"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9 этап",
+      "product": "Подписанные сканы сопроводительных документов (УПД, ТТН, СК)",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": "Пройденный предрейсовый осмотр",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 11,
+      "label": "11 этап",
+      "product": "Загруженная машина с ГП",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Склад (Зав. Складом)",
+          "action": "Комплектация и подготовка заказа к отгрузке"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "label": "12 этап",
+      "product": "Уведомление об отгрузке",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Отдел продаж (Коммерческий директор)",
+      "toRole": "РнД (Директор РнД)",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "РнД (Директор РнД)",
+      "toRole": "Склад (Зав. Складом)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 12,
+      "toStage": 12,
+      "fromRole": "Отдел продаж (Коммерческий директор)",
+      "toRole": "РнД (Директор РнД)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 12,
+      "fromRole": "Отдел продаж (Коммерческий директор)",
+      "toRole": "Отдел продаж (Коммерческий директор)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Отдел продаж (Коммерческий директор)",
+      "toRole": "Специалист по НТД",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 12,
+      "fromRole": "Отдел продаж (Коммерческий директор)",
+      "toRole": "Отдел продаж (Коммерческий директор)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 12,
+      "toStage": 12,
+      "fromRole": "Отдел продаж (Коммерческий директор)",
+      "toRole": "Производство (Директор по производству)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 12,
+      "fromRole": "Производство (Директор по производству)",
+      "toRole": "Производство (Директор по производству)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Производство (Директор по производству)",
+      "toRole": "РнД (Директор РнД)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Отдел продаж (Коммерческий директор)",
+      "toRole": "РнД (Директор РнД)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 6,
+      "fromRole": "РнД (Директор РнД)",
+      "toRole": "РнД (Директор РнД)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Специалист по НТД",
+      "toRole": "РнД (Директор РнД)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 1,
+      "fromRole": "Отдел продаж (Коммерческий директор)",
+      "toRole": "РнД (Директор РнД)",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

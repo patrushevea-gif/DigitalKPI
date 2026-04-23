@@ -1,0 +1,75 @@
+{
+  "code": "14.5",
+  "title": "Инструменты Администрирорвания",
+  "direction": "Администрирование",
+  "directionCode": "14",
+  "roles": [
+    "Администратор",
+    "Инициатор"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "Пакет документов",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Инициатор",
+          "action": "Подготовка документов на отправку"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "Сформированное письмо",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администратор",
+          "action": "Пдоготовка и оформление исходящей корреспонденции письмами"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "Запись в реестре",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администратор",
+          "action": "Внесение в реестр"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "Чек, номер отправки",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администратор",
+          "action": "Отправка письма"
+        }
+      ]
+    }
+  ],
+  "dependencies": [],
+  "meta": {
+    "targetState": "Коррекспонденция отправляется систематически",
+    "currentState": "Корреспонденция отправляется от случая к случаю, нет ответственного",
+    "transformation": "Утвержден и введен в работу регламент по входящей/исходящей корреспонденцией",
+    "essence": null
+  }
+}

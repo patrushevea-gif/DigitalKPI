@@ -1,0 +1,535 @@
+{
+  "code": "1.3",
+  "title": "Производственный учет (аналитика, отчетность)",
+  "direction": "Производство",
+  "directionCode": "1",
+  "roles": [
+    "IT",
+    "Администрация",
+    "Безопасность",
+    "Гл.инженер",
+    "Директор по исследованиям и разработкам",
+    "Заведующий лабораторий",
+    "Заведующий складом",
+    "Закупки",
+    "Инженер по планированию и ПП",
+    "Инженер-механик",
+    "Кладовщик",
+    "Лаборант",
+    "Лаборант ЛКК",
+    "Логистика",
+    "Мастер ПУ",
+    "Начальник лаборатории",
+    "Начальник производства",
+    "Оператор ДПУ",
+    "Охрана труда, ПБ",
+    "Персонал",
+    "Право",
+    "Продажи",
+    "Производственный учет (аналитика, отчетность)",
+    "Технолог",
+    "Финансы",
+    "Энергетик"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Продажи",
+          "action": "Формирование плана продаж"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Инженер по планированию и ПП",
+          "action": "Формирование плана производства, определение наличия сырья"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Директор по исследованиям и разработкам",
+          "action": "Проверка наличия рабочих рецептур"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Логистика",
+          "action": "Формирование плана отгрузок ГП, поставки сырья"
+        },
+        {
+          "role": "Закупки",
+          "action": "Формирование плана закупки сырья"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Гл.инженер",
+          "action": "Актуализация плана ТО и подтверждение технической исправности оборулования"
+        },
+        {
+          "role": "Начальник производства",
+          "action": "Определение оборудования для производства"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Заведующий складом",
+          "action": "Определение мест хранения сырья и готовой продукции"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Заведующий лабораторий",
+          "action": "Входной и промежуточный контроль сырья"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "IT",
+          "action": "Сбор и обработка первичных данных"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "IT",
+          "action": "Формирование отчетов по направлениям деятельности"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администрация",
+          "action": "Плановая работа предприятия"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "label": "11 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "IT",
+          "action": "Сбор текущих данных, обработка, формирование отчетов"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "label": "12 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администрация",
+          "action": "Анализ текущей деятельности, принятие решений по оптимизации производственных процессов, корректировка текущей производственной деятельности для достижения поставленных целей"
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "label": "13 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "IT",
+          "action": "Формирование отчетов, заданий при необходимости внесение корректировок, наработка/накопление данных"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 1,
+      "toStage": 3,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Продажи",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Заведующий складом",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Гл.инженер",
+      "toRole": "Заведующий складом",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Начальник производства",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Директор по исследованиям и разработкам",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Инженер по планированию и ПП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Гл.инженер",
+      "toRole": "Начальник производства",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Директор по исследованиям и разработкам",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 5,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Инженер по планированию и ПП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 7,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Инженер по планированию и ПП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Гл.инженер",
+      "toRole": "Заведующий складом",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Заведующий складом",
+      "toRole": "Заведующий лабораторий",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Инженер по планированию и ПП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Оператор ДПУ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Логистика",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 9,
+      "fromRole": "Заведующий лабораторий",
+      "toRole": "Закупки",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Энергетик",
+      "toRole": "Начальник производства",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Гл.инженер",
+      "toRole": "Начальник производства",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 10,
+      "fromRole": "Администрация",
+      "toRole": "Начальник производства",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Администрация",
+      "toRole": "Инженер по планированию и ПП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 11,
+      "fromRole": "Начальник производства",
+      "toRole": "Начальник производства",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 13,
+      "toStage": 13,
+      "fromRole": "Заведующий лабораторий",
+      "toRole": "Закупки",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 13,
+      "toStage": 13,
+      "fromRole": "Инженер-механик",
+      "toRole": "Логистика",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 13,
+      "fromRole": "Начальник производства",
+      "toRole": "Заведующий складом",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Технолог",
+      "toRole": "Заведующий складом",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 12,
+      "fromRole": "Начальник производства",
+      "toRole": "Начальник производства",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 12,
+      "toStage": 13,
+      "fromRole": "Гл.инженер",
+      "toRole": "Гл.инженер",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 8,
+      "fromRole": "Начальник производства",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 8,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 9,
+      "fromRole": "IT",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 8,
+      "fromRole": "Энергетик",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Заведующий лабораторий",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 8,
+      "fromRole": "Директор по исследованиям и разработкам",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 8,
+      "fromRole": "Продажи",
+      "toRole": "Продажи",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 8,
+      "fromRole": "Продажи",
+      "toRole": "Логистика",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 10,
+      "fromRole": "IT",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 11,
+      "fromRole": "IT",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 12,
+      "fromRole": "IT",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 12,
+      "toStage": 13,
+      "fromRole": "IT",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 13,
+      "fromRole": "Продажи",
+      "toRole": "Персонал",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 13,
+      "toStage": 13,
+      "fromRole": "Продажи",
+      "toRole": "Персонал",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 8,
+      "fromRole": "Заведующий складом",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 8,
+      "fromRole": "Продажи",
+      "toRole": "Закупки",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

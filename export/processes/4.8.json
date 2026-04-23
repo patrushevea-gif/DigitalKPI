@@ -1,0 +1,230 @@
+{
+  "code": "4.8",
+  "title": "Ресейл",
+  "direction": "Продажи и маркетинг",
+  "directionCode": "4",
+  "roles": [
+    "ОКК",
+    "Отдел продаж (коммерческий директор)",
+    "Склад"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 Этап",
+      "product": "Отчёт о рынке",
+      "methodology": "Исследование готовых решений (внутренний рынок, импорт, каталоги производителей), которые можно закупить с выгодной ценой и быстро адаптировать под свой бренд.",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж (коммерческий директор)",
+          "action": "Процесс 4.1 \"Анализ рынка\""
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 Этап",
+      "product": "Протокол/резолюция",
+      "methodology": "Финансово-экономическая оценка",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж (коммерческий директор)",
+          "action": "Принятие решения о дальнейшем анализе рынка"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 Этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 4,
+      "label": "4 Этап",
+      "product": "Договор поставки",
+      "methodology": "Согласование условий закупки, минимальных партий, сроков, возможности брендирования (white label / private label) и технической документации.",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж (коммерческий директор)",
+          "action": "Переговоры с производителем"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 Этап",
+      "product": "Название, логотип, макеты, УТП, инструкция",
+      "methodology": "Разработка позиционирования, визуальной айдентики, оформление",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж (коммерческий директор)",
+          "action": "Разработка упаковки и НТД"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 Этап",
+      "product": "Коммерческое предложение, прайс, презентация",
+      "methodology": "Продвижение продукта под брендом, заключение сделок с клиентами",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж (коммерческий директор)",
+          "action": "Запуск проекта"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 Этап",
+      "product": "Готовый продукт",
+      "methodology": "Приёмка, проверка соответствия (кол-во, качество)",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Склад",
+          "action": "Приёмка товара"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 Этап",
+      "product": "Протоколы контроля качества",
+      "methodology": "Проверка продукта на соответсвие требований",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "ОКК",
+          "action": "Проверка соответствия требованиям, проведение испытаний (если нужно)"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9 Этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Склад",
+          "action": "Соответствует требованиям"
+        },
+        {
+          "role": "ОКК",
+          "action": "Не соответствует требованиям"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "label": "10 Этап",
+      "product": "Этикетки, штрихкоды",
+      "methodology": "Нанесение фирменной маркировки, упаковка в брендированную упаковку",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Склад",
+          "action": "Маркировка и упаковка"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "label": "11 Этап",
+      "product": "Отгрузочные документы",
+      "methodology": "Продажи",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж (коммерческий директор)",
+          "action": "ПЕРЕХОД НА ПРОЦЕСС \"ПРОДАЖА ОВП\" ИЛИ \"НОВЫЕ ПРОДАЖИ\""
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 1,
+      "toStage": 2,
+      "fromRole": "Отдел продаж (коммерческий директор)",
+      "toRole": "Отдел продаж (коммерческий директор)",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Отдел продаж (коммерческий директор)",
+      "toRole": "Отдел продаж (коммерческий директор)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 7,
+      "fromRole": "Отдел продаж (коммерческий директор)",
+      "toRole": "Отдел продаж (коммерческий директор)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 9,
+      "fromRole": "Склад",
+      "toRole": "ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 11,
+      "fromRole": "Отдел продаж (коммерческий директор)",
+      "toRole": "Отдел продаж (коммерческий директор)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 9,
+      "fromRole": "ОКК",
+      "toRole": "ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 8,
+      "fromRole": "ОКК",
+      "toRole": "ОКК",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Отдел продаж (коммерческий директор)",
+      "toRole": "ОКК",
+      "hasArrow": false
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

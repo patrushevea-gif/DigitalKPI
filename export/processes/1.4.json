@@ -1,0 +1,251 @@
+{
+  "code": "1.4",
+  "title": "Отгрузка ГП",
+  "direction": "Производство",
+  "directionCode": "1",
+  "roles": [
+    "Инженер по планированию и ПП",
+    "Логист",
+    "ОТК",
+    "Отдел продаж, коммерции",
+    "Склад"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "заявка на отгрузкук",
+      "methodology": "Заява в битрикс Заявка в 1С Рассылка по почте",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж, коммерции",
+          "action": "Заявка на отгрузку"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "Уведомление в почте",
+      "methodology": "Гугл диск Битрикс",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Инженер по планированию и ПП",
+          "action": "Присвоение отгрузочной партии, номенклатуры, раскладки (если применимо)"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Логист",
+          "action": "Уточнение готовности продукта и согласование времени отгрузки у склада"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Склад",
+          "action": "Комплектация согласно заявки на отгрузку, экетирование"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "ОТК",
+          "action": "Сертификация, контроль массы"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Склад",
+          "action": "загрузка автомобиля"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Логист",
+          "action": "перевозка"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 9,
+      "label": "9 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 11,
+      "label": "11 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 12,
+      "label": "12 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 13,
+      "label": "13 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 14,
+      "label": "14 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 15,
+      "label": "15 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 16,
+      "label": "16 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Склад",
+      "toRole": "ОТК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 2,
+      "fromRole": "Отдел продаж, коммерции",
+      "toRole": "Отдел продаж, коммерции",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 14,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "ОТК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 14,
+      "toStage": 15,
+      "fromRole": "Склад",
+      "toRole": "Логист",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 4,
+      "fromRole": "Склад",
+      "toRole": "ОТК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 4,
+      "fromRole": "Инженер по планированию и ПП",
+      "toRole": "Инженер по планированию и ПП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Склад",
+      "toRole": "Логист",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

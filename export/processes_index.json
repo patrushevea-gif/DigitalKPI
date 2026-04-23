@@ -1,0 +1,644 @@
+{
+  "generated": "2026-04-23T07:40:51.514Z",
+  "processes": [
+    {
+      "code": "1.1",
+      "title": "Планирование",
+      "direction": "Производство",
+      "stageCount": 16,
+      "roleCount": 8,
+      "activityCount": 16,
+      "arrowCount": 17
+    },
+    {
+      "code": "1.2",
+      "title": "Исполнение",
+      "direction": "Производство",
+      "stageCount": 16,
+      "roleCount": 10,
+      "activityCount": 25,
+      "arrowCount": 53
+    },
+    {
+      "code": "1.3",
+      "title": "Производственный учет (аналитика, отчетность)",
+      "direction": "Производство",
+      "stageCount": 13,
+      "roleCount": 26,
+      "activityCount": 15,
+      "arrowCount": 43
+    },
+    {
+      "code": "1.4",
+      "title": "Отгрузка ГП",
+      "direction": "Производство",
+      "stageCount": 16,
+      "roleCount": 5,
+      "activityCount": 7,
+      "arrowCount": 7
+    },
+    {
+      "code": "1.5",
+      "title": "Оптимизация технологических процессов",
+      "direction": "Производство",
+      "stageCount": 8,
+      "roleCount": 6,
+      "activityCount": 11,
+      "arrowCount": 14
+    },
+    {
+      "code": "1.6",
+      "title": "Складское хозяйство",
+      "direction": "Производство",
+      "stageCount": 29,
+      "roleCount": 15,
+      "activityCount": 23,
+      "arrowCount": 27
+    },
+    {
+      "code": "2.1",
+      "title": "Контроль качества сырья",
+      "direction": "Качество",
+      "stageCount": 10,
+      "roleCount": 8,
+      "activityCount": 13,
+      "arrowCount": 18
+    },
+    {
+      "code": "2.2",
+      "title": "Контроль качества операционн. и ГП",
+      "direction": "Качество",
+      "stageCount": 11,
+      "roleCount": 7,
+      "activityCount": 16,
+      "arrowCount": 15
+    },
+    {
+      "code": "2.3",
+      "title": "Коммерческий отдел",
+      "direction": "Качество",
+      "stageCount": 12,
+      "roleCount": 8,
+      "activityCount": 18,
+      "arrowCount": 21
+    },
+    {
+      "code": "2.4",
+      "title": "Работа с несоответствиями",
+      "direction": "Качество",
+      "stageCount": 11,
+      "roleCount": 10,
+      "activityCount": 26,
+      "arrowCount": 28
+    },
+    {
+      "code": "2.5",
+      "title": "СМК",
+      "direction": "Качество",
+      "stageCount": 10,
+      "roleCount": 8,
+      "activityCount": 13,
+      "arrowCount": 43
+    },
+    {
+      "code": "3.1",
+      "title": "Разраюотка новых/доработка разработанных продуктов",
+      "direction": "RnD и Технологии",
+      "stageCount": 34,
+      "roleCount": 6,
+      "activityCount": 36,
+      "arrowCount": 35
+    },
+    {
+      "code": "3.2",
+      "title": "Поиск аналогов сырья",
+      "direction": "RnD и Технологии",
+      "stageCount": 35,
+      "roleCount": 6,
+      "activityCount": 36,
+      "arrowCount": 31
+    },
+    {
+      "code": "3.3",
+      "title": "Снижение себестоимости разработанного продукта",
+      "direction": "RnD и Технологии",
+      "stageCount": 33,
+      "roleCount": 6,
+      "activityCount": 30,
+      "arrowCount": 27
+    },
+    {
+      "code": "3.4",
+      "title": "Нормативно-технологическая документация",
+      "direction": "RnD и Технологии",
+      "stageCount": 14,
+      "roleCount": 8,
+      "activityCount": 23,
+      "arrowCount": 18
+    },
+    {
+      "code": "3.5",
+      "title": "Контроль производственного цикла",
+      "direction": "RnD и Технологии",
+      "stageCount": 14,
+      "roleCount": 8,
+      "activityCount": 12,
+      "arrowCount": 20
+    },
+    {
+      "code": "4.1",
+      "title": "Анализ рынка",
+      "direction": "Продажи и маркетинг",
+      "stageCount": 7,
+      "roleCount": 2,
+      "activityCount": 3,
+      "arrowCount": 0
+    },
+    {
+      "code": "4.2",
+      "title": "Рекламно-информационнон сопровожение продаж",
+      "direction": "Продажи и маркетинг",
+      "stageCount": 9,
+      "roleCount": 2,
+      "activityCount": 9,
+      "arrowCount": 5
+    },
+    {
+      "code": "4.3",
+      "title": "Продвижение брэнда",
+      "direction": "Продажи и маркетинг",
+      "stageCount": 8,
+      "roleCount": 3,
+      "activityCount": 8,
+      "arrowCount": 1
+    },
+    {
+      "code": "4.4",
+      "title": "Аттестация и сертификация",
+      "direction": "Продажи и маркетинг",
+      "stageCount": 5,
+      "roleCount": 9,
+      "activityCount": 6,
+      "arrowCount": 20
+    },
+    {
+      "code": "4.5",
+      "title": "Планирование",
+      "direction": "Продажи и маркетинг",
+      "stageCount": 6,
+      "roleCount": 6,
+      "activityCount": 2,
+      "arrowCount": 5
+    },
+    {
+      "code": "4.6",
+      "title": "Продажа ОВП",
+      "direction": "Продажи и маркетинг",
+      "stageCount": 13,
+      "roleCount": 6,
+      "activityCount": 13,
+      "arrowCount": 12
+    },
+    {
+      "code": "4.7",
+      "title": "Новые продажи",
+      "direction": "Продажи и маркетинг",
+      "stageCount": 11,
+      "roleCount": 7,
+      "activityCount": 8,
+      "arrowCount": 12
+    },
+    {
+      "code": "4.8",
+      "title": "Ресейл",
+      "direction": "Продажи и маркетинг",
+      "stageCount": 11,
+      "roleCount": 3,
+      "activityCount": 11,
+      "arrowCount": 5
+    },
+    {
+      "code": "4.9",
+      "title": "Управление продуктовый потрфель",
+      "direction": "Продажи и маркетинг",
+      "stageCount": 6,
+      "roleCount": 5,
+      "activityCount": 6,
+      "arrowCount": 0
+    },
+    {
+      "code": "5.1",
+      "title": "Формирование реестр квалифицированных поставщиков по категории",
+      "direction": "Снабжение",
+      "stageCount": 12,
+      "roleCount": 5,
+      "activityCount": 16,
+      "arrowCount": 21
+    },
+    {
+      "code": "5.2",
+      "title": "\"Закупочная процедура\"",
+      "direction": "Снабжение",
+      "stageCount": 12,
+      "roleCount": 8,
+      "activityCount": 20,
+      "arrowCount": 20
+    },
+    {
+      "code": "5.3",
+      "title": "\"Логистика\"",
+      "direction": "Снабжение",
+      "stageCount": 11,
+      "roleCount": 8,
+      "activityCount": 18,
+      "arrowCount": 19
+    },
+    {
+      "code": "6.1",
+      "title": "Формирование стратегии",
+      "direction": "Развитие",
+      "stageCount": 18,
+      "roleCount": 7,
+      "activityCount": 19,
+      "arrowCount": 15
+    },
+    {
+      "code": "6.2",
+      "title": "Вовлеченность в развитие",
+      "direction": "Развитие",
+      "stageCount": 9,
+      "roleCount": 6,
+      "activityCount": 9,
+      "arrowCount": 5
+    },
+    {
+      "code": "6.3",
+      "title": "Реализация трансформационных проектов",
+      "direction": "Развитие",
+      "stageCount": 8,
+      "roleCount": 6,
+      "activityCount": 8,
+      "arrowCount": 7
+    },
+    {
+      "code": "6.4",
+      "title": "Контроль эффектов",
+      "direction": "Развитие",
+      "stageCount": 14,
+      "roleCount": 7,
+      "activityCount": 14,
+      "arrowCount": 13
+    },
+    {
+      "code": "6.5",
+      "title": "Анализ развития существующих и новых направлений",
+      "direction": "Развитие",
+      "stageCount": 9,
+      "roleCount": 6,
+      "activityCount": 9,
+      "arrowCount": 6
+    },
+    {
+      "code": "7.1",
+      "title": "Анализ и аудит",
+      "direction": "Операционная эффективность",
+      "stageCount": 10,
+      "roleCount": 4,
+      "activityCount": 10,
+      "arrowCount": 0
+    },
+    {
+      "code": "7.2",
+      "title": "Оптимизация процессов",
+      "direction": "Операционная эффективность",
+      "stageCount": 11,
+      "roleCount": 4,
+      "activityCount": 12,
+      "arrowCount": 0
+    },
+    {
+      "code": "7.3",
+      "title": "Система мониторинга ключевых показателей эффектов",
+      "direction": "Операционная эффективность",
+      "stageCount": 7,
+      "roleCount": 4,
+      "activityCount": 7,
+      "arrowCount": 0
+    },
+    {
+      "code": "7.4",
+      "title": "5S Организация рабочего места",
+      "direction": "Операционная эффективность",
+      "stageCount": 8,
+      "roleCount": 4,
+      "activityCount": 8,
+      "arrowCount": 0
+    },
+    {
+      "code": "7.5",
+      "title": "Управление проблемами и рисками",
+      "direction": "Операционная эффективность",
+      "stageCount": 10,
+      "roleCount": 5,
+      "activityCount": 10,
+      "arrowCount": 0
+    },
+    {
+      "code": "7.6",
+      "title": "Коммуникация и информационное сопровождение",
+      "direction": "Операционная эффективность",
+      "stageCount": 15,
+      "roleCount": 4,
+      "activityCount": 15,
+      "arrowCount": 0
+    },
+    {
+      "code": "8.1",
+      "title": "Привлечение",
+      "direction": "Персонал",
+      "stageCount": 16,
+      "roleCount": 8,
+      "activityCount": 19,
+      "arrowCount": 9
+    },
+    {
+      "code": "8.2",
+      "title": "Адаптация",
+      "direction": "Персонал",
+      "stageCount": 12,
+      "roleCount": 13,
+      "activityCount": 25,
+      "arrowCount": 11
+    },
+    {
+      "code": "8.3",
+      "title": "Оценка",
+      "direction": "Персонал",
+      "stageCount": 8,
+      "roleCount": 7,
+      "activityCount": 12,
+      "arrowCount": 6
+    },
+    {
+      "code": "8.4",
+      "title": "Увольнение",
+      "direction": "Персонал",
+      "stageCount": 10,
+      "roleCount": 10,
+      "activityCount": 19,
+      "arrowCount": 3
+    },
+    {
+      "code": "8.5",
+      "title": "Повышение производительности труда",
+      "direction": "Персонал",
+      "stageCount": 10,
+      "roleCount": 6,
+      "activityCount": 13,
+      "arrowCount": 7
+    },
+    {
+      "code": "9.1",
+      "title": "Бюджетирование и финансовое планирование",
+      "direction": "Финансы",
+      "stageCount": 14,
+      "roleCount": 14,
+      "activityCount": 15,
+      "arrowCount": 1
+    },
+    {
+      "code": "9.2",
+      "title": "Бухгалтерский учет и отчетность",
+      "direction": "Финансы",
+      "stageCount": 16,
+      "roleCount": 5,
+      "activityCount": 20,
+      "arrowCount": 13
+    },
+    {
+      "code": "9.3",
+      "title": "Управленческая отчетность",
+      "direction": "Финансы",
+      "stageCount": 13,
+      "roleCount": 6,
+      "activityCount": 15,
+      "arrowCount": 2
+    },
+    {
+      "code": "9.4",
+      "title": "Управление доходами и расходами",
+      "direction": "Финансы",
+      "stageCount": 9,
+      "roleCount": 6,
+      "activityCount": 9,
+      "arrowCount": 1
+    },
+    {
+      "code": "9.5",
+      "title": "Взаимодействие с внешними организациями",
+      "direction": "Финансы",
+      "stageCount": 7,
+      "roleCount": 4,
+      "activityCount": 9,
+      "arrowCount": 4
+    },
+    {
+      "code": "11.1",
+      "title": "Целевые программы",
+      "direction": "СОТПБ и ЭБ",
+      "stageCount": 10,
+      "roleCount": 4,
+      "activityCount": 11,
+      "arrowCount": 10
+    },
+    {
+      "code": "11.2",
+      "title": "Инструктажи",
+      "direction": "СОТПБ и ЭБ",
+      "stageCount": 7,
+      "roleCount": 4,
+      "activityCount": 9,
+      "arrowCount": 8
+    },
+    {
+      "code": "11.3",
+      "title": "Обучение и оценка знаний",
+      "direction": "СОТПБ и ЭБ",
+      "stageCount": 3,
+      "roleCount": 4,
+      "activityCount": 6,
+      "arrowCount": 7
+    },
+    {
+      "code": "11.4",
+      "title": "Производство работ",
+      "direction": "СОТПБ и ЭБ",
+      "stageCount": 8,
+      "roleCount": 4,
+      "activityCount": 13,
+      "arrowCount": 11
+    },
+    {
+      "code": "11.5",
+      "title": "Документальное сопровождение",
+      "direction": "СОТПБ и ЭБ",
+      "stageCount": 10,
+      "roleCount": 4,
+      "activityCount": 13,
+      "arrowCount": 12
+    },
+    {
+      "code": "12.1",
+      "title": "Согласование договоров протоколов разногласий, задач и иных документов",
+      "direction": "Право",
+      "stageCount": 7,
+      "roleCount": 3,
+      "activityCount": 13,
+      "arrowCount": 10
+    },
+    {
+      "code": "12.2",
+      "title": "Согласование Спецификаций - Заданий  - Приложений по действующим договорам (новые закупки)",
+      "direction": "Право",
+      "stageCount": 7,
+      "roleCount": 3,
+      "activityCount": 14,
+      "arrowCount": 16
+    },
+    {
+      "code": "12.3",
+      "title": "Подготовка рекламаций, требований, жалоб, служебные споры (автоматизация, учет, хранение)",
+      "direction": "Право",
+      "stageCount": 6,
+      "roleCount": 3,
+      "activityCount": 7,
+      "arrowCount": 4
+    },
+    {
+      "code": "12.4",
+      "title": "Корпоративная защита",
+      "direction": "Право",
+      "stageCount": 6,
+      "roleCount": 2,
+      "activityCount": 6,
+      "arrowCount": 3
+    },
+    {
+      "code": "12.5",
+      "title": "Оценка юридических рисков",
+      "direction": "Право",
+      "stageCount": 6,
+      "roleCount": 1,
+      "activityCount": 4,
+      "arrowCount": 2
+    },
+    {
+      "code": "13.1",
+      "title": "Управление запросами на обслуживание",
+      "direction": "ИТ и Автоматизация",
+      "stageCount": 8,
+      "roleCount": 3,
+      "activityCount": 9,
+      "arrowCount": 12
+    },
+    {
+      "code": "13.2",
+      "title": "Управление изменениями",
+      "direction": "ИТ и Автоматизация",
+      "stageCount": 6,
+      "roleCount": 4,
+      "activityCount": 6,
+      "arrowCount": 9
+    },
+    {
+      "code": "13.3",
+      "title": "Управление инцидентами",
+      "direction": "ИТ и Автоматизация",
+      "stageCount": 9,
+      "roleCount": 4,
+      "activityCount": 10,
+      "arrowCount": 11
+    },
+    {
+      "code": "13.4",
+      "title": "Управление активами и конфигурациями",
+      "direction": "ИТ и Автоматизация",
+      "stageCount": 6,
+      "roleCount": 4,
+      "activityCount": 6,
+      "arrowCount": 8
+    },
+    {
+      "code": "13.5",
+      "title": "Обеспечение доступами и ресурсами",
+      "direction": "ИТ и Автоматизация",
+      "stageCount": 8,
+      "roleCount": 4,
+      "activityCount": 8,
+      "arrowCount": 10
+    },
+    {
+      "code": "14.1",
+      "title": "Матрица администрирования",
+      "direction": "Администрирование",
+      "stageCount": 4,
+      "roleCount": 2,
+      "activityCount": 4,
+      "arrowCount": 1
+    },
+    {
+      "code": "14.2",
+      "title": "Анализ исполнения",
+      "direction": "Администрирование",
+      "stageCount": 7,
+      "roleCount": 3,
+      "activityCount": 8,
+      "arrowCount": 0
+    },
+    {
+      "code": "14.3",
+      "title": "Сквозной протокол",
+      "direction": "Администрирование",
+      "stageCount": 7,
+      "roleCount": 3,
+      "activityCount": 8,
+      "arrowCount": 0
+    },
+    {
+      "code": "14.4",
+      "title": "Ознакомление с организационно-распорядительными документами",
+      "direction": "Администрирование",
+      "stageCount": 11,
+      "roleCount": 3,
+      "activityCount": 15,
+      "arrowCount": 4
+    },
+    {
+      "code": "14.5",
+      "title": "Инструменты Администрирорвания",
+      "direction": "Администрирование",
+      "stageCount": 4,
+      "roleCount": 2,
+      "activityCount": 4,
+      "arrowCount": 0
+    },
+    {
+      "code": "15.3",
+      "title": "ТОиР",
+      "direction": "Техническая политика",
+      "stageCount": 11,
+      "roleCount": 6,
+      "activityCount": 21,
+      "arrowCount": 17
+    },
+    {
+      "code": "15.4",
+      "title": "Метрологическое обеспечение",
+      "direction": "Техническая политика",
+      "stageCount": 13,
+      "roleCount": 11,
+      "activityCount": 29,
+      "arrowCount": 22
+    }
+  ]
+}

@@ -1,0 +1,410 @@
+{
+  "code": "5.1",
+  "title": "Формирование реестр квалифицированных поставщиков по категории",
+  "direction": "Снабжение",
+  "directionCode": "5",
+  "roles": [
+    "Администрация",
+    "Руководительистркутурных подразделений",
+    "СБ",
+    "Снабжение",
+    "Юр.отдел"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "Форма реестра в Ексель",
+      "methodology": "Разработка формы с указанием ключевых характеристик",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Снабжение",
+          "action": "Разработка формы категорийного реестра"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "Реестр поставщиков в Ексель",
+      "methodology": "Внесение в форму реестра в Ексель сущетсвуюших поставщиков Определение потенциальных поставщкиов и внесение их в реестр",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Снабжение",
+          "action": "Внесение поставщиков в реестр по категориям"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "Проект Регламента проведения квалификациив виде ворд-документа",
+      "methodology": "Разработка ворд-документа с указанием критериев выбора поставщиков каждой категории, описанием процесса ежегодного пересмотра, регламента работы комисии и т.д.",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Снабжение",
+          "action": "Разработка регламента проведения квалификации поставщиков"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "Проект приказа в виде-ворд-документ",
+      "methodology": "Разработка ворд-документа с указанием лиц, участвующих в квалификации в каждой категории",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Снабжение",
+          "action": "Подготовка приказа о создании комисии"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Согласованный регламент Согласованный приказ",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководительистркутурных подразделений",
+          "action": "Согласование"
+        },
+        {
+          "role": "Юр.отдел",
+          "action": "Согласование"
+        },
+        {
+          "role": "СБ",
+          "action": "Согласование"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Утвержденный регламент Утвержденный приказ",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администрация",
+          "action": "Утверждение"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": "План-график в виде ворд-документа",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Снабжение",
+          "action": "Разработка плана-графика проведения квалификации поставщиков"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": "Согласованный план-график",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководительистркутурных подразделений",
+          "action": "Согласование"
+        },
+        {
+          "role": "Юр.отдел",
+          "action": "Согласование"
+        },
+        {
+          "role": "СБ",
+          "action": "Согласование"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9 этап",
+      "product": "Утвержденный план-график",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администрация",
+          "action": "Утверждение"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": "Реестр поставщиков с указанием статуса квалификации",
+      "methodology": "1) дистанционный аудит 2) выездной аудит",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Снабжение",
+          "action": "Проведение квалификации"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "label": "11 этап",
+      "product": "Проект договор и специфкации",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Юр.отдел",
+          "action": "Разработка формы долгосрочного договора и специфкации на поставку сырья и ТМЦ"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "label": "12 этап",
+      "product": "Заключенные контракты",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Снабжение",
+          "action": "Заключение долгосрочных контрактов по категорийным закупкам"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": null,
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Руководительистркутурных подразделений",
+      "toRole": "Администрация",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": null,
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 7,
+      "fromRole": "Снабжение",
+      "toRole": "СБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 7,
+      "fromRole": "Руководительистркутурных подразделений",
+      "toRole": "СБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 7,
+      "fromRole": "Юр.отдел",
+      "toRole": "СБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Администрация",
+      "toRole": "Администрация",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 7,
+      "fromRole": "Руководительистркутурных подразделений",
+      "toRole": "СБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 7,
+      "fromRole": "СБ",
+      "toRole": "Администрация",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Снабжение",
+      "toRole": "Руководительистркутурных подразделений",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": null,
+      "toRole": "Руководительистркутурных подразделений",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": null,
+      "toRole": "Юр.отдел",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": null,
+      "toRole": null,
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": null,
+      "toRole": "Руководительистркутурных подразделений",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "СБ",
+      "toRole": "СБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "Снабжение",
+      "toRole": "Снабжение",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Снабжение",
+      "toRole": "СБ",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "СБ",
+      "toRole": "СБ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "Юр.отдел",
+      "toRole": "Юр.отдел",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "Администрация",
+      "toRole": "Администрация",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Руководительистркутурных подразделений",
+      "toRole": "Администрация",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Снабжение",
+      "toRole": "СБ",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Руководительистркутурных подразделений",
+      "toRole": "Руководительистркутурных подразделений",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Юр.отдел",
+      "toRole": "Юр.отдел",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "СБ",
+      "toRole": "СБ",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Юр.отдел",
+      "toRole": "Юр.отдел",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Снабжение",
+      "toRole": "СБ",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 8,
+      "toStage": 9,
+      "fromRole": "Администрация",
+      "toRole": "Администрация",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Руководительистркутурных подразделений",
+      "toRole": "Администрация",
+      "hasArrow": false
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

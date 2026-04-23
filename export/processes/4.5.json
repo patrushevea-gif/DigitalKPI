@@ -1,0 +1,158 @@
+{
+  "code": "4.5",
+  "title": "Планирование",
+  "direction": "Продажи и маркетинг",
+  "directionCode": "4",
+  "roles": [
+    "Логистика",
+    "ОКК",
+    "Отдел продаж",
+    "Производство",
+    "Склад",
+    "Снабжение"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "План-прогноз по отгрузке ГП",
+      "methodology": "Составление плана с учетом данных менеджеров по продажам, планируемых тендеров , заявки от клиентов, исполнение контрактов",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж",
+          "action": "Формирует прогноз продаж по основным группам продукции на год/квартал/месяц/неделя (с учётом тенденций, контрактов, заявок клиентов)"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "План производства, заявки на закуп",
+      "methodology": "Методика производства",
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "Потребность в 1С КА, реестры на оплату",
+      "methodology": "Методика отдела снабжения",
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "Производство (тех карта) ЛКК (протоколы испытаний) Склад (штрихкоды, маркировка)",
+      "methodology": "Методика производства, ЛКК, склада",
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Протоколы испытаний, сертификат качества",
+      "methodology": "Методика ЛКК, склада",
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел продаж",
+          "action": "Переход на процесс \"Продажи\""
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Производство",
+      "toRole": "Логистика",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Логистика",
+      "toRole": "Склад",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Производство",
+      "toRole": "Снабжение",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 4,
+      "toStage": 6,
+      "fromRole": "ОКК",
+      "toRole": "ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Снабжение",
+      "toRole": "Склад",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 6,
+      "fromRole": "Производство",
+      "toRole": "Производство",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Производство",
+      "toRole": "ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Отдел продаж",
+      "toRole": "Склад",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 6,
+      "toStage": 7,
+      "fromRole": "Отдел продаж",
+      "toRole": "Отдел продаж",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "ОКК",
+      "toRole": "Склад",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

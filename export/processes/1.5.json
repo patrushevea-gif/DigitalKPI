@@ -1,0 +1,246 @@
+{
+  "code": "1.5",
+  "title": "Оптимизация технологических процессов",
+  "direction": "Производство",
+  "directionCode": "1",
+  "roles": [
+    "Директор",
+    "Производство",
+    "СГИ",
+    "ТИС",
+    "Технический директор",
+    "Технология R&D"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "Этап 1",
+      "product": "Таблица статистических данных",
+      "methodology": "Регламент",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Производство",
+          "action": "Статистический анализ на производственной линии. Рационализаторские предложения."
+        },
+        {
+          "role": "Технология R&D",
+          "action": "Статистический анализ на производственной линии. Рационализаторские предложения."
+        },
+        {
+          "role": "СГИ",
+          "action": "Статистический анализ на производственной линии. Рационализаторские предложения."
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "Этап 2",
+      "product": "Техническое задание",
+      "methodology": "Стандарт",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Технический директор",
+          "action": "Выявление критичных мест в процессе. Предложение по улучшению ТЗ"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "Этап 3",
+      "product": "Перечень предложений",
+      "methodology": "Стандарт",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "СГИ",
+          "action": "Предложение организационно- технических решений, расчет стоимости."
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "Этап 4",
+      "product": "Перечень предложений, после анализа",
+      "methodology": "Стандарт",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Производство",
+          "action": "Анализ организационно- технических решений"
+        },
+        {
+          "role": "Технический директор",
+          "action": "Анализ организационно-технических решений"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "Этап 5",
+      "product": "Резолюция директора (для рассмотрения в ТИС или рамках бюджета завода)",
+      "methodology": "Стандарт",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Директор",
+          "action": "Согласование (Если в рамках бюджета завода то без ТИС, если нет то через ТИС)"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "Этап 6",
+      "product": "Протокол решения комиссии",
+      "methodology": "Стандарт",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "ТИС",
+          "action": "Комиссия Принятие решения"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "Этап 7",
+      "product": "Реализация проекта",
+      "methodology": "Стандарт",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "СГИ",
+          "action": "Реализация проекта"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "Этап 8",
+      "product": "Скорректированая ТК/ ТИ",
+      "methodology": "СТО СМК 14-2025 ред.1",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Технический директор",
+          "action": "Корректирующие мероприятия в НТД"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "ТИС",
+      "toRole": "Директор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Технический директор",
+      "toRole": "СГИ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Производство",
+      "toRole": "СГИ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "ТИС",
+      "toRole": "СГИ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "СГИ",
+      "toRole": "СГИ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 6,
+      "fromRole": "СГИ",
+      "toRole": "СГИ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "ТИС",
+      "toRole": "СГИ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "ТИС",
+      "toRole": "СГИ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Технический директор",
+      "toRole": "Директор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 7,
+      "fromRole": "СГИ",
+      "toRole": "Директор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Производство",
+      "toRole": "Технология R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Технический директор",
+      "toRole": "Технический директор",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "ТИС",
+      "toRole": "СГИ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Технология R&D",
+      "toRole": "Технический директор",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

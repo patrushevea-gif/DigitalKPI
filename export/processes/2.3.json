@@ -1,0 +1,365 @@
+{
+  "code": "2.3",
+  "title": "Коммерческий отдел",
+  "direction": "Качество",
+  "directionCode": "2",
+  "roles": [
+    "Инженер СМК (специалист по качеству)",
+    "Инженер химик ЛКК",
+    "Коммерческий отдел",
+    "Контролер",
+    "Планировщик",
+    "Руководитель ОКК",
+    "Склад ГП",
+    "Тех. Совет (комиссия по работе с несоответствиями)"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Коммерческий отдел",
+          "action": "План продаж"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "Выполняется контроль сроков хранения ГП на складе",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Склад ГП",
+          "action": "Хранение продукции на складе ГП"
+        },
+        {
+          "role": "Инженер химик ЛКК",
+          "action": "Учет сроков хранения"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "Протокол испытаний",
+      "methodology": "Требуется разработка регламента перепроверок",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Инженер химик ЛКК",
+          "action": "Периодическая перепроверка параметров качества при длительном хранении"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "В реестре партий выполнено объединение в партию отгрузки",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Планировщик",
+          "action": "Планирование отгрузок, формирование партии"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Отметка в тех. карте о перепроверке партии отгрузки",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Склад ГП",
+          "action": "Сборка и подготовка партии отгрузки"
+        },
+        {
+          "role": "Контролер",
+          "action": "Идентификация продукта, контроль документов"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Акт о несоответствии",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководитель ОКК",
+          "action": "Анализ выявленных несоответствий"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": "Акт сверки",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Инженер химик ЛКК",
+          "action": "Сверка арбитражных проб"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": "Сертификат качества",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководитель ОКК",
+          "action": "Подготовка сертефиката качества"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9 этап",
+      "product": "Отметка в журнале о результатах выборочного контроля",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Склад ГП",
+          "action": "Упаковка"
+        },
+        {
+          "role": "Контролер",
+          "action": "Выборочный контроль упаковки"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": "Решение по несоответствию",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Тех. Совет (комиссия по работе с несоответствиями)",
+          "action": "Процесс работы с несоответствиями"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "label": "11 этап",
+      "product": "Отметка в журнале регистрации претензий и рекламаций",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Коммерческий отдел",
+          "action": "Претензия, рекломация, обратная связь от потребителя"
+        },
+        {
+          "role": "Инженер СМК (специалист по качеству)",
+          "action": "Анализ и регистрация претензии или рекламации от потребителя"
+        },
+        {
+          "role": "Руководитель ОКК",
+          "action": "Сводный анализ претензии или рекламации от потребителя"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "label": "12 этап",
+      "product": "1. Отчет 8Д 2. Ответ на претензию или рекламацию",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Коммерческий отдел",
+          "action": "Ответ на претензию, рекламацию"
+        },
+        {
+          "role": "Инженер СМК (специалист по качеству)",
+          "action": "Подготовка ответа по претензии, рекламации"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Склад ГП",
+      "toRole": "Инженер химик ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 4,
+      "fromRole": "Планировщик",
+      "toRole": "Планировщик",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "Планировщик",
+      "toRole": "Склад ГП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 7,
+      "fromRole": "Склад ГП",
+      "toRole": "Инженер химик ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Склад ГП",
+      "toRole": "Контролер",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 9,
+      "fromRole": "Склад ГП",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 4,
+      "fromRole": "Коммерческий отдел",
+      "toRole": "Планировщик",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 1,
+      "fromRole": "Планировщик",
+      "toRole": "Склад ГП",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Склад ГП",
+      "toRole": "Контролер",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 6,
+      "fromRole": "Инженер СМК (специалист по качеству)",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "Контролер",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Инженер СМК (специалист по качеству)",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 10,
+      "fromRole": "Тех. Совет (комиссия по работе с несоответствиями)",
+      "toRole": "Тех. Совет (комиссия по работе с несоответствиями)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 10,
+      "fromRole": "Планировщик",
+      "toRole": "Тех. Совет (комиссия по работе с несоответствиями)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 11,
+      "fromRole": "Коммерческий отдел",
+      "toRole": "Инженер СМК (специалист по качеству)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 11,
+      "fromRole": "Инженер СМК (специалист по качеству)",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 11,
+      "fromRole": "Руководитель ОКК",
+      "toRole": "Тех. Совет (комиссия по работе с несоответствиями)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 12,
+      "fromRole": "Инженер СМК (специалист по качеству)",
+      "toRole": "Тех. Совет (комиссия по работе с несоответствиями)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 12,
+      "toStage": 12,
+      "fromRole": "Планировщик",
+      "toRole": "Инженер химик ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 3,
+      "fromRole": "Контролер",
+      "toRole": "Инженер химик ЛКК",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

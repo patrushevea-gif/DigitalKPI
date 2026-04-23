@@ -1,0 +1,124 @@
+{
+  "code": "12.4",
+  "title": "Корпоративная защита",
+  "direction": "Право",
+  "directionCode": "12",
+  "roles": [
+    "Вышестоящее руководство",
+    "Юридический департамент (ЮД)"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": null,
+      "methodology": "1. Нот. Доверенность от ФЛ (участников); 2. Нот. доверенность от ООО (директора); 3. Опционы от учредителей 4. Договор смешанного займа от 3-го лица; 5. Корпоративный договор между Заимодавцем и компанией Заемщиком; 6. Брачный договор участников; 7. Корректировка Уставов.",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Вышестоящее руководство",
+          "action": "Постановка задачи вышестоящим руководством (изменение ЕИО и т.д.)"
+        },
+        {
+          "role": "Юридический департамент (ЮД)",
+          "action": "Анализ, истребование документов"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Юридический департамент (ЮД)",
+          "action": "Подготовка необходимого пакета документов"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Юридический департамент (ЮД)",
+          "action": "Подача документов в уполномоченный орган"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Юридический департамент (ЮД)",
+          "action": "Регистрация изменений в государственных реестрах"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Юридический департамент (ЮД)",
+          "action": "Сдача документов в архив"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 1,
+      "toStage": 2,
+      "fromRole": "Юридический департамент (ЮД)",
+      "toRole": "Юридический департамент (ЮД)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Юридический департамент (ЮД)",
+      "toRole": "Юридический департамент (ЮД)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "Юридический департамент (ЮД)",
+      "toRole": "Юридический департамент (ЮД)",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

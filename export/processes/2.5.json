@@ -1,0 +1,528 @@
+{
+  "code": "2.5",
+  "title": "СМК",
+  "direction": "Качество",
+  "directionCode": "2",
+  "roles": [
+    "Инженер СМК (специалист по качеству)",
+    "Инженер химик ЛКК",
+    "Контролер",
+    "Лаборант ЛКК",
+    "Работник склада",
+    "Руководитель ОКК",
+    "Тех. Совет (комиссия по работе с несоответствиями)",
+    "Технолог"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "Сформирован отчет о приемке сырья",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Работник склада",
+          "action": "Оприходывание сырья"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "1.Отобраны пробы 2.Выписано направление на исследование в ЛКК",
+      "methodology": "1. Требуется разработка регламента 2.Требуется формирование общего перечня входного контроля сырья (ОПВК)",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Контролер",
+          "action": "Идентификация , проверка документов, внешний осмотр, отбор проб для ЛКК"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "Протокол испытаний",
+      "methodology": "Методики контроля утверждены не в полном объеме, требуется доразработка",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Лаборант ЛКК",
+          "action": "Выполнение исследования в ЛКК"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "Протокол испытаний",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Технолог",
+          "action": "Технологическая проба"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Проверенное сырьё перемещено на склад \"принятых\"",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Инженер химик ЛКК",
+          "action": "Анализ результатов, завершение входного контроля, перемещение в \"1С\" на склад \"принятых\""
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Решение по несоответствию",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Тех. Совет (комиссия по работе с несоответствиями)",
+          "action": "Процесс работы с несоответствием, комиссионное принятие решения"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": "Выполняется контроль сроков хранения сырья на складе",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Работник склада",
+          "action": "Хранение сырья на складе \"принятых\""
+        },
+        {
+          "role": "Инженер химик ЛКК",
+          "action": "Учёт сроков хранения в соответствии с параметрами качества и периодичностью перепроверок"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": "Протокол испытаний",
+      "methodology": "1. Методики контроля утверждены не в полном объеме, требуется доразработка 2. Требуется разработка регламента перепроверок",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Лаборант ЛКК",
+          "action": "Выполнение периодических перепроверок"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9 этап",
+      "product": "Акт о несоответствия",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Работник склада",
+          "action": "Изолирование сырья с несоответствиями"
+        },
+        {
+          "role": "Руководитель ОКК",
+          "action": "Анализ выявленного несоответствия"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": "Оформлена претензия или рекламеция",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Работник склада",
+          "action": "Рекламационная огрузка несоответствующей сырьевой продукции поставщику"
+        },
+        {
+          "role": "Инженер СМК (специалист по качеству)",
+          "action": "Претензионня работа"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 6,
+      "toStage": 7,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 10,
+      "fromRole": "Руководитель ОКК",
+      "toRole": "Тех. Совет (комиссия по работе с несоответствиями)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Контролер",
+      "toRole": "Инженер СМК (специалист по качеству)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Контролер",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Технолог",
+      "toRole": "Тех. Совет (комиссия по работе с несоответствиями)",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 2,
+      "toStage": 3,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Тех. Совет (комиссия по работе с несоответствиями)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 6,
+      "fromRole": "Руководитель ОКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 3,
+      "fromRole": "Руководитель ОКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 3,
+      "fromRole": "Контролер",
+      "toRole": "Лаборант ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 3,
+      "fromRole": "Работник склада",
+      "toRole": "Работник склада",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "Работник склада",
+      "toRole": "Лаборант ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Инженер химик ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 10,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Технолог",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Технолог",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Технолог",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Инженер химик ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Работник склада",
+      "toRole": "Лаборант ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 7,
+      "fromRole": "Инженер СМК (специалист по качеству)",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 7,
+      "fromRole": "Работник склада",
+      "toRole": "Работник склада",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Инженер СМК (специалист по качеству)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Технолог",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 8,
+      "toStage": 10,
+      "fromRole": "Работник склада",
+      "toRole": "Работник склада",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Работник склада",
+      "toRole": "Инженер СМК (специалист по качеству)",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Руководитель ОКК",
+      "toRole": "Технолог",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Технолог",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Контролер",
+      "toRole": "Технолог",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 1,
+      "fromRole": "Контролер",
+      "toRole": "Лаборант ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Контролер",
+      "toRole": "Лаборант ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Контролер",
+      "toRole": "Лаборант ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 7,
+      "fromRole": "Работник склада",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Работник склада",
+      "toRole": "Контролер",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Технолог",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Технолог",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 7,
+      "fromRole": "Работник склада",
+      "toRole": "Лаборант ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 9,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 9,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 9,
+      "fromRole": "Инженер СМК (специалист по качеству)",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 6,
+      "fromRole": "Технолог",
+      "toRole": "Тех. Совет (комиссия по работе с несоответствиями)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 9,
+      "fromRole": "Инженер химик ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 9,
+      "fromRole": "Руководитель ОКК",
+      "toRole": "Тех. Совет (комиссия по работе с несоответствиями)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 5,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Инженер химик ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Контролер",
+      "toRole": "Инженер химик ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Контролер",
+      "toRole": "Инженер СМК (специалист по качеству)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 10,
+      "fromRole": "Работник склада",
+      "toRole": "Работник склада",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Контролер",
+      "toRole": "Инженер химик ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 10,
+      "fromRole": "Руководитель ОКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Лаборант ЛКК",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

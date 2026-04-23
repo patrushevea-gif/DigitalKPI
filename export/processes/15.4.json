@@ -1,0 +1,534 @@
+{
+  "code": "15.4",
+  "title": "Метрологическое обеспечение",
+  "direction": "Техническая политика",
+  "directionCode": "15",
+  "roles": [
+    "IT",
+    "R&D",
+    "Метролог предприятия",
+    "ОТК",
+    "Отдел снабжения и логистика",
+    "Производство",
+    "СГИ",
+    "СМК",
+    "Склад",
+    "Технология",
+    "Юридический отдел"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "R&D",
+          "action": "Сбор и анализ информации о средствах измерения и испытательного оборудования"
+        },
+        {
+          "role": "ОТК",
+          "action": "Сбор и анализ информации о средствах измерения и испытательного оборудования"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "Перечень средств измерений средств измерений и учёта испытательного оборудования в 1С",
+      "methodology": "Доработка СТО-СМК-10-2025",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Метролог предприятия",
+          "action": "Внесение испытательного оборудования и средств измерений в перечень оборудования"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "Прикреплены паспорта на оборудования и свидетельства о поверке СИ и ИО",
+      "methodology": "Доработка СТО-СМК-10-2025",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Метролог предприятия",
+          "action": "Определение необходимости первичной поверки или аттестации оборудования"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "Учёт средств измерений и испытательного оборудования в 1С",
+      "methodology": "Доработка СТО-СМК-10-2025",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "R&D",
+          "action": "Передача в экплуатацию. Учет средств измерений и испытательного оборудования. Контроль периодичности поверки."
+        },
+        {
+          "role": "СГИ",
+          "action": "Передача в экплуатацию. Учет средств измерений . Контроль периодичности поверки."
+        },
+        {
+          "role": "ОТК",
+          "action": "Передача в экплуатацию. Учет средств измерений и испытательного оборудования. Контроль периодичности поверки."
+        },
+        {
+          "role": "Производство",
+          "action": "Передача в экплуатацию. Учет средств измерений и испытательного оборудования. Контроль периодичности поверки."
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Процесс согласования договора в 1С",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Метролог предприятия",
+          "action": "Состовление графика поверки"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Утверждённый график поверки в 1С",
+      "methodology": "Доработка СТО-СМК-10-2025",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Метролог предприятия",
+          "action": "Заключение договора с ЦСМ"
+        },
+        {
+          "role": "Юридический отдел",
+          "action": "Согласование договора"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": "Учёт средств измерений и испытательного оборудования в 1С",
+      "methodology": "Доработка СТО-СМК-10-2025",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "R&D",
+          "action": "Контроль за состоянием средств измерений и испытательного оборудования во время межповерочного интервала"
+        },
+        {
+          "role": "СГИ",
+          "action": "Контроль за состоянием средств измерений во время межповерочного интервала"
+        },
+        {
+          "role": "ОТК",
+          "action": "Контроль эксплатации средств измерений и испытательного оборудования во время межповерочного интервала"
+        },
+        {
+          "role": "Производство",
+          "action": "Контрольза состоянием средств измерений во время межповерочного интервала"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": "Дефетная ведомость. Учёт средств измерений и испытательного оборудования в 1С",
+      "methodology": "Доработка СТО-СМК-10-2025",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "R&D",
+          "action": "Дефектная ведомость/ списание"
+        },
+        {
+          "role": "Метролог предприятия",
+          "action": "Заявка на поверку"
+        },
+        {
+          "role": "ОТК",
+          "action": "Дефектная ведомость/ списание"
+        },
+        {
+          "role": "Производство",
+          "action": "Дефектная ведомость/ списание"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9этап",
+      "product": "Процесс согласования и оплаты по метрологии",
+      "methodology": "СТО-СМК-12-2025",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Отдел снабжения и логистика",
+          "action": "Согласование и оплата"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": "Заявка на техническое обслуживание средств измерений и испытательного оборудования в 1С",
+      "methodology": "СТО-СМК-11- 2025",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "R&D",
+          "action": "Техническое обслуживание оборудования перед отправкой при необходимости"
+        },
+        {
+          "role": "ОТК",
+          "action": "Техническое обслуживание оборудования перед отправкой при необходимости"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "label": "11 этап",
+      "product": null,
+      "methodology": "СТО-СМК-10-2025",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Метролог предприятия",
+          "action": "Подготовка к оправке на поверку"
+        },
+        {
+          "role": "Отдел снабжения и логистика",
+          "action": "Доставка оборудования до поверителя"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "label": "12 этап",
+      "product": null,
+      "methodology": "СТО-СМК-10-2025",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Метролог предприятия",
+          "action": "Получения оборудования"
+        },
+        {
+          "role": "Отдел снабжения и логистика",
+          "action": "Возврат средств измерений"
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "label": "13 этап",
+      "product": "Учет и актуализация срокв поверки средств измеренийи испытательного оборудования в 1С",
+      "methodology": "Доработка СТО-СМК-10-2025",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "R&D",
+          "action": "Дефектная ведомость при несоответствия после результатов поверки"
+        },
+        {
+          "role": "Метролог предприятия",
+          "action": "Актуализация сроков периодической поверки средств измерений и аттестации испытательного оборудования"
+        },
+        {
+          "role": "ОТК",
+          "action": "Дефектная ведомость при несоответствия после результатов поверки"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Метролог предприятия",
+      "toRole": "Юридический отдел",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 11,
+      "fromRole": "ОТК",
+      "toRole": "Юридический отдел",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 12,
+      "fromRole": "Отдел снабжения и логистика",
+      "toRole": "Отдел снабжения и логистика",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 12,
+      "toStage": 12,
+      "fromRole": "ОТК",
+      "toRole": "Отдел снабжения и логистика",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "R&D",
+      "toRole": "Метролог предприятия",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Метролог предприятия",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 5,
+      "fromRole": "Метролог предприятия",
+      "toRole": "Метролог предприятия",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "СГИ",
+      "toRole": "Метролог предприятия",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "R&D",
+      "toRole": "Метролог предприятия",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "R&D",
+      "toRole": "R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "ОТК",
+      "toRole": "Производство",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "R&D",
+      "toRole": "R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "СГИ",
+      "toRole": "СГИ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "ОТК",
+      "toRole": "ОТК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Производство",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "R&D",
+      "toRole": "Метролог предприятия",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Метролог предприятия",
+      "toRole": "Метролог предприятия",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "СГИ",
+      "toRole": "Метролог предприятия",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Метролог предприятия",
+      "toRole": "ОТК",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Метролог предприятия",
+      "toRole": "Производство",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 12,
+      "toStage": 12,
+      "fromRole": "СГИ",
+      "toRole": "Метролог предприятия",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "СГИ",
+      "toRole": "СГИ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "R&D",
+      "toRole": "СГИ",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "R&D",
+      "toRole": "R&D",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "ОТК",
+      "toRole": "ОТК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "ОТК",
+      "toRole": "Производство",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "Производство",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Метролог предприятия",
+      "toRole": "Производство",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 8,
+      "toStage": 9,
+      "fromRole": "Метролог предприятия",
+      "toRole": "Метролог предприятия",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "СГИ",
+      "toRole": "Метролог предприятия",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 11,
+      "toStage": 11,
+      "fromRole": "СГИ",
+      "toRole": "Метролог предприятия",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 11,
+      "fromRole": "ОТК",
+      "toRole": "Производство",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 12,
+      "toStage": 12,
+      "fromRole": "Метролог предприятия",
+      "toRole": "ОТК",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 13,
+      "toStage": 13,
+      "fromRole": "Технология",
+      "toRole": "Метролог предприятия",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 5,
+      "toStage": 13,
+      "fromRole": "Технология",
+      "toRole": "Технология",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Технология",
+      "toRole": "Метролог предприятия",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Метролог предприятия",
+      "toRole": "СМК",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

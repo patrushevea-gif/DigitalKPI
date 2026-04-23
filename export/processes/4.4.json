@@ -1,0 +1,240 @@
+{
+  "code": "4.4",
+  "title": "Аттестация и сертификация",
+  "direction": "Продажи и маркетинг",
+  "directionCode": "4",
+  "roles": [
+    "RnD",
+    "Бухгалтерия",
+    "Логистика",
+    "ОКК",
+    "Отдел IT",
+    "Отдел продаж",
+    "Склад",
+    "Служба безопасности",
+    "Юридический отдел"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "RnD",
+          "action": "Формирование заявки на разработку НТД"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "ОКК",
+          "action": "Согласование содержания этикетки"
+        },
+        {
+          "role": "RnD",
+          "action": "Согласование содержания этикетки"
+        },
+        {
+          "role": "Отдел IT",
+          "action": "Разработка проекта этикетки"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "RnD",
+          "action": "Подготовка образцов для получения СГР"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "RnD",
+          "action": "Согласование/ доработка состава"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 1,
+      "toStage": 1,
+      "fromRole": "RnD",
+      "toRole": "Отдел продаж",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Служба безопасности",
+      "toRole": "Логистика",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "RnD",
+      "toRole": "Отдел продаж",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "RnD",
+      "toRole": "Склад",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Склад",
+      "toRole": "Логистика",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Отдел продаж",
+      "toRole": "Юридический отдел",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Служба безопасности",
+      "toRole": "Бухгалтерия",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Служба безопасности",
+      "toRole": "Юридический отдел",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Служба безопасности",
+      "toRole": "Бухгалтерия",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Отдел продаж",
+      "toRole": "Отдел IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Служба безопасности",
+      "toRole": "Юридический отдел",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Служба безопасности",
+      "toRole": "Бухгалтерия",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "RnD",
+      "toRole": "Отдел продаж",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "RnD",
+      "toRole": "Склад",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Склад",
+      "toRole": "Логистика",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 2,
+      "fromRole": "Отдел продаж",
+      "toRole": "Отдел продаж",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Отдел продаж",
+      "toRole": "Отдел продаж",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 1,
+      "fromRole": "ОКК",
+      "toRole": "RnD",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "ОКК",
+      "toRole": "RnD",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 1,
+      "fromRole": "ОКК",
+      "toRole": "Отдел продаж",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

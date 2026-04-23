@@ -1,0 +1,107 @@
+{
+  "code": "12.5",
+  "title": "Оценка юридических рисков",
+  "direction": "Право",
+  "directionCode": "12",
+  "roles": [
+    "Юридический департамент (ЮД)"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": null,
+      "methodology": "Каждый квартал требуется обновление / корректировка / дополнение действующей ЮКР",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Юридический департамент (ЮД)",
+          "action": "Запрос сведений от руководителей направлений"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Юридический департамент (ЮД)",
+          "action": "обновление / корректировка / дополнение ЮКР"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Юридический департамент (ЮД)",
+          "action": "Подготовка и утверждение приказа"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Юридический департамент (ЮД)",
+          "action": "Публикация в системе Битрикс 24 и размещение в сетевой папке R"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": []
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 1,
+      "toStage": 2,
+      "fromRole": "Юридический департамент (ЮД)",
+      "toRole": "Юридический департамент (ЮД)",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Юридический департамент (ЮД)",
+      "toRole": "Юридический департамент (ЮД)",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

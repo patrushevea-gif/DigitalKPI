@@ -1,0 +1,354 @@
+{
+  "code": "9.2",
+  "title": "Бухгалтерский учет и отчетность",
+  "direction": "Финансы",
+  "directionCode": "9",
+  "roles": [
+    "IT",
+    "Администрация",
+    "Все отделы",
+    "Развитие, автоматизация",
+    "Финансы"
+  ],
+  "stages": [
+    {
+      "number": 0,
+      "label": "0 этап",
+      "product": "Утвержденная до 25 декабря текущего года Учетная политика для целей бухгалтерского учета на следующий отчетный год.",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Разработка/корректировка существующей учетной политики для целей бухгалтерского учета в соответствии с требованием законодательства и финансово-хозяйственной деятельностью компании"
+        }
+      ]
+    },
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "Все хоз.операции отражены в 1С КА (ERP)",
+      "methodology": "не требуется",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Все отделы",
+          "action": "Ежедневное сквозное отражение всех хозяйственных операций организации в реальном масштабе времени в управленческой программе 1С КА (ERP в будущем)"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "Хозяйственные операции отражены в 1С:Бухгалтерия",
+      "methodology": "не требуется",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "IT",
+          "action": "Ежедневная выгрузка хозяйственных операций из управленческой программы 1С в 1С:Бухгалтерия"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "Достоверный учет хоз.операции фактам хоз.деятельности (в соответствии с первичным документом)",
+      "methodology": "не требуется",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Ежедневный контроль за достоверностью отраженной информации в 1С:Бухгалтерия"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "Операция закрытие месяца проведена без ошибок. (период закрыт)",
+      "methodology": "не требуется",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "До 5-го числа следующего месяца за отчетным проверка проведения всех операций и закрытие периода (месяца)"
+        },
+        {
+          "role": "IT",
+          "action": "Техническая поддержка в реализации этапа"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Подготовленная к сдаче промежуточная отчетность",
+      "methodology": "не требуется",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Формирование промежуточной отчетности"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Достоверная промежуточная отчетность",
+      "methodology": "не требуется",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Внутренний контроль. Проверка достоверности сформированной промежуточной отчетности."
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": "Протокол отправки отчетности",
+      "methodology": "не требуется",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Выгрузка отчетности в спец.программу передачи данных. Отправка отчетности в контролирующие органы"
+        },
+        {
+          "role": "IT",
+          "action": "Техническая поддержка в реализации этапа"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": "Протокол принятия отчетности",
+      "methodology": "не требуется",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Проверка факта сдачи отчетности"
+        },
+        {
+          "role": "IT",
+          "action": "Техническая поддержка в реализации этапа"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9 этап",
+      "product": "Заключение аудиторов",
+      "methodology": "не требуется",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Проведение промежуточной аудиторской проверки"
+        },
+        {
+          "role": "IT",
+          "action": "Организация безопасного доступа аудиторов к информационной программе 1С:Бухгалтерия"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": "Ошибки исправлены",
+      "methodology": "не требуется",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Исправление ошибок по результатам промежуточной аудиторской проверки"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "label": "11 этап",
+      "product": "Предварительная финансовая и налоговая отчетность",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Формирование годовой финансовой и бухгалтерской отчетности"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "label": "12 этап",
+      "product": "Исправленная годовая финансовая и налоговая отчетность",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Исправление ошибок по результатам аудиторской проверки"
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "label": "13 этап",
+      "product": "Подписанная отчетность",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администрация",
+          "action": "Утверждение годовой финансовой и налоговой отчетности"
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "label": "14 этап",
+      "product": "Протокол сдачи отчетности",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Сдача отчетности в контролирующие органы"
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "label": "15 этап",
+      "product": "Заархивированная отчетность",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Финансы",
+          "action": "Архивирование сданной отчетности"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Финансы",
+      "toRole": "Финансы",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "Финансы",
+      "toRole": "Финансы",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "Финансы",
+      "toRole": "Финансы",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 7,
+      "fromRole": "Финансы",
+      "toRole": "Финансы",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 8,
+      "fromRole": "Финансы",
+      "toRole": "Финансы",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 10,
+      "fromRole": "Финансы",
+      "toRole": "Финансы",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 11,
+      "fromRole": "Финансы",
+      "toRole": "Финансы",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 11,
+      "toStage": 12,
+      "fromRole": "Финансы",
+      "toRole": "Финансы",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 14,
+      "toStage": 15,
+      "fromRole": "Финансы",
+      "toRole": "Финансы",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Все отделы",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 7,
+      "toStage": 7,
+      "fromRole": "Финансы",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Все отделы",
+      "toRole": "IT",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Все отделы",
+      "toRole": "IT",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

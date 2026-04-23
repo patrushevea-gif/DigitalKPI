@@ -1,0 +1,169 @@
+{
+  "code": "13.2",
+  "title": "Управление изменениями",
+  "direction": "ИТ и Автоматизация",
+  "directionCode": "13",
+  "roles": [
+    "Пользователь",
+    "Программист",
+    "Руководитель отдела ИТ",
+    "Системный администратор"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Пользователь",
+          "action": "Инициирование процесса на изменение"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководитель отдела ИТ",
+          "action": "Оценка и согласование запроса"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Программист",
+          "action": "Реализация"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководитель отдела ИТ",
+          "action": "Проверка изменения"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Системный администратор",
+          "action": "Закрытие изменения"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Руководитель отдела ИТ",
+          "action": "Анализ и отчетность"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Системный администратор",
+      "toRole": "Руководитель отдела ИТ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 6,
+      "fromRole": "Руководитель отдела ИТ",
+      "toRole": "Руководитель отдела ИТ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 5,
+      "toStage": 5,
+      "fromRole": "Системный администратор",
+      "toRole": "Руководитель отдела ИТ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 2,
+      "fromRole": "Руководитель отдела ИТ",
+      "toRole": "Руководитель отдела ИТ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Руководитель отдела ИТ",
+      "toRole": "Программист",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 3,
+      "toStage": 4,
+      "fromRole": "Руководитель отдела ИТ",
+      "toRole": "Руководитель отдела ИТ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 1,
+      "fromRole": "Пользователь",
+      "toRole": "Руководитель отдела ИТ",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Руководитель отдела ИТ",
+      "toRole": "Программист",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 3,
+      "fromRole": "Программист",
+      "toRole": "Программист",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

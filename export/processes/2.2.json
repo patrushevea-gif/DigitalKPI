@@ -1,0 +1,346 @@
+{
+  "code": "2.2",
+  "title": "Контроль качества операционн. и ГП",
+  "direction": "Качество",
+  "directionCode": "2",
+  "roles": [
+    "Инженер ЛКК",
+    "Контроль качества операционн. и ГП",
+    "Контролёр ОКК",
+    "Лаборант ЛКК",
+    "Работник производства",
+    "Руководитель ОКК",
+    "Технолог"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "Отметка в журнале о результатах выборочного контроля",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Работник производства",
+          "action": "Операции взвешивания компонентов, фассовка в партионную тару"
+        },
+        {
+          "role": "Контролёр ОКК",
+          "action": "Выборочный контроль"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "Отметка в журнале о результатах выборочного контроля",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Работник производства",
+          "action": "Выполнение операций производственного цикла в соответствии с технологией"
+        },
+        {
+          "role": "Контролёр ОКК",
+          "action": "Выборочный контроль"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "1.Отобраны пробы 2.Выписано направление на исследование в ЛКК",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Контролёр ОКК",
+          "action": "Идентификация , проверка документов на выполнени точек контроля, отбор проб для ЛКК"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "Протокол испытаний",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Лаборант ЛКК",
+          "action": "Выполнение исследований в объеме тестов по технологии"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Лист корректировки",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Технолог",
+          "action": "Анализ результатов, технологическое сопровождение"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Отметка в журнале о результатах выборочного контроля",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Работник производства",
+          "action": "Операция завершения цикла производства"
+        },
+        {
+          "role": "Контролёр ОКК",
+          "action": "Выборочный контроль"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": "1.Отобраны пробы 2.Выписано направление на исследование в ЛКК",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Контролёр ОКК",
+          "action": "Идентификация , проверка документов на выполнени точек контроля, отбор проб для ЛКК"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "label": "8 этап",
+      "product": "Протокол испытаний",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Лаборант ЛКК",
+          "action": "Выполнение исследований в объеме тестов окончательного контроля"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "label": "9 этап",
+      "product": "Сформированы арбитражные пробы",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Инженер ЛКК",
+          "action": "Анализ результатов испытаний, формирование арбитражных проб"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "label": "10 этап",
+      "product": "Отметка в журнале о результатах выборочного контроля",
+      "methodology": "Требуется разработка регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Работник производства",
+          "action": "Фассовка ГП"
+        },
+        {
+          "role": "Контролёр ОКК",
+          "action": "Выборочный контроль"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "label": "11 этап",
+      "product": "Акт несоответствия",
+      "methodology": "Требуется переиздание регламента",
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Работник производства",
+          "action": "Изолирование несоответствующей продкуции"
+        },
+        {
+          "role": "Руководитель ОКК",
+          "action": "Анализ выявленных несоответсвий, запуск процесса работы с несоответствиями"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStage": 1,
+      "toStage": 2,
+      "fromRole": "Работник производства",
+      "toRole": "Работник производства",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 3,
+      "fromRole": "Работник производства",
+      "toRole": "Контролёр ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 4,
+      "fromRole": "Контролёр ОКК",
+      "toRole": "Лаборант ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 11,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 3,
+      "toStage": 3,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 8,
+      "toStage": 8,
+      "fromRole": "Контролёр ОКК",
+      "toRole": "Лаборант ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 7,
+      "fromRole": "Работник производства",
+      "toRole": "Контролёр ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 4,
+      "toStage": 5,
+      "fromRole": "Инженер ЛКК",
+      "toRole": "Технолог",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 6,
+      "fromRole": "Работник производства",
+      "toRole": "Работник производства",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Инженер ЛКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 6,
+      "toStage": 6,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 6,
+      "toStage": 10,
+      "fromRole": "Работник производства",
+      "toRole": "Работник производства",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Работник производства",
+      "toRole": "Инженер ЛКК",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 9,
+      "toStage": 9,
+      "fromRole": "Технолог",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Лаборант ЛКК",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": false
+    },
+    {
+      "fromStage": 11,
+      "toStage": 11,
+      "fromRole": "Работник производства",
+      "toRole": "Руководитель ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 1,
+      "toStage": 1,
+      "fromRole": "Работник производства",
+      "toRole": "Контролёр ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 2,
+      "fromRole": "Работник производства",
+      "toRole": "Контролёр ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 10,
+      "toStage": 10,
+      "fromRole": "Работник производства",
+      "toRole": "Контролёр ОКК",
+      "hasArrow": true
+    },
+    {
+      "fromStage": 2,
+      "toStage": 5,
+      "fromRole": "Работник производства",
+      "toRole": "Технолог",
+      "hasArrow": true
+    }
+  ],
+  "meta": {
+    "targetState": null,
+    "currentState": null,
+    "transformation": null,
+    "essence": null
+  }
+}

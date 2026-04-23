@@ -1,0 +1,122 @@
+{
+  "code": "14.3",
+  "title": "Сквозной протокол",
+  "direction": "Администрирование",
+  "directionCode": "14",
+  "roles": [
+    "IT",
+    "Администратор",
+    "Генеральный директор"
+  ],
+  "stages": [
+    {
+      "number": 1,
+      "label": "1 этап",
+      "product": "Презентация",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администратор",
+          "action": "Подготовка концепции работы со сквозным протоколом"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "label": "2 этап",
+      "product": "Согласование письмом в почте",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Генеральный директор",
+          "action": "Согласование предоставленной концепции"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "label": "3 этап",
+      "product": "ТЗ",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администратор",
+          "action": "Подготовка ТЗ на доработку имеющейся системы"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "label": "4 этап",
+      "product": "Работоспособная система",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "IT",
+          "action": "Доработка системы по ТЗ"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "label": "5 этап",
+      "product": "Обратная связь о выполненной рабооте согласно ТЗ",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администратор",
+          "action": "Тестирование системы после доработки"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "label": "6 этап",
+      "product": "Подпись в листе ознакомления о проведенном обучении",
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администратор",
+          "action": "Обучение сотрудников работе в системе, получение ОС"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "label": "7 этап",
+      "product": null,
+      "methodology": null,
+      "metrics": null,
+      "kpi": null,
+      "activities": [
+        {
+          "role": "Администратор",
+          "action": "Контроль системы в части правильности работы"
+        },
+        {
+          "role": "IT",
+          "action": "Конртроль системы в технической плоскости"
+        }
+      ]
+    }
+  ],
+  "dependencies": [],
+  "meta": {
+    "targetState": "Битрикс24 - единственный источник информации по задачам, все протоколы ведутся в системе. Система удобна пользователям, персонал обучен",
+    "currentState": "Не все протоколы перенесены, не все подразделения работают в системе",
+    "transformation": "Реализация проекта сквозной протокол в Б24",
+    "essence": null
+  }
+}
