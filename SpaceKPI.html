@@ -185,17 +185,20 @@ cv.addEventListener('wheel',e=>{e.preventDefault();cs.r=Math.max(80,Math.min(900
 
 const SG=[new THREE.Group(),new THREE.Group(),new THREE.Group(),new THREE.Group(),new THREE.Group()];
 SG.forEach(g=>scene.add(g));
-const HOV=[[],[],[],[]];
+const HOV=[[],[],[],[],[]];
 
 function label(txt,col='#fff',sz=12,bg=null){
-const c=document.createElement('canvas'),ctx=c.getContext('2d'),pd=6,fp=sz*2.2;
-ctx.font=`500 ${fp}px 'Anthropic Sans',sans-serif`;
-const w=ctx.measureText(txt).width+pd*2,h=fp+pd*1.1;
+const c=document.createElement('canvas'),ctx=c.getContext('2d'),pd=8,fp=sz*2.4;
+ctx.font=`700 ${fp}px 'Inter','Anthropic Sans',sans-serif`;
+const w=ctx.measureText(txt).width+pd*2,h=fp+pd*1.2;
 c.width=w;c.height=h;
-ctx.font=`500 ${fp}px 'Anthropic Sans',sans-serif`;
-if(bg){ctx.fillStyle=bg;const r=6;ctx.beginPath();ctx.moveTo(r,0);ctx.lineTo(w-r,0);ctx.quadraticCurveTo(w,0,w,r);ctx.lineTo(w,h-r);ctx.quadraticCurveTo(w,h,w-r,h);ctx.lineTo(r,h);ctx.quadraticCurveTo(0,h,0,h-r);ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);ctx.closePath();ctx.fill();}
+ctx.font=`700 ${fp}px 'Inter','Anthropic Sans',sans-serif`;
+// Soft dark halo (no box) for readability on any background
+ctx.shadowColor='rgba(0,0,0,0.92)';ctx.shadowBlur=10;ctx.shadowOffsetX=0;ctx.shadowOffsetY=1;
 ctx.fillStyle=col;ctx.textBaseline='middle';ctx.fillText(txt,pd,h/2);
-const tx=new THREE.CanvasTexture(c);tx.minFilter=THREE.LinearFilter;
+// Second pass for stronger text contrast
+ctx.shadowBlur=0;ctx.fillText(txt,pd,h/2);
+const tx=new THREE.CanvasTexture(c);tx.minFilter=THREE.LinearFilter;tx.anisotropy=4;
 const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthWrite:false,depthTest:false}));
 s.scale.set(w*0.22,h*0.22,1);s.userData.isLbl=true;return s;
 }
@@ -323,6 +326,373 @@ const y=oy+j*dy;LC.gr.add(ln(new THREE.Vector3(ox,y,0),new THREE.Vector3(ox+nx*d
 
 const LD={goals:new THREE.Group(),dirs:new THREE.Group(),dash:new THREE.Group(),emp:new THREE.Group(),idx:new THREE.Group(),sal:new THREE.Group(),twins:new THREE.Group(),team:new THREE.Group(),ai:new THREE.Group(),lk:new THREE.Group()};
 Object.values(LD).forEach(g=>SG[1].add(g));
+
+// ==================== LE · АРХИТЕКТУРА 2.0 ====================
+const LE={
+  procs:new THREE.Group(), dirsL:new THREE.Group(),
+  itCore:new THREE.Group(), itOrbit:new THREE.Group(),
+  dash:new THREE.Group(), dashMain:new THREE.Group(),
+  goals:new THREE.Group(), motiv:new THREE.Group(),
+  leaders:new THREE.Group(), agents:new THREE.Group(),
+  ai:new THREE.Group(),
+  lk:new THREE.Group()
+};
+Object.values(LE).forEach(g=>SG[4].add(g));
+
+// ---- Layout constants ----
+const LE_Y_BOTTOM=-200, LE_Y_MID=0, LE_Y_TOP=200, LE_Y_PEAK=340;
+const LE_R_BOTTOM=340, LE_R_MID=170, LE_R_TOP=230;
+
+// ---- Bottom layer: 19 directions + processes (static) ----
+const leDirHubs={}; // id -> mesh
+DIRS.forEach((d,i)=>{
+  const ang=i*Math.PI*2/DIRS.length;
+  const x=Math.cos(ang)*LE_R_BOTTOM, z=Math.sin(ang)*LE_R_BOTTOM;
+  // Direction hub (crystal octahedron)
+  const hub=new THREE.Mesh(
+    new THREE.OctahedronGeometry(10,1),
+    new THREE.MeshPhongMaterial({color:d.c,emissive:d.c,emissiveIntensity:0.55,shininess:90,transparent:true,opacity:0.95})
+  );
+  hub.position.set(x,LE_Y_BOTTOM,z);
+  hub.userData={name:d.n,info:`Направление ${d.id}: ${d.n}`,dir:d.id};
+  LE.dirsL.add(hub);HOV[4].push(hub);
+  leDirHubs[d.id]=hub;
+  // Glow ring under the hub
+  const ringGeo=new THREE.RingGeometry(12,16,32);
+  const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:d.c,transparent:true,opacity:0.45,side:THREE.DoubleSide,depthWrite:false}));
+  ring.rotation.x=-Math.PI/2;ring.position.set(x,LE_Y_BOTTOM-8,z);
+  LE.dirsL.add(ring);
+  // Label above hub — transparent, bold
+  const lab=label(d.n,'#fff',11);lab.position.set(x*1.03,LE_Y_BOTTOM+22,z*1.03);
+  LE.dirsL.add(lab);
+  // Processes: small nodes in an arc around the hub, in a tangent direction
+  const pc=(PROCS.find(p=>p[0]===d.id)||[0,3])[1];
+  const names=PNAMES[d.id]||[];
+  const tgx=-Math.sin(ang),tgz=Math.cos(ang); // tangent direction
+  for(let j=0;j<pc;j++){
+    const off=(j-(pc-1)/2)*18;
+    const px=x+tgx*off, pz=z+tgz*off, py=LE_Y_BOTTOM-14;
+    const pn=new THREE.Mesh(
+      new THREE.SphereGeometry(3,12,12),
+      new THREE.MeshPhongMaterial({color:d.c,emissive:d.c,emissiveIntensity:0.35,shininess:60,transparent:true,opacity:0.9})
+    );
+    pn.position.set(px,py,pz);
+    pn.userData={name:names[j]||`Процесс ${j+1}`,info:`${d.n} · ${names[j]||''}`.trim(),dir:d.id};
+    LE.procs.add(pn);HOV[4].push(pn);
+    // tiny connector
+    LE.procs.add(ln(new THREE.Vector3(px,py,pz),new THREE.Vector3(x,LE_Y_BOTTOM,z),d.c,0.22));
+  }
+});
+
+// Bottom layer glow platter: two concentric rings
+const platter1=new THREE.Mesh(new THREE.RingGeometry(LE_R_BOTTOM-8,LE_R_BOTTOM+8,128),new THREE.MeshBasicMaterial({color:0x5b6ee8,transparent:true,opacity:0.25,side:THREE.DoubleSide,depthWrite:false}));
+platter1.rotation.x=-Math.PI/2;platter1.position.y=LE_Y_BOTTOM-16;LE.dirsL.add(platter1);
+const platter2=new THREE.Mesh(new THREE.RingGeometry(LE_R_BOTTOM+18,LE_R_BOTTOM+22,128),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.18,side:THREE.DoubleSide,depthWrite:false}));
+platter2.rotation.x=-Math.PI/2;platter2.position.y=LE_Y_BOTTOM-16;LE.dirsL.add(platter2);
+
+// ---- Middle layer: IT infrastructure (dynamic, rotating) ----
+const leItNodes=[
+  {n:'1С:ERP',c:'#22d3ee',g:'1C',info:'Ядро учёта (Пр-во, Снабж., Финансы)'},
+  {n:'1С:MES',c:'#06b6d4',g:'1C',info:'Производственные заказы'},
+  {n:'1С:LIMS',c:'#0ea5e9',g:'1C',info:'Лаборатория / Качество'},
+  {n:'1С:WMS',c:'#3b82f6',g:'1C',info:'Склад'},
+  {n:'1С:Док-оборот',c:'#6366f1',g:'1C',info:'Электронный документооборот'},
+  {n:'1С:ЗУП+KPI',c:'#8b5cf6',g:'1C',info:'Кадры / Зарплата / KPI'},
+  {n:'1С:ITILIUM',c:'#a78bfa',g:'1C',info:'ИТ-сервис менеджмент'},
+  {n:'1С:Аналитика',c:'#c084fc',g:'1C',info:'Отчётность / BI'},
+  {n:'1С:Безопасность',c:'#f472b6',g:'1C',info:'Охрана труда'},
+  {n:'1С:SKUD',c:'#ec4899',g:'1C',info:'Контроль доступа'},
+  {n:'Bitrix · ОП',c:'#fbbf24',g:'BX',info:'Операционные задачи'},
+  {n:'Bitrix · Такт',c:'#f59e0b',g:'BX',info:'Тактические задачи'},
+  {n:'Bitrix · Топ',c:'#f97316',g:'BX',info:'Топ-задачи / Руководство'},
+  {n:'OBSIDIAN',c:'#a855f7',g:'KB',info:'База знаний / Регламенты'},
+  {n:'SCADA',c:'#10b981',g:'OT',info:'Промышленная автоматика'},
+  {n:'AI / ML',c:'#22d3ee',g:'AI',info:'Модели / Прогнозирование'}
+];
+leItNodes.forEach((it,i)=>{
+  const ang=i*Math.PI*2/leItNodes.length;
+  const x=Math.cos(ang)*LE_R_MID, z=Math.sin(ang)*LE_R_MID;
+  // Crystal box for each IT module
+  const geo=new THREE.BoxGeometry(14,14,14);
+  const m=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({color:it.c,emissive:it.c,emissiveIntensity:0.4,shininess:80,transparent:true,opacity:0.9}));
+  m.position.set(x,LE_Y_MID,z);
+  m.userData={name:it.n,info:it.info,it:1};
+  LE.itOrbit.add(m);HOV[4].push(m);
+  // Edge highlight (wireframe)
+  const wf=new THREE.Mesh(new THREE.BoxGeometry(14.8,14.8,14.8),new THREE.MeshBasicMaterial({color:it.c,wireframe:true,transparent:true,opacity:0.5}));
+  wf.position.copy(m.position);LE.itOrbit.add(wf);
+  // Label below the box
+  const lab=label(it.n,'#fff',10);lab.position.set(x,LE_Y_MID-18,z);
+  LE.itOrbit.add(lab);
+});
+
+// Central IT core ring (stays still, visual anchor)
+const coreRing=new THREE.Mesh(new THREE.TorusGeometry(LE_R_MID+4,0.8,12,128),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.35}));
+coreRing.rotation.x=Math.PI/2;coreRing.position.y=LE_Y_MID;LE.itCore.add(coreRing);
+const coreRing2=coreRing.clone();coreRing2.material=coreRing.material.clone();coreRing2.material.color.setHex(0xa78bfa);coreRing2.material.opacity=0.25;
+coreRing2.rotation.x=Math.PI/2;coreRing2.scale.setScalar(0.55);LE.itCore.add(coreRing2);
+
+// Central hub sphere (IT backbone)
+const itHub=new THREE.Mesh(new THREE.IcosahedronGeometry(22,2),new THREE.MeshPhongMaterial({color:0x0a1628,emissive:0x22d3ee,emissiveIntensity:0.3,shininess:110,transparent:true,opacity:0.75,wireframe:false}));
+itHub.position.y=LE_Y_MID;LE.itCore.add(itHub);
+const itHubWf=new THREE.Mesh(new THREE.IcosahedronGeometry(23,1),new THREE.MeshBasicMaterial({color:0x22d3ee,wireframe:true,transparent:true,opacity:0.55}));
+itHubWf.position.y=LE_Y_MID;LE.itCore.add(itHubWf);
+const itHubLab=label('IT · Интеграционное ядро','#22d3ee',11);itHubLab.position.set(0,LE_Y_MID+28,0);LE.itCore.add(itHubLab);
+
+// ---- Top analytics layer: dashboards per direction + main dashboard ----
+function miniDashCanvas(col){
+  const c=document.createElement('canvas');c.width=128;c.height=72;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='rgba(8,12,24,0.88)';ctx.fillRect(0,0,c.width,c.height);
+  ctx.strokeStyle=col;ctx.lineWidth=1.4;ctx.strokeRect(1,1,c.width-2,c.height-2);
+  // bar chart
+  ctx.fillStyle=col;
+  const bars=[0.4,0.7,0.55,0.9,0.6,0.8,0.5];
+  bars.forEach((h,i)=>{const bh=h*42;ctx.fillRect(12+i*14,60-bh,9,bh);});
+  // top line
+  ctx.strokeStyle='rgba(255,255,255,0.55)';ctx.lineWidth=0.8;
+  ctx.beginPath();ctx.moveTo(6,12);ctx.lineTo(c.width-6,12);ctx.stroke();
+  return c;
+}
+DIRS.forEach((d,i)=>{
+  const ang=i*Math.PI*2/DIRS.length;
+  const x=Math.cos(ang)*LE_R_TOP, z=Math.sin(ang)*LE_R_TOP;
+  const tx=new THREE.CanvasTexture(miniDashCanvas(d.c));tx.minFilter=THREE.LinearFilter;
+  const panel=new THREE.Mesh(
+    new THREE.PlaneGeometry(26,15),
+    new THREE.MeshBasicMaterial({map:tx,transparent:true,opacity:0.95,side:THREE.DoubleSide,depthWrite:false})
+  );
+  panel.position.set(x,LE_Y_TOP,z);
+  panel.lookAt(0,LE_Y_TOP,0);
+  panel.userData={name:`Дашборд · ${d.n}`,info:`Аналитика направления ${d.n}`};
+  LE.dash.add(panel);HOV[4].push(panel);
+  // accent bar under panel
+  const bar=new THREE.Mesh(new THREE.BoxGeometry(26,0.6,0.6),new THREE.MeshBasicMaterial({color:d.c,transparent:true,opacity:0.85}));
+  bar.position.set(x,LE_Y_TOP-8.5,z);bar.lookAt(0,LE_Y_TOP-8.5,0);LE.dash.add(bar);
+  // subtle glow halo
+  const halo=new THREE.Mesh(new THREE.PlaneGeometry(30,19),new THREE.MeshBasicMaterial({color:d.c,transparent:true,opacity:0.12,side:THREE.DoubleSide,depthWrite:false}));
+  halo.position.set(x,LE_Y_TOP,z);halo.lookAt(0,LE_Y_TOP,0);halo.position.add(new THREE.Vector3(Math.cos(ang)*-0.5,0,Math.sin(ang)*-0.5));
+  LE.dash.add(halo);
+});
+
+// Central MAIN dashboard — hexagonal disc with concentric rings, floats above panels
+const mainY=LE_Y_TOP+42;
+const mainDisc=new THREE.Mesh(new THREE.CylinderGeometry(44,44,2.4,6),new THREE.MeshPhongMaterial({color:0x0a1628,emissive:0x22d3ee,emissiveIntensity:0.35,shininess:90,transparent:true,opacity:0.88}));
+mainDisc.position.y=mainY;LE.dashMain.add(mainDisc);
+const mainEdge=new THREE.Mesh(new THREE.TorusGeometry(44,0.7,12,96),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.75}));
+mainEdge.rotation.x=Math.PI/2;mainEdge.position.y=mainY;LE.dashMain.add(mainEdge);
+// inner ring
+const innerRing=new THREE.Mesh(new THREE.TorusGeometry(28,0.4,10,80),new THREE.MeshBasicMaterial({color:0xa78bfa,transparent:true,opacity:0.55}));
+innerRing.rotation.x=Math.PI/2;innerRing.position.y=mainY+1.4;LE.dashMain.add(innerRing);
+// core pulse
+const mainCore=new THREE.Mesh(new THREE.IcosahedronGeometry(10,1),new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:0.9,shininess:100,transparent:true,opacity:0.95}));
+mainCore.position.y=mainY+3.5;LE.dashMain.add(mainCore);
+mainCore.userData={name:'Главный дашборд',info:'Свод по компании. Агрегация всех направлений.'};HOV[4].push(mainCore);
+// label
+const mainLab=label('ГЛАВНЫЙ ДАШБОРД · СВОД','#fff',12);mainLab.position.set(0,mainY+22,0);LE.dashMain.add(mainLab);
+
+// ---- Links: each direction's dashboard → main dashboard ----
+DIRS.forEach((d,i)=>{
+  const ang=i*Math.PI*2/DIRS.length;
+  const x=Math.cos(ang)*LE_R_TOP, z=Math.sin(ang)*LE_R_TOP;
+  LE.lk.add(ln(new THREE.Vector3(x,LE_Y_TOP,z),new THREE.Vector3(0,mainY,0),d.c,0.18));
+});
+
+// ---- Peak: 3 strategic goals + 5 motivation streams orbiting ----
+const GOALS=[
+  {n:'Рост выручки ×2 к 2028',c:'#a78bfa'},
+  {n:'Лидерство в отрасли',c:'#f472b6'},
+  {n:'Цифровая зрелость · ур.8',c:'#22d3ee'}
+];
+GOALS.forEach((g,i)=>{
+  const ang=i*Math.PI*2/3 - Math.PI/2;
+  const x=Math.cos(ang)*22, z=Math.sin(ang)*22;
+  const m=new THREE.Mesh(
+    new THREE.IcosahedronGeometry(9,1),
+    new THREE.MeshPhongMaterial({color:g.c,emissive:g.c,emissiveIntensity:0.85,shininess:120,transparent:true,opacity:0.98})
+  );
+  m.position.set(x,LE_Y_PEAK+28,z);
+  m.userData={name:'Стратегическая цель',info:g.n};
+  LE.goals.add(m);HOV[4].push(m);
+  // thin halo ring
+  const halo=new THREE.Mesh(new THREE.RingGeometry(10,12,48),new THREE.MeshBasicMaterial({color:g.c,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false}));
+  halo.rotation.x=Math.PI/2;halo.position.copy(m.position);LE.goals.add(halo);
+  const lab=label(g.n,'#fff',10);lab.position.set(x*1.1,LE_Y_PEAK+44,z*1.1);LE.goals.add(lab);
+});
+// Crown label
+const crownLab=label('СТРАТЕГИЧЕСКИЕ ЦЕЛИ · 2028','#a78bfa',13);crownLab.position.set(0,LE_Y_PEAK+68,0);LE.goals.add(crownLab);
+// Base glow disc for goals
+const goalBase=new THREE.Mesh(new THREE.RingGeometry(28,32,64),new THREE.MeshBasicMaterial({color:0xa78bfa,transparent:true,opacity:0.35,side:THREE.DoubleSide,depthWrite:false}));
+goalBase.rotation.x=-Math.PI/2;goalBase.position.y=LE_Y_PEAK+15;LE.goals.add(goalBase);
+
+// 5 motivation streams orbiting peak
+const MOTIV=[
+  {n:'KPI по должностям',c:'#a78bfa'},
+  {n:'Исполнительская дисциплина',c:'#22d3ee'},
+  {n:'Оценка 360',c:'#fbbf24'},
+  {n:'Аттестация',c:'#10b981'},
+  {n:'Анализ совещаний',c:'#f472b6'}
+];
+MOTIV.forEach((m,i)=>{
+  const ang=i*Math.PI*2/MOTIV.length;
+  const R=62, Y=LE_Y_PEAK+22;
+  const x=Math.cos(ang)*R, z=Math.sin(ang)*R;
+  // Diamond + wireframe
+  const d=new THREE.Mesh(
+    new THREE.OctahedronGeometry(5,0),
+    new THREE.MeshPhongMaterial({color:m.c,emissive:m.c,emissiveIntensity:0.55,shininess:100,transparent:true,opacity:0.95})
+  );
+  d.position.set(x,Y,z);d.userData={name:'Поток мотивации',info:m.n,motiv:1};
+  LE.motiv.add(d);HOV[4].push(d);
+  const lab=label(m.n,'#fff',9);lab.position.set(x*1.18,Y+10,z*1.18);LE.motiv.add(lab);
+  // link to goals center
+  LE.motiv.add(ln(new THREE.Vector3(x,Y,z),new THREE.Vector3(0,LE_Y_PEAK+28,0),m.c,0.22));
+});
+// motivation orbit ring
+const motivRing=new THREE.Mesh(new THREE.TorusGeometry(62,0.5,10,96),new THREE.MeshBasicMaterial({color:0xa78bfa,transparent:true,opacity:0.3}));
+motivRing.rotation.x=Math.PI/2;motivRing.position.y=LE_Y_PEAK+22;LE.motiv.add(motivRing);
+
+// ---- Digital leaders orbit (around bottom layer, slow) ----
+const leaderRot=new THREE.Group();LE.leaders.add(leaderRot);
+LE.leaders.userData.rot=leaderRot;
+DIRS.forEach((d,i)=>{
+  const ang=i*Math.PI*2/DIRS.length + Math.PI/DIRS.length;
+  const R=430, Y=LE_Y_BOTTOM+40;
+  const x=Math.cos(ang)*R, z=Math.sin(ang)*R;
+  // Leader body: tall prism (cone)
+  const body=new THREE.Mesh(
+    new THREE.ConeGeometry(6,18,6),
+    new THREE.MeshPhongMaterial({color:d.c,emissive:d.c,emissiveIntensity:0.6,shininess:80,transparent:true,opacity:0.92})
+  );
+  body.position.set(x,Y,z);
+  body.userData={name:`Цифровой руководитель · ${d.n}`,info:`Руководитель направления ${d.n}`,dir:d.id,leader:1};
+  leaderRot.add(body);HOV[4].push(body);
+  // accent ring under leader
+  const lr=new THREE.Mesh(new THREE.RingGeometry(7,9,24),new THREE.MeshBasicMaterial({color:d.c,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false}));
+  lr.rotation.x=-Math.PI/2;lr.position.set(x,Y-10,z);leaderRot.add(lr);
+  // thin link from leader to its direction hub
+  if(leDirHubs[d.id]){
+    const link=ln(new THREE.Vector3(x,Y-4,z),leDirHubs[d.id].position,d.c,0.28);
+    leaderRot.add(link);
+  }
+});
+// outer orbit ring under leaders
+const leadRing=new THREE.Mesh(new THREE.TorusGeometry(430,0.7,10,128),new THREE.MeshBasicMaterial({color:0x94a3b8,transparent:true,opacity:0.22}));
+leadRing.rotation.x=Math.PI/2;leadRing.position.y=LE_Y_BOTTOM+25;LE.leaders.add(leadRing);
+
+// ---- Digital agents / twins orbit (around middle layer, active) ----
+const agentRot=new THREE.Group();LE.agents.add(agentRot);
+LE.agents.userData.rot=agentRot;
+const AGENT_COUNT=30;
+for(let i=0;i<AGENT_COUNT;i++){
+  const ang=i*Math.PI*2/AGENT_COUNT;
+  const R=LE_R_MID+70 + (i%3)*8;   // slight variance for depth
+  const Y=LE_Y_MID + (i%5-2)*6;    // vertical scatter
+  const x=Math.cos(ang)*R, z=Math.sin(ang)*R;
+  const sz=2.4+(i%4)*0.4;
+  const col=[0x22d3ee,0xa78bfa,0xf472b6,0xfbbf24,0x10b981][i%5];
+  const m=new THREE.Mesh(
+    new THREE.TetrahedronGeometry(sz,0),
+    new THREE.MeshPhongMaterial({color:col,emissive:col,emissiveIntensity:0.7,shininess:80,transparent:true,opacity:0.92})
+  );
+  m.position.set(x,Y,z);
+  m.userData={name:'Цифровой агент',info:`AI-агент #${i+1} · передача данных в аналитику`,agent:1,phase:i};
+  agentRot.add(m);HOV[4].push(m);
+  // thin dashed-looking beam going up to analytics layer (random target angle around dashboard ring)
+  const tgtAng=Math.random()*Math.PI*2;
+  const tx=Math.cos(tgtAng)*LE_R_TOP, tz=Math.sin(tgtAng)*LE_R_TOP;
+  agentRot.add(ln(new THREE.Vector3(x,Y,z),new THREE.Vector3(tx,LE_Y_TOP,tz),col,0.12));
+}
+// orbit ring for agents (visual anchor)
+const agRing=new THREE.Mesh(new THREE.TorusGeometry(LE_R_MID+70,0.5,10,128),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.18}));
+agRing.rotation.x=Math.PI/2;agRing.position.y=LE_Y_MID;LE.agents.add(agRing);
+
+// ---- AI module: core + envelope + 5 satellite cards + beams ----
+const LE_AI_Y=LE_Y_MID+70;
+const leAiOrbit=new THREE.Group();LE.ai.add(leAiOrbit);
+LE.ai.userData.orbit=leAiOrbit; // whole AI assembly can rotate as one
+
+// AI core (icosahedron, strong emissive)
+const leAiCore=new THREE.Mesh(
+  new THREE.IcosahedronGeometry(17,1),
+  new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:1.1,shininess:140,transparent:true,opacity:0.96,specular:0xaaf0ff,flatShading:true})
+);
+leAiCore.position.set(0,LE_AI_Y,0);
+leAiCore.userData={name:'ИИ · Ядро аналитики',info:'Сквозной аналитический модуль. Связан со всей IT-инфраструктурой и питает дашборды.'};
+leAiOrbit.add(leAiCore);HOV[4].push(leAiCore);
+LE.ai.userData.core=leAiCore;
+// Inner wireframe
+const leAiWf=new THREE.Mesh(new THREE.IcosahedronGeometry(19,1),new THREE.MeshBasicMaterial({color:0x22d3ee,wireframe:true,transparent:true,opacity:0.55}));
+leAiWf.position.copy(leAiCore.position);leAiOrbit.add(leAiWf);
+// Soft envelope sphere
+const leAiEnv=new THREE.Mesh(new THREE.SphereGeometry(110,48,32),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.06,side:THREE.BackSide,depthWrite:false}));
+leAiEnv.position.copy(leAiCore.position);leAiEnv.userData.isEnv=1;leAiEnv.userData.envR=110;leAiOrbit.add(leAiEnv);
+// Scan ring pulses around AI core
+const leScanRing=new THREE.Mesh(new THREE.RingGeometry(28,31,96),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));
+leScanRing.rotation.x=Math.PI/2;leScanRing.position.copy(leAiCore.position);leAiOrbit.add(leScanRing);
+LE.ai.userData.scan=leScanRing;
+// 5 AI satellite cards around the core
+const LE_AI=[
+  {t:'АНОМАЛИИ · 5 ТИПОВ',d:'Выбросы · Падения · Всплески · Паттерны · Кросс'},
+  {t:'ДИАГНОСТИКА',d:'Корневые причины · Цепочки влияния · Бенчмарки'},
+  {t:'РЕКОМЕНДАЦИИ',d:'Корректирующие действия · Перераспределение'},
+  {t:'АЛЕРТЫ · ЭСКАЛАЦИЯ',d:'Ранние предупреждения · Тихие зоны · Пороги'},
+  {t:'ПРЕДИКТИВ · 9 СЦЕНАРИЕВ',d:'Прогноз целей · Каскады · Выгорание · Сезонность'}
+];
+const leAiSatRot=new THREE.Group();leAiSatRot.position.set(0,LE_AI_Y,0);leAiOrbit.add(leAiSatRot);
+LE.ai.userData.satRot=leAiSatRot;
+LE_AI.forEach((f,i)=>{
+  const a=(i/LE_AI.length)*Math.PI*2-Math.PI/2,r=95,x=Math.cos(a)*r,z=Math.sin(a)*r,y=30;
+  // marker diamond
+  const mk=new THREE.Mesh(new THREE.OctahedronGeometry(4,0),new THREE.MeshPhongMaterial({color:0x22d3ee,emissive:0x22d3ee,emissiveIntensity:0.9,flatShading:true}));
+  mk.position.set(x*0.75,y-5,z*0.75);
+  mk.userData={name:f.t,info:f.d};leAiSatRot.add(mk);HOV[4].push(mk);
+  const lb=label(f.t,'#e6fbff',11);lb.position.set(x,y,z);leAiSatRot.add(lb);
+  const ds=label(f.d,'#9ee8f2',8);ds.position.set(x,y-13,z);leAiSatRot.add(ds);
+  leAiSatRot.add(ln(mk.position,new THREE.Vector3(0,0,0),'#22d3ee',0.4));
+});
+
+// Beams: AI → IT hub (down) and AI → main dashboard (up)
+LE.lk.add(ln(leAiCore.position,new THREE.Vector3(0,LE_Y_MID,0),'#22d3ee',0.55));
+LE.lk.add(ln(leAiCore.position,new THREE.Vector3(0,mainY,0),'#a78bfa',0.5));
+// Beam visual (thicker cylinders) between AI and IT hub
+const aiItBeam=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.4,LE_AI_Y-LE_Y_MID,8),new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.35}));
+aiItBeam.position.set(0,(LE_AI_Y+LE_Y_MID)/2,0);LE.lk.add(aiItBeam);
+const aiDashBeam=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.4,mainY-LE_AI_Y,8),new THREE.MeshBasicMaterial({color:0xa78bfa,transparent:true,opacity:0.35}));
+aiDashBeam.position.set(0,(mainY+LE_AI_Y)/2,0);LE.lk.add(aiDashBeam);
+
+// ---- Inter-layer flow: each direction hub → its dashboard panel (vertical flow) ----
+DIRS.forEach((d,i)=>{
+  const ang=i*Math.PI*2/DIRS.length;
+  const bx=Math.cos(ang)*LE_R_BOTTOM, bz=Math.sin(ang)*LE_R_BOTTOM;
+  const tx=Math.cos(ang)*LE_R_TOP, tz=Math.sin(ang)*LE_R_TOP;
+  // bottom dir → dashboard panel: gently curved using 3 segments through IT layer
+  const mx=Math.cos(ang)*((LE_R_BOTTOM+LE_R_TOP)/2), mz=Math.sin(ang)*((LE_R_BOTTOM+LE_R_TOP)/2);
+  const pts=[new THREE.Vector3(bx,LE_Y_BOTTOM,bz),new THREE.Vector3(mx,LE_Y_MID,mz),new THREE.Vector3(tx,LE_Y_TOP,tz)];
+  const geo=new THREE.BufferGeometry().setFromPoints(pts);
+  const mat=new THREE.LineBasicMaterial({color:d.c,transparent:true,opacity:0.15});
+  LE.lk.add(new THREE.Line(geo,mat));
+});
+// IT core hub → main dashboard (backbone)
+LE.lk.add(ln(new THREE.Vector3(0,LE_Y_MID,0),new THREE.Vector3(0,mainY,0),'#a78bfa',0.3));
+// Strategic goals → main dashboard
+LE.lk.add(ln(new THREE.Vector3(0,LE_Y_PEAK+28,0),new THREE.Vector3(0,mainY,0),'#a78bfa',0.3));
+// Strategic goals ↓ IT core (top-down vision)
+LE.lk.add(ln(new THREE.Vector3(0,LE_Y_PEAK+28,0),new THREE.Vector3(0,LE_Y_MID,0),'#f472b6',0.18));
+
+// Central spine — faint glow column from base to peak
+const leSpineH=(LE_Y_PEAK+28)-(LE_Y_BOTTOM);
+const leSpine=new THREE.Mesh(
+  new THREE.CylinderGeometry(1.2,1.2,leSpineH,12,1,true),
+  new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.16,side:THREE.DoubleSide,depthWrite:false})
+);
+leSpine.position.set(0,(LE_Y_PEAK+28+LE_Y_BOTTOM)/2,0);LE.lk.add(leSpine);
+// Base glow disc under pyramid
+const leBaseGlow=new THREE.Mesh(new THREE.CircleGeometry(480,96),new THREE.MeshBasicMaterial({color:0x1e293b,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));
+leBaseGlow.rotation.x=-Math.PI/2;leBaseGlow.position.y=LE_Y_BOTTOM-20;LE.lk.add(leBaseGlow);
+// Outer grid ring for scale
+const leGridRing=new THREE.Mesh(new THREE.RingGeometry(475,478,128),new THREE.MeshBasicMaterial({color:0x5b6ee8,transparent:true,opacity:0.32,side:THREE.DoubleSide,depthWrite:false}));
+leGridRing.rotation.x=-Math.PI/2;leGridRing.position.y=LE_Y_BOTTOM-18;LE.lk.add(leGridRing);
 
 function hex2rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
 function haloMat(col){return new THREE.SpriteMaterial({map:haloTex(col),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending});}
@@ -546,14 +916,16 @@ cnt:{goals:3,dirs:19,dash:20,emp:5,idx:1,sal:4,twins:19,team:95,ai:1,lk:''}},
 col:{tl:'#f97316',drv:'#f472b6',lv:'#94a3b8',lk:'#666'},
 cnt:{tl:5,drv:4,lv:8,lk:''}},
 null,
-{g:{},lbl:{},col:{},cnt:{}}
+{g:LE,lbl:{procs:'01 · Процессы (94)',dirsL:'02 · Направления (19)',itOrbit:'03 · IT-инфраструктура (16)',itCore:'04 · IT-ядро',dash:'05 · Дашборды направлений',dashMain:'06 · Главный дашборд',goals:'07 · Стратегические цели',motiv:'08 · Потоки мотивации',leaders:'09 · Цифровые руководители',agents:'10 · Цифровые агенты',ai:'11 · ИИ-модуль',lk:'12 · Связи слоёв'},
+col:{procs:'#3b82f6',dirsL:'#eab308',itOrbit:'#22d3ee',itCore:'#a78bfa',dash:'#10b981',dashMain:'#22d3ee',goals:'#f472b6',motiv:'#fbbf24',leaders:'#94a3b8',agents:'#22d3ee',ai:'#22d3ee',lk:'#5b6275'},
+cnt:{procs:94,dirsL:19,itOrbit:16,itCore:1,dash:19,dashMain:1,goals:3,motiv:5,leaders:19,agents:30,ai:6,lk:''}}
 ];
 const LEG=[
 [['Компания','#7f77dd'],['Направления (19)','#eab308'],['Процессы (94)','#3b82f6'],['ИТ (13)','#22d3ee']],
 [['Топ-цели (3)','#a78bfa'],['Направления (19)','#10b981'],['Дашборды (20)','#3b82f6'],['Данные сотрудников','#f87171'],['Индекс влияния','#fbbf24'],['Зарплата','#c084fc'],['Двойники руководителей','#f472b6'],['Цифровая команда','#94a3b8'],['ИИ-ядро','#22d3ee']],
 [['2024 уровень 4','#1e40af'],['2025 ур.5','#2563eb'],['2026 ур.6','#eab308'],['2027 ур.7','#f97316'],['2028–30 ур.8','#dc2626'],['Драйверы','#f472b6']],
 [],
-[]
+[['Процессы (94)','#3b82f6'],['Направления (19)','#eab308'],['IT-инфраструктура (16)','#22d3ee'],['Дашборды (19+1)','#10b981'],['Стратегические цели (3)','#f472b6'],['Потоки мотивации (5)','#fbbf24'],['Цифровые руководители (19)','#94a3b8'],['Цифровые агенты (30)','#22d3ee'],['ИИ-модуль','#a78bfa']]
 ];
 
 let at=1;
@@ -569,12 +941,12 @@ r.querySelector('input').addEventListener('change',e=>{c.g[k].visible=e.target.c
 });
 const leg=LEG[at]||[];
 document.getElementById('legend').innerHTML=leg.length?('<div class="secLbl">Легенда</div>'+leg.map(l=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;font-size:11px;color:rgba(255,255,255,0.78);"><span style="width:9px;height:9px;border-radius:50%;background:${l[1]};box-shadow:0 0 6px ${l[1]};"></span>${l[0]}</div>`).join('')):'';
-if(at===4){document.getElementById('info').innerHTML='<div style="color:rgba(255,255,255,0.55);font-style:italic;">Архитектура 2.0 — пустой каркас. Контент будет добавлен.</div>';}
+if(at===4){document.getElementById('info').innerHTML='<div style="color:rgba(255,255,255,0.72);line-height:1.55;">Четырёхуровневая пирамида компании: процессы → IT-инфраструктура → аналитика → стратегия. Руководители вращаются вокруг низа, агенты — вокруг IT, ИИ питает дашборды.</div>';}
 }
 
-const HUD_MODES=['АРХИТЕКТУРА · 3D ПРОЦЕССОВ','KPI · ЦИФРОВАЯ ПЛАТФОРМА','ЗРЕЛОСТЬ · ТРАЕКТОРИЯ 2024–28','','АРХИТЕКТУРА 2.0 · В РАЗРАБОТКЕ'];
-const HUD_NODES=[127,185,42,0,0];
-const HUD_LINKS=[312,428,56,0,0];
+const HUD_MODES=['АРХИТЕКТУРА · 3D ПРОЦЕССОВ','KPI · ЦИФРОВАЯ ПЛАТФОРМА','ЗРЕЛОСТЬ · ТРАЕКТОРИЯ 2024–28','','АРХИТЕКТУРА 2.0 · ЦИФРОВАЯ ПИРАМИДА'];
+const HUD_NODES=[127,185,42,0,217];
+const HUD_LINKS=[312,428,56,0,148];
 function sw(i){
 setHover(null);
 const m=document.getElementById('hudMode');if(m)m.textContent=HUD_MODES[i]||'';
@@ -583,7 +955,7 @@ const l=document.getElementById('hudLinks');if(l)l.textContent=HUD_LINKS[i]||0;
 at=i;SG.forEach((g,k)=>g.visible=(k===i));
 if(i===0){cs.r=380;cs.th=Math.PI/2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
 else if(i===1){cs.r=700;cs.th=Math.PI/2.15;cs.ph=Math.PI/5;cs.tx=0;cs.ty=30;cs.tz=0;}
-else if(i===4){cs.r=500;cs.th=Math.PI/2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
+else if(i===4){cs.r=950;cs.th=Math.PI/2.3;cs.ph=Math.PI/6;cs.tx=0;cs.ty=60;cs.tz=0;}
 else{cs.r=440;cs.th=Math.PI/2.2;cs.ph=0;cs.tx=cs.ty=cs.tz=0;}
 upCam();
 document.querySelectorAll('#tabs .tab').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.tab)===i));
@@ -675,6 +1047,39 @@ if(at===1){
     scene.userData.scanRing.material.opacity=0.55*(1-phase);
   }
   LD.twins.children.forEach((c)=>{if(c.isMesh&&c.geometry&&c.geometry.type==='OctahedronGeometry')c.rotation.y=t*0.6;});
+}
+if(at===4){
+  const t=Date.now()*0.001;
+  // Leaders orbit slowly counter-clockwise
+  if(LE.leaders.userData.rot) LE.leaders.userData.rot.rotation.y=-t*0.06;
+  // Agents orbit faster clockwise
+  if(LE.agents.userData.rot) LE.agents.userData.rot.rotation.y=t*0.18;
+  // IT middle layer gentle rotation
+  LE.itOrbit.rotation.y=t*0.08;
+  // AI core spin + emissive breath
+  if(LE.ai.userData.core){
+    LE.ai.userData.core.rotation.y=t*0.35;
+    LE.ai.userData.core.rotation.x=t*0.2;
+    LE.ai.userData.core.material.emissiveIntensity=0.9+Math.sin(t*1.6)*0.25;
+  }
+  // AI satellite cards orbit around core
+  if(LE.ai.userData.satRot) LE.ai.userData.satRot.rotation.y=t*0.12;
+  // AI scan ring expanding pulse
+  if(LE.ai.userData.scan){
+    const phase=(t*0.32)%1;
+    LE.ai.userData.scan.scale.setScalar(0.5+phase*4.5);
+    LE.ai.userData.scan.material.opacity=0.55*(1-phase);
+  }
+  // Motivation streams orbit around goals
+  LE.motiv.rotation.y=t*0.22;
+  // Goals subtle bob
+  LE.goals.rotation.y=t*0.04;
+  // Direction hubs gentle pulse (static layer, but visual breathing)
+  LE.dirsL.children.forEach((m,i)=>{if(m.isMesh&&m.geometry&&m.geometry.type==='OctahedronGeometry'){m.rotation.y=t*0.3+i*0.7;}});
+  // Main dashboard core slow rotation
+  LE.dashMain.children.forEach(c=>{if(c.isMesh&&c.geometry&&c.geometry.type==='IcosahedronGeometry'){c.rotation.y=t*0.45;c.rotation.x=t*0.25;}});
+  // Individual agents tumble
+  if(LE.agents.userData.rot) LE.agents.userData.rot.children.forEach(m=>{if(m.isMesh&&m.geometry&&m.geometry.type==='TetrahedronGeometry'){m.rotation.y=t*1.2+m.userData.phase;m.rotation.x=t*0.8;}});
 }
 if(scene.userData.stars){scene.userData.stars.rotation.y+=0.00008;}
 renderer.render(scene,cam);
